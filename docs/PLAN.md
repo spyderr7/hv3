@@ -33,12 +33,14 @@ Prototyp: [`prototype/index.html`](../prototype/index.html) (otwórz w przegląd
 ## 3. System wizualny (z decku)
 
 - Fonty: **Barlow Condensed** ExtraBold (ogromne nagłówki, wersaliki, dwa kolory), **Space Grotesk** (tekst; pogrubione listy jak w decku), Barlow Condensed Light Italic (cytaty). Oba z Google Fonts, z polskimi znakami.
-- Kolory: fiolet #4C02E8, zieleń #00CC66, biel; AlterCast #FBAA19 + biel + #231F20.
-- Motywy: pionowy fioletowy pasek z obróconym logo na białych sekcjach, czarne „pigułki” jako etykiety, portrety w duotonie fiolet/zieleń w kształcie kapsuły, postacie 3D działów.
+- Kolory: fiolet #4C02E8, zieleń #00CC66, biel; AlterCast #FBAA19 + biel + #231F20. Zielony tekst na białym tle jest o ton ciemniejszy (#00A659), żeby duże nagłówki miały kontrast co najmniej 3:1. Na zielonym tle nie ma białego tekstu. W sekcji AlterCast druga część nagłówka to ciemny tekst na białym pasku, więc biel AlterCast zostaje, a tekst jest czytelny.
+- Motywy: pionowy fioletowy pasek z obróconym logo na białych sekcjach, czarne „pigułki” jako etykiety, zdjęcie zespołu w kształcie kapsuły, portrety w duotonie fiolet/zieleń w owalach, postacie 3D działów.
 
 ## 4. Przejścia kolorów (poprawka)
 
 Każda sekcja maluje własne tło. Siatka rysuje się między tłem a tekstem i przyjmuje kolor sekcji, nad którą akurat jest. Tekst nigdy nie stoi na kolorze, który zmienia się pod nim. Płynne przejście to gradient na górze każdej sekcji, w pustym miejscu przed treścią. Nawigacja bierze kolor z sekcji, która jest pod nią. W panelu można przełączyć przejścia na ostre.
+
+Na telefonie i na tablecie w pionie tekst zajmuje całą szerokość, więc siatka się cofa. Diagramy są bledsze i nie mają podpisów, a twarz AlterCast i znak ┐H są mniejsze i przesunięte w prawo. Poniżej 900 px linki nawigacji chowają się pod przyciskiem „Menu”.
 
 ## 5. Technologia
 
