@@ -6,334 +6,354 @@
 <title>Humanverse v3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Kumbh+Sans:wght@400;500;600;700&family=Montserrat+Alternates:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,500;0,700;0,800;1,300&family=Space+Grotesk:wght@400;500;700&display=swap">
 <style>
 :root {
-  /* Layout: one fixed "living grid" canvas behind full-bleed scenes. On wide screens copy keeps to the left column,
-     so each scene's grid form (modules, frames, pipeline, face, logo) owns the right side. */
-  --violet: #3D00FF;
-  --violet-lift: #8A73FF;
-  --mist: #CFC7FF;
-  --ink: #0A0816;
-  --paper: #F7F6FB;
-  --white: #FFFFFF;
-  --jeden: #9D93FF;
-  --ac-orange: #FBAA19;
-  --ac-blue: #0070E7;
+  /* Layout: full-bleed colour blocks like the Humanverse deck. A fixed grid canvas sits between each block's
+     background and its copy; every block paints its own colour, so copy never changes colour under the reader.
+     White blocks carry the deck's violet side rail with the rotated wordmark. */
+  --c-violet: #4C02E8;
+  --c-green: #00CC66;
+  --c-white: #FFFFFF;
+  --c-yellow: #FBAA19;
+  --black: #0D0C12;
+  --ac-dark: #231F20;
 
-  --fg: #FFFFFF;
-  --fg-dim: rgba(255, 255, 255, 0.8);
-  --accent: #FFFFFF;
-  --h1-a: #FFFFFF;
-  --h1-b: #CFC7FF;
-  --card: rgba(255, 255, 255, 0.07);
-  --card-line: rgba(255, 255, 255, 0.26);
-  --field: rgba(255, 255, 255, 0.08);
-  --btn-bg: #FFFFFF;
-  --btn-fg: #3D00FF;
-
-  --nav-fg: #FFFFFF;
-  --nav-glass: rgba(61, 0, 255, 0.74);
-  --nav-cta-bg: #FFFFFF;
-  --nav-cta-fg: #3D00FF;
-  --wm-h: #FFFFFF;
-  --wm-v: #FFFFFF;
-
-  --font-display: "Montserrat Alternates", "Futura", "Century Gothic", "Avenir Next", system-ui, sans-serif;
-  --font-body: "Kumbh Sans", "Avenir Next", "Segoe UI", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-head: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", "Helvetica Neue", sans-serif;
+  --font-body: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
 
   --gutter: max(16px, 5vw);
-  --measure: 1240px;
+  --rail: clamp(30px, 3.4vw, 60px);
+  --measure: 1360px;
+  --seam: 0px;
+
+  /* scheme tokens; every section sets its own through an .s-* class */
+  --bg: var(--c-violet);
+  --fg: #FFFFFF;
+  --fg-dim: rgba(255, 255, 255, 0.84);
+  --a: #FFFFFF;
+  --b: var(--c-green);
+  --card: rgba(255, 255, 255, 0.08);
+  --line: rgba(255, 255, 255, 0.3);
+  --btn-bg: var(--c-green);
+  --btn-fg: var(--black);
+  --pill-bg: var(--black);
+  --pill-fg: #FFFFFF;
+  --mark: var(--c-green);
+
+  --nav-fg: #FFFFFF;
+  --nav-glass: rgba(76, 2, 232, 0.9);
+  --nav-cta-bg: var(--c-green);
+  --nav-cta-fg: var(--black);
+  --wm: #FFFFFF;
   color-scheme: light;
 }
 
-body[data-scene="ink"] {
-  --nav-fg: #F2F0FF; --nav-glass: rgba(10, 8, 22, 0.74); --nav-cta-bg: #8A73FF; --nav-cta-fg: #0A0816;
-  --wm-h: #8A73FF; --wm-v: #FFFFFF;
-}
-body[data-scene="paper"] {
-  --nav-fg: #0A0816; --nav-glass: rgba(247, 246, 251, 0.84); --nav-cta-bg: #3D00FF; --nav-cta-fg: #FFFFFF;
-  --wm-h: #3D00FF; --wm-v: #0A0816;
-}
+.s-violet { --bg: var(--c-violet); --fg: #FFFFFF; --fg-dim: rgba(255, 255, 255, 0.84); --a: #FFFFFF; --b: var(--c-green); --card: rgba(255, 255, 255, 0.08); --line: rgba(255, 255, 255, 0.3); --btn-bg: var(--c-green); --btn-fg: var(--black); --pill-bg: var(--black); --pill-fg: #FFFFFF; --mark: var(--c-green); }
+.s-green { --bg: var(--c-green); --fg: var(--black); --fg-dim: rgba(13, 12, 18, 0.84); --a: #FFFFFF; --b: var(--c-violet); --card: rgba(255, 255, 255, 0.2); --line: rgba(13, 12, 18, 0.24); --btn-bg: var(--c-violet); --btn-fg: #FFFFFF; --pill-bg: var(--black); --pill-fg: #FFFFFF; --mark: var(--c-violet); }
+.s-white { --bg: #FFFFFF; --fg: var(--black); --fg-dim: #47434F; --a: var(--c-green); --b: var(--c-violet); --card: #F4F2FD; --line: rgba(76, 2, 232, 0.16); --btn-bg: var(--c-violet); --btn-fg: #FFFFFF; --pill-bg: var(--black); --pill-fg: #FFFFFF; --mark: var(--c-violet); }
+.s-yellow { --bg: var(--c-yellow); --fg: var(--ac-dark); --fg-dim: rgba(35, 31, 32, 0.88); --a: var(--ac-dark); --b: #FFFFFF; --card: #FFFFFF; --line: rgba(35, 31, 32, 0.25); --btn-bg: var(--ac-dark); --btn-fg: #FFFFFF; --pill-bg: var(--ac-dark); --pill-fg: #FFFFFF; --mark: #FFFFFF; }
 
-.on-violet {
-  --fg: #FFFFFF; --fg-dim: rgba(255, 255, 255, 0.8); --accent: #FFFFFF; --h1-a: #FFFFFF; --h1-b: #CFC7FF;
-  --card: rgba(255, 255, 255, 0.07); --card-line: rgba(255, 255, 255, 0.26); --field: rgba(255, 255, 255, 0.08);
-  --btn-bg: #FFFFFF; --btn-fg: #3D00FF;
-}
-.on-ink {
-  --fg: #F2F0FF; --fg-dim: rgba(242, 240, 255, 0.74); --accent: #9D93FF; --h1-a: #8A73FF; --h1-b: #F2F0FF;
-  --card: rgba(138, 115, 255, 0.08); --card-line: rgba(138, 115, 255, 0.32); --field: rgba(138, 115, 255, 0.1);
-  --btn-bg: #8A73FF; --btn-fg: #0A0816;
-}
-.on-paper {
-  --fg: #0A0816; --fg-dim: #4B4763; --accent: #3D00FF; --h1-a: #3D00FF; --h1-b: #0A0816;
-  --card: rgba(255, 255, 255, 0.8); --card-line: rgba(61, 0, 255, 0.18); --field: #FFFFFF;
-  --btn-bg: #3D00FF; --btn-fg: #FFFFFF;
-}
-.theme-altercast { --accent: #0070E7; }
+body[data-nav="green"] { --nav-fg: var(--black); --nav-glass: rgba(0, 204, 102, 0.92); --nav-cta-bg: var(--c-violet); --nav-cta-fg: #FFFFFF; --wm: var(--black); }
+body[data-nav="white"] { --nav-fg: var(--black); --nav-glass: rgba(255, 255, 255, 0.92); --nav-cta-bg: var(--c-violet); --nav-cta-fg: #FFFFFF; --wm: var(--c-violet); }
+body[data-nav="yellow"] { --nav-fg: var(--ac-dark); --nav-glass: rgba(251, 170, 25, 0.94); --nav-cta-bg: var(--ac-dark); --nav-cta-fg: #FFFFFF; --wm: var(--ac-dark); }
 
 [hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
 body {
   margin: 0;
-  background: var(--violet);
+  background: var(--c-violet);
   color: var(--fg);
   font-family: var(--font-body);
   font-size: 17px;
-  line-height: 1.55;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  transition: background-color 0.6s ease;
 }
-body[data-scene="ink"] { background: var(--ink); }
-body[data-scene="paper"] { background: var(--paper); }
-
-#hv-grid { position: fixed; top: 0; left: 0; z-index: 0; display: block; pointer-events: none; }
-main, .site-foot { position: relative; z-index: 1; }
+#hv-grid { position: fixed; top: 0; left: 0; z-index: 1; display: block; pointer-events: none; }
 a { color: inherit; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-p, h1, h2, h3, ul, ol { margin: 0; }
-h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; }
-h2 { font-size: clamp(29px, 5vw, 68px); line-height: 1.03; letter-spacing: -0.005em; overflow-wrap: break-word; }
-h3 { font-size: clamp(19px, 1.5vw, 21px); line-height: 1.22; }
+:focus-visible { outline: 3px solid var(--mark); outline-offset: 3px; }
+p, h1, h2, h3, ul, ol, figure, blockquote { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+h1, h2, h3 { text-wrap: balance; }
 
 /* ---------- navigation ---------- */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 20;
-  display: flex; align-items: center; gap: clamp(14px, 2.6vw, 34px);
-  padding: calc(env(safe-area-inset-top, 0px) + 16px) var(--gutter) 16px;
+  display: flex; align-items: center; gap: clamp(14px, 2.4vw, 32px);
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) var(--gutter) 14px;
   color: var(--nav-fg);
-  transition: color 0.4s ease, background-color 0.4s ease;
+  transition: color 0.25s ease, background-color 0.25s ease;
 }
-.nav.scrolled { background: var(--nav-glass); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
-.brand { display: inline-flex; align-items: center; margin-right: auto; text-decoration: none; }
-.wordmark { height: 26px; width: auto; display: block; }
-.wordmark .wm-h { fill: var(--wm-h); transition: fill 0.4s ease; }
-.wordmark .wm-v { fill: var(--wm-v); transition: fill 0.4s ease; }
-.nav-links { display: flex; gap: clamp(14px, 1.8vw, 26px); font-size: 15px; font-weight: 500; }
+.nav.scrolled { background: var(--nav-glass); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.brand { display: inline-flex; margin-right: auto; }
+.wordmark { height: 24px; width: auto; display: block; }
+.wordmark { color: var(--wm); transition: color 0.25s ease; }
+.nav-links { display: flex; gap: clamp(14px, 1.8vw, 26px); font: 700 18px/1 var(--font-head); letter-spacing: 0.02em; text-transform: uppercase; }
 .nav-links a { text-decoration: none; }
-.nav-links a:hover { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1.5px; }
-.lang { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; opacity: 0.8; }
+.nav-links a:hover { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; }
+.lang { display: inline-flex; border: 1.5px solid currentColor; border-radius: 999px; overflow: hidden; }
+.lang button {
+  font: 700 14px/1 var(--font-head); letter-spacing: 0.06em; color: inherit; background: transparent;
+  border: 0; padding: 7px 10px; cursor: pointer;
+}
+.lang button[aria-pressed="true"] { background: var(--nav-fg); color: var(--nav-cta-fg); }
+body[data-nav="green"] .lang button[aria-pressed="true"],
+body[data-nav="white"] .lang button[aria-pressed="true"],
+body[data-nav="yellow"] .lang button[aria-pressed="true"] { color: #FFFFFF; }
 .nav-cta {
-  position: relative; display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; margin-left: 12px;
-  background: var(--nav-cta-bg); color: var(--nav-cta-fg); text-decoration: none; font-weight: 600; font-size: 14px;
-  transition: background-color 0.4s ease, color 0.4s ease;
+  display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border-radius: 999px;
+  background: var(--nav-cta-bg); color: var(--nav-cta-fg); text-decoration: none;
+  font: 800 17px/1 var(--font-head); letter-spacing: 0.03em; text-transform: uppercase;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
-.nav-cta::before {
-  content: ""; position: absolute; right: 100%; top: 0; width: 12px; height: 9px;
-  background: var(--nav-cta-bg); transition: background-color 0.4s ease;
+@media (max-width: 1080px) { .nav-links { display: none; } }
+@media (max-width: 520px) {
+  .wordmark { height: 19px; }
+  .nav-cta { min-height: 34px; padding: 0 12px; font-size: 15px; }
+  .lang button { padding: 6px 7px; font-size: 13px; }
+  .nav { gap: 10px; }
 }
-@media (max-width: 1020px) { .nav-links, .lang { display: none; } }
-@media (max-width: 560px) {
-  .wordmark { height: 20px; }
-  .nav-cta { min-height: 36px; padding: 0 12px; font-size: 13px; }
-  .nav-cta::before { width: 10px; height: 8px; }
-}
-.cta-short { display: none; }
-@media (max-width: 400px) { .cta-long { display: none; } .cta-short { display: inline; } }
 
-/* ---------- scenes ---------- */
+/* ---------- sections ---------- */
 .scene {
   position: relative; box-sizing: border-box;
   min-height: 100vh; min-height: 100svh;
-  padding-block: clamp(112px, 15vh, 168px) clamp(72px, 11vh, 120px);
-  padding-inline: var(--gutter);
+  padding: calc(var(--seam) + clamp(76px, 11vh, 132px)) var(--gutter) clamp(64px, 10vh, 120px);
   display: flex; flex-direction: column; justify-content: center;
   color: var(--fg);
+  background: linear-gradient(to bottom, var(--prev-bg, var(--bg)) 0px, var(--bg) var(--seam));
 }
-.wrap { width: 100%; max-width: var(--measure); margin-inline: auto; display: grid; gap: clamp(22px, 3vw, 34px); min-width: 0; }
-.wrap > *, .copy > * { min-width: 0; }
-.copy { display: grid; gap: 22px; min-width: 0; }
-.split .copy { max-width: 540px; }
-@media (max-width: 900px) { .split .copy { max-width: none; } }
-.lead { font-size: clamp(18px, 1.45vw, 21px); line-height: 1.5; color: var(--fg-dim); max-width: 58ch; }
-.note { font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.04em; color: var(--fg-dim); display: flex; gap: 10px; align-items: center; }
+.scene.s-white { padding-right: calc(var(--gutter) + var(--rail)); }
+.wrap { position: relative; z-index: 2; width: 100%; max-width: var(--measure); margin-inline: auto; display: grid; gap: clamp(26px, 3.4vw, 46px); min-width: 0; }
+.wrap > *, .col > * { min-width: 0; }
+.col { display: grid; gap: clamp(18px, 2vw, 26px); align-content: start; }
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: start; }
+.split > .col:first-child { max-width: 640px; }
+@media (max-width: 900px) { .split { grid-template-columns: 1fr; } }
 
-.eyebrow {
-  display: flex; align-items: center; gap: 12px;
-  font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--fg-dim);
+.rail { position: absolute; z-index: 2; top: var(--seam); right: 0; bottom: 0; width: var(--rail); background: var(--c-violet); overflow: clip; }
+.rail-mark { position: sticky; top: calc(50vh - 80px); height: 160px; display: grid; place-items: center; }
+.rail-mark svg { width: 150px; height: auto; transform: rotate(90deg); }
+@media (max-width: 700px) { :root { --rail: 10px; } .rail-mark { display: none; } }
+
+/* ---------- type ---------- */
+.mega {
+  font-family: var(--font-head); font-weight: 800; text-transform: uppercase;
+  font-size: clamp(60px, 11.6vw, 216px); line-height: 0.86; letter-spacing: -0.008em;
+  color: var(--a); overflow-wrap: anywhere;
 }
-.hook { position: relative; flex: none; width: 14px; height: 10px; color: var(--accent); }
-.hook::before { content: ""; position: absolute; left: 0; top: 0; width: 14px; height: 3px; background: currentColor; }
-.hook::after { content: ""; position: absolute; right: 0; top: 0; width: 3px; height: 10px; background: currentColor; }
+.mega .b, .statement .b { color: var(--b); }
+.mega .a, .statement .a { color: var(--a); }
+.mega span { display: block; }
+.hero .mega { font-size: clamp(64px, 13.6vw, 252px); }
+.split .mega { font-size: clamp(54px, 7.4vw, 140px); }
+.mega.long { font-size: clamp(48px, 7.6vw, 150px); }
+.statement { font-family: var(--font-head); font-weight: 800; font-size: clamp(30px, 4vw, 66px); line-height: 1.02; letter-spacing: 0.002em; }
+.statement.sm { font-size: clamp(26px, 2.9vw, 46px); }
+.lead { font-weight: 500; font-size: clamp(18px, 1.45vw, 23px); line-height: 1.45; color: var(--fg-dim); max-width: 60ch; }
+.body { font-weight: 500; font-size: clamp(16px, 1.15vw, 18px); line-height: 1.55; color: var(--fg-dim); max-width: 62ch; }
+.quote { font-family: var(--font-head); font-weight: 300; font-style: italic; font-size: clamp(26px, 2.8vw, 46px); line-height: 1.12; }
+.quote cite { display: block; margin-top: 10px; font: 700 15px/1.3 var(--font-body); font-style: normal; letter-spacing: 0.02em; color: var(--fg-dim); }
+.kicker {
+  display: inline-flex; align-self: start; justify-self: start; align-items: center; gap: 8px;
+  background: var(--pill-bg); color: var(--pill-fg); border-radius: 999px; padding: 8px 16px 7px;
+  font: 800 17px/1 var(--font-head); letter-spacing: 0.04em; text-transform: uppercase;
+}
+.hl { color: var(--mark); }
+.s-white .hl { color: var(--c-violet); }
+
+/* bullet lists like the deck: bold copy with a coloured dot */
+.dots { display: grid; gap: 10px; }
+.dots li { position: relative; padding-left: 22px; font-weight: 700; font-size: clamp(16px, 1.2vw, 19px); line-height: 1.4; }
+.dots li::before { content: ""; position: absolute; left: 0; top: 0.5em; width: 9px; height: 9px; border-radius: 50%; background: var(--mark); }
 
 .btn {
-  position: relative; display: inline-flex; align-items: center; gap: 12px;
-  min-height: 52px; padding: 0 22px; box-sizing: border-box;
-  border: 1.5px solid currentColor; background: transparent; color: var(--fg);
-  font: 600 16px/1 var(--font-body); text-decoration: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 10px; min-height: 54px; padding: 0 26px; box-sizing: border-box;
+  border-radius: 999px; border: 2px solid currentColor; background: transparent; color: var(--fg);
+  font: 800 20px/1 var(--font-head); letter-spacing: 0.03em; text-transform: uppercase; text-decoration: none; cursor: pointer;
   transition: transform 0.2s ease;
 }
-.btn:hover { transform: translateY(-1px); }
-.btn.primary { background: var(--btn-bg); border-color: var(--btn-bg); color: var(--btn-fg); margin-left: 16px; }
-.btn.primary::before {
-  content: ""; position: absolute; right: calc(100% + 1.5px); top: -1.5px; width: 16px; height: 12px; background: var(--btn-bg);
-}
-.btn .arr { font-family: var(--font-mono); font-weight: 500; }
-.ctas { display: flex; flex-wrap: wrap; gap: 14px 18px; align-items: center; }
+.btn:hover { transform: translateY(-2px); }
+.btn.primary { background: var(--btn-bg); border-color: var(--btn-bg); color: var(--btn-fg); }
+.ctas { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; }
 
-/* hero */
-.hero { justify-content: flex-end; min-height: 92vh; min-height: 92svh; padding-bottom: clamp(40px, 7vh, 72px); }
-.hero h1 { font-size: clamp(38px, 10vw, 134px); line-height: 0.95; letter-spacing: -0.012em; color: var(--h1-b); overflow-wrap: break-word; }
-.hero h1 .h-a { color: var(--h1-a); }
-.hero-foot {
-  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px 32px;
-  border-top: 1px solid var(--card-line); padding-top: 18px;
-}
-.eco {
-  display: flex; flex-wrap: wrap; gap: 8px 24px; list-style: none; padding: 0;
-  font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg);
-}
-.eco li { display: flex; align-items: center; gap: 10px; }
-.eco li::before { content: ""; width: 6px; height: 6px; background: currentColor; }
-.hint { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; color: var(--fg-dim); }
-.hint-touch { display: none; }
-@media (hover: none) { .hint-mouse { display: none; } .hint-touch { display: inline; } }
+/* ---------- hero ---------- */
+.hero { justify-content: flex-end; min-height: 94vh; min-height: 94svh; padding-bottom: clamp(36px, 6vh, 64px); }
+.tagline { font: 800 clamp(24px, 2.7vw, 46px)/1.05 var(--font-head); color: var(--c-green); max-width: 22ch; }
+.proof { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 2px solid var(--line); }
+.proof > div { display: grid; gap: 4px; align-content: start; padding: 16px 20px 0 0; }
+.proof b { font: 800 clamp(44px, 5.4vw, 92px)/0.9 var(--font-head); color: var(--fg); }
+.proof span { font-weight: 700; font-size: clamp(14px, 1.05vw, 17px); color: var(--fg-dim); max-width: 28ch; }
+@media (max-width: 700px) { .proof { grid-template-columns: 1fr; } .proof > div { grid-template-columns: auto 1fr; gap: 14px; align-items: center; padding: 12px 0 0; } }
 
-/* 01 ecosystem */
-.chain {
-  list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-top: 1px solid var(--card-line);
-}
-.chain li { display: grid; gap: 10px; align-content: start; padding: 22px 22px 26px; border-right: 1px solid var(--card-line); min-width: 0; }
-.chain li:first-child { padding-left: 0; }
-.chain li:last-child { border-right: 0; }
-.chain .k { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-dim); }
-.chain li:not(:last-child) .k::after { content: "  →"; }
-.chain p { color: var(--fg-dim); font-size: 16px; }
-.chain .who { font-family: var(--font-mono); font-size: 12px; color: var(--fg); opacity: 0.9; }
-@media (max-width: 980px) {
-  .chain { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .chain li { border-bottom: 1px solid var(--card-line); }
-  .chain li:nth-child(odd) { padding-left: 0; }
-  .chain li:nth-child(2) { border-right: 0; }
-}
-@media (max-width: 560px) {
-  .chain { grid-template-columns: 1fr; }
-  .chain li { padding-left: 0; border-right: 0; }
-}
+/* positioning */
+.nots { display: grid; gap: 2px; }
+.nots span { display: block; font: 500 clamp(30px, 5vw, 84px)/1 var(--font-head); color: var(--fg); }
+.nots span.b { font-weight: 800; color: var(--b); margin-top: 10px; }
+.trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.trio > div { display: grid; gap: 6px; align-content: start; padding: 18px 20px 20px; background: var(--card); border-radius: 22px; }
+.trio .k { font: 800 clamp(22px, 2vw, 32px)/1 var(--font-head); text-transform: uppercase; color: var(--fg); }
+.trio .v { font-weight: 700; color: var(--fg-dim); font-size: 15px; }
+.trio .partner { font-weight: 500; font-size: 13px; color: var(--fg-dim); }
+@media (max-width: 760px) { .trio { grid-template-columns: 1fr; } }
 
-/* 02 marketing solutions */
-.solutions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.sol {
-  display: grid; gap: 10px; align-content: start; min-width: 0;
-  padding: 22px 22px 24px; background: var(--card); border: 1px solid var(--card-line);
-  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-}
-.sol .tag { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
-.sol p { color: var(--fg-dim); font-size: 16px; }
-.sol .ex { font-family: var(--font-mono); font-size: 12px; color: var(--fg); border-top: 1px dashed var(--card-line); padding-top: 10px; margin-top: 4px; }
-@media (max-width: 1000px) { .solutions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 620px) { .solutions { grid-template-columns: 1fr; } }
+/* team photo */
+.team-figure { position: relative; }
+.team-figure img { display: block; width: 100%; height: auto; aspect-ratio: 2.27 / 1; object-fit: cover; border-radius: 999px; background: rgba(255, 255, 255, 0.12); }
+/* build without photos (public repo): keep the stadium shape as a placeholder */
+.team-figure:empty { aspect-ratio: 2.27 / 1; border-radius: 999px; background: linear-gradient(120deg, rgba(255, 255, 255, 0.14), rgba(0, 204, 102, 0.28)); }
+@media (max-width: 700px) { .team-figure img, .team-figure:empty { aspect-ratio: 1.35 / 1; border-radius: 120px; } }
+.team-cap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; align-items: baseline; }
+.story { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.story > div { display: grid; gap: 10px; align-content: start; padding: 20px 22px 22px; border: 2px solid var(--line); border-radius: 26px; }
+.story q { font: 300 italic clamp(22px, 2vw, 32px)/1.1 var(--font-head); quotes: "\201C" "\201D"; }
+.story .to { font: 800 clamp(22px, 2vw, 32px)/1 var(--font-head); color: var(--mark); text-transform: uppercase; }
+@media (max-width: 860px) { .story { grid-template-columns: 1fr; } }
 
-/* 03 studio */
-.studio-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(20px, 3vw, 40px); align-items: start; }
-.reel {
-  position: relative; aspect-ratio: 16 / 9; max-width: 100%;
-  border: 1px solid var(--card-line); background: rgba(10, 8, 22, 0.55);
-  display: grid; place-items: center;
-}
-.reel .play { width: 72px; height: 72px; border: 1.5px solid var(--fg); display: grid; place-items: center; }
-.reel .play::after { content: ""; margin-left: 5px; border-left: 18px solid var(--fg); border-top: 11px solid transparent; border-bottom: 11px solid transparent; }
-.reel .meta, .reel .tc { position: absolute; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-dim); }
-.reel .meta { left: 16px; top: 14px; }
-.reel .tc { right: 16px; bottom: 14px; font-variant-numeric: tabular-nums; }
-.cases { list-style: none; padding: 0; display: grid; border-top: 1px solid var(--card-line); }
-.cases li { display: grid; grid-template-columns: minmax(0, 11ch) minmax(0, 1fr); gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--card-line); }
-.cases .f { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); padding-top: 3px; }
-@media (max-width: 900px) { .studio-grid { grid-template-columns: 1fr; } }
+/* creative */
+.stages { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.stages span { background: var(--pill-bg); color: var(--pill-fg); border-radius: 999px; padding: 10px 18px 9px; font: 800 clamp(18px, 1.6vw, 24px)/1 var(--font-head); text-transform: uppercase; letter-spacing: 0.03em; }
+.stages span.arrow { background: none; color: var(--c-violet); padding: 0 2px; }
+.pair { display: grid; gap: 8px; padding: 22px 24px 24px; border-radius: 26px; background: var(--card); }
+.pair h3 { font: 800 clamp(24px, 2.2vw, 34px)/1.02 var(--font-head); }
 
-/* 04 jeden.ai */
-.flow { list-style: none; padding: 0; display: grid; border-top: 1px solid var(--card-line); }
-.flow li { display: grid; grid-template-columns: 11ch minmax(0, 1fr); gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--card-line); }
-.flow .f { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); padding-top: 3px; }
+/* production */
+.paths { display: grid; border-top: 2px solid var(--line); }
+.paths li { display: grid; grid-template-columns: minmax(0, 15ch) minmax(0, 1fr); gap: 18px; align-items: baseline; padding: 16px 0; border-bottom: 2px solid var(--line); }
+.paths b { font: 800 clamp(26px, 2.6vw, 42px)/1 var(--font-head); text-transform: uppercase; color: var(--mark); }
+.paths span { font-weight: 700; font-size: clamp(16px, 1.2vw, 19px); }
+.chain { display: flex; flex-wrap: wrap; gap: 8px 6px; align-items: center; font: 800 clamp(18px, 1.5vw, 24px)/1.2 var(--font-head); text-transform: uppercase; }
+.chain li:not(:last-child)::after { content: "→"; margin-left: 6px; color: var(--mark); }
+.rnd { display: grid; gap: 14px; padding: 24px 26px 26px; border-radius: 26px; background: var(--c-green); color: var(--black); }
+.rnd .statement { color: var(--black); }
+.rnd .statement .b { color: #FFFFFF; }
+.rnd .dots li::before { background: var(--c-violet); }
 
-/* 05 altercast */
-.sides { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.side { display: grid; gap: 8px; align-content: start; padding: 18px 18px 20px; background: var(--card); border: 1px solid var(--card-line); min-width: 0; }
-.side .who { display: flex; gap: 10px; align-items: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg); }
-.side .who::before { content: ""; width: 9px; height: 9px; background: var(--dot, var(--ac-blue)); }
-.side.orange { --dot: var(--ac-orange); }
-.side p { color: var(--fg-dim); font-size: 16px; }
-@media (max-width: 620px) { .sides { grid-template-columns: 1fr; } }
-.textlink { font-weight: 600; text-underline-offset: 5px; text-decoration-thickness: 1.5px; }
+/* jeden.ai */
+.brand-logo { height: clamp(40px, 4.4vw, 64px); width: auto; display: block; }
+.flow3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.flow3 > div { display: grid; gap: 8px; align-content: start; padding: 18px 20px 20px; border-radius: 22px; background: var(--card); }
+.flow3 .k { font: 800 20px/1 var(--font-head); text-transform: uppercase; color: var(--c-violet); }
+.flow3 ul { display: grid; gap: 4px; font-weight: 700; font-size: 15px; }
+@media (max-width: 760px) { .flow3 { grid-template-columns: 1fr; } }
 
-/* 06 trust */
-.trust { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(18px, 3vw, 40px); border-top: 1px solid var(--card-line); padding-top: 26px; }
-.trust > div { display: grid; gap: 10px; align-content: start; min-width: 0; }
-.trust p { color: var(--fg-dim); font-size: 16px; }
-@media (max-width: 860px) { .trust { grid-template-columns: 1fr; } }
+/* how we think / trust */
+.values { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 40px; }
+.values li { display: grid; gap: 4px; padding: 14px 0; border-top: 2px solid var(--line); }
+.values b { font: 800 clamp(22px, 2vw, 30px)/1.05 var(--font-head); }
+.values span { font-weight: 500; font-size: 16px; color: var(--fg-dim); }
+@media (max-width: 760px) { .values { grid-template-columns: 1fr; } }
+.trust-lines { display: grid; gap: 12px; }
+.trust-lines p { font: 800 clamp(24px, 3.2vw, 52px)/1.08 var(--font-head); }
+.trust-lines .hl { color: var(--c-green); }
 
-/* 07 contact */
-.form { display: grid; gap: 14px; max-width: 540px; }
+/* how we're built (team) */
+.founders { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2vw, 28px); }
+.person { display: grid; gap: 6px; align-content: start; }
+.person .ph { width: 100%; max-width: 260px; aspect-ratio: 1 / 1; border-radius: 50%; overflow: hidden; background: linear-gradient(160deg, var(--c-green), var(--c-violet)); }
+.person .ph img { width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.03); }
+.person .nm { font: 800 clamp(22px, 2vw, 32px)/1 var(--font-head); margin-top: 8px; }
+.person .rl { font: 800 16px/1.1 var(--font-head); text-transform: uppercase; letter-spacing: 0.03em; color: var(--c-violet); }
+.person .bio { font-weight: 500; font-size: 14px; color: var(--fg-dim); }
+@media (max-width: 760px) { .founders { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; } .person .bio { display: none; } .person .nm { font-size: 18px; } .person .rl { font-size: 13px; } }
+.depts { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.dept { display: grid; gap: 10px; align-content: start; padding: 16px 16px 18px; border-radius: 26px; background: var(--card); }
+.dept .char { height: 150px; display: grid; place-items: end center; }
+.dept .char img { max-height: 150px; max-width: 100%; width: auto; display: block; }
+.dept .char:empty { background: radial-gradient(circle at 50% 70%, rgba(76, 2, 232, 0.14), transparent 60%); }
+.dept .kicker { justify-self: center; }
+.dept .line { font-weight: 700; font-size: 15px; line-height: 1.35; text-align: center; }
+.dept .people { display: grid; gap: 6px; border-top: 2px solid var(--line); padding-top: 10px; }
+.dept .people li { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 10px; align-items: center; }
+.dept .people .av { width: 38px; height: 50px; border-radius: 50%; overflow: hidden; background: linear-gradient(160deg, var(--c-green), var(--c-violet)); }
+.dept .people .av img { width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.04); }
+.dept .people b { display: block; font: 800 17px/1.05 var(--font-head); }
+.dept .people small { display: block; font-weight: 500; font-size: 12.5px; color: var(--fg-dim); line-height: 1.25; }
+@media (max-width: 1180px) { .depts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .depts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .depts { grid-template-columns: 1fr; } }
+.places { font: 800 clamp(26px, 3vw, 48px)/1 var(--font-head); text-transform: uppercase; }
+.places .b { color: var(--c-green); }
+.careers { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 40px); padding: clamp(22px, 3vw, 40px); border-radius: 30px; background: var(--c-violet); color: #FFFFFF; }
+.careers .statement .b { color: var(--c-green); }
+.careers .dots li::before { background: var(--c-green); }
+.mail { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.mail code { font: 800 clamp(22px, 2vw, 30px)/1 var(--font-head); user-select: all; letter-spacing: 0.01em; }
+.mail button { font: 800 15px/1 var(--font-head); text-transform: uppercase; letter-spacing: 0.04em; border-radius: 999px; border: 2px solid currentColor; background: transparent; color: inherit; padding: 8px 14px; cursor: pointer; }
+@media (max-width: 860px) { .careers { grid-template-columns: 1fr; } }
+
+/* AlterCast */
+.ac-logo { width: min(520px, 100%); height: auto; display: block; }
+.ac-head { font: 800 clamp(36px, 5.4vw, 90px)/0.98 var(--font-head); }
+.ac-head .b { color: #FFFFFF; }
+.cards3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.cards3 > div { display: grid; gap: 8px; align-content: start; padding: 20px 22px 22px; border-radius: 24px; background: #FFFFFF; color: var(--ac-dark); }
+.cards3 b { font: 800 clamp(30px, 3vw, 46px)/0.95 var(--font-head); }
+.cards3 small { font: 800 15px/1.1 var(--font-head); text-transform: uppercase; letter-spacing: 0.03em; color: rgba(35, 31, 32, 0.66); }
+.cards3 p { font-weight: 500; font-size: 15px; line-height: 1.45; }
+@media (max-width: 860px) { .cards3 { grid-template-columns: 1fr; } }
+.ac-box { display: grid; gap: 12px; padding: clamp(20px, 2.6vw, 34px); border-radius: 28px; background: #FFFFFF; color: var(--ac-dark); }
+.ac-box .statement.sm { color: var(--ac-dark); }
+.ac-note { font-weight: 700; font-size: 15px; display: flex; gap: 10px; align-items: center; }
+.ac-note::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--c-yellow); flex: none; }
+
+/* contact */
+.form { display: grid; gap: 14px; max-width: 600px; }
 .topics { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
-.topics legend { padding: 0; margin-bottom: 10px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-dim); }
+.topics legend { padding: 0; margin-bottom: 10px; font: 800 16px/1 var(--font-head); letter-spacing: 0.05em; text-transform: uppercase; color: var(--fg-dim); }
 .topics input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.topics label { border: 1px solid var(--card-line); padding: 8px 12px; font-size: 14px; cursor: pointer; }
-.topics input:checked + label { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
-.topics input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
+.topics label { border: 2px solid var(--line); border-radius: 999px; padding: 8px 14px; font: 800 17px/1 var(--font-head); text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; }
+.topics input:checked + label { background: var(--c-green); color: var(--black); border-color: var(--c-green); }
+.topics input:focus-visible + label { outline: 3px solid var(--c-green); outline-offset: 2px; }
 .field { display: grid; gap: 6px; min-width: 0; }
-.field label { font-size: 13px; color: var(--fg-dim); }
+.field label { font-weight: 700; font-size: 13px; color: var(--fg-dim); }
 .field input, .field textarea {
-  font: inherit; font-size: 16px; color: var(--fg); background: var(--field);
-  border: 1px solid var(--card-line); border-radius: 0; padding: 12px 14px; min-width: 0;
+  font: 500 16px/1.4 var(--font-body); color: var(--fg); background: rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--line); border-radius: 18px; padding: 12px 16px; min-width: 0;
 }
 .field input::placeholder, .field textarea::placeholder { color: var(--fg-dim); opacity: 0.7; }
-.field textarea { min-height: 96px; resize: vertical; }
+.field textarea { min-height: 100px; resize: vertical; }
 .row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 @media (max-width: 560px) { .row2 { grid-template-columns: 1fr; } }
-.form-status { font-family: var(--font-mono); font-size: 13px; min-height: 1.5em; color: var(--fg); }
-address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.02em; color: var(--fg-dim); }
-
-/* notes */
-.notes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.notes > section { display: grid; gap: 10px; align-content: start; padding: 20px 22px 22px; background: var(--card); border: 1px solid var(--card-line); min-width: 0; }
-.notes p, .notes li { color: var(--fg-dim); font-size: 16px; }
-.notes ol, .notes ul { padding-left: 1.2em; display: grid; gap: 6px; }
-.notes li::marker { font-family: var(--font-mono); color: var(--accent); }
-@media (max-width: 860px) { .notes { grid-template-columns: 1fr; } }
+.form-status { font-weight: 700; font-size: 14px; min-height: 1.5em; }
+address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg-dim); }
 
 .site-foot {
-  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 28px;
+  position: relative; z-index: 2;
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 28px;
   padding: 26px var(--gutter) calc(26px + env(safe-area-inset-bottom, 0px));
-  background: var(--ink); color: rgba(242, 240, 255, 0.72);
-  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.02em;
+  background: var(--black); color: rgba(255, 255, 255, 0.76); font-size: 13px;
 }
+.site-foot .logos { display: flex; align-items: center; gap: 22px; color: #FFFFFF; }
+.site-foot .logos svg { height: 22px; width: auto; display: block; }
 
 /* concept panel */
 .panel {
   position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 30;
-  display: grid; justify-items: end; gap: 8px;
-  font-family: var(--font-mono); font-size: 12px; color: #0A0816;
+  display: grid; justify-items: end; gap: 8px; font-family: var(--font-body); font-size: 13px; color: #0D0C12;
 }
 .panel-toggle {
-  display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
-  background: #FFFFFF; color: #0A0816; border: 1px solid rgba(10, 8, 22, 0.16);
-  padding: 10px 14px; font: 500 12px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase;
-  box-shadow: 0 10px 30px rgba(10, 8, 22, 0.2);
+  cursor: pointer; background: #0D0C12; color: #FFFFFF; border: 0; border-radius: 999px; padding: 11px 18px 10px;
+  font: 800 16px/1 var(--font-head); letter-spacing: 0.05em; text-transform: uppercase; box-shadow: 0 10px 30px rgba(13, 12, 18, 0.28);
 }
-.panel-toggle .hook { color: #3D00FF; }
 .panel-body {
-  box-sizing: border-box; width: min(290px, calc(100vw - 32px));
-  display: grid; gap: 14px; padding: 16px;
-  background: #FFFFFF; border: 1px solid rgba(10, 8, 22, 0.14); box-shadow: 0 10px 30px rgba(10, 8, 22, 0.2);
+  box-sizing: border-box; width: min(300px, calc(100vw - 32px)); display: grid; gap: 14px; padding: 16px;
+  background: #FFFFFF; border-radius: 22px; box-shadow: 0 10px 34px rgba(13, 12, 18, 0.25);
 }
+@media (max-width: 520px) { .panel-toggle { font-size: 13px; padding: 9px 13px 8px; } }
 .panel-body fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 8px; }
-.panel-body legend, .panel-body .lbl { padding: 0; margin-bottom: 8px; color: #4B4763; letter-spacing: 0.08em; text-transform: uppercase; font-size: 11px; }
-.seg { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid rgba(10, 8, 22, 0.18); }
+.panel-body legend, .panel-body .lbl { padding: 0; margin-bottom: 6px; font: 800 14px/1 var(--font-head); letter-spacing: 0.06em; text-transform: uppercase; color: #47434F; }
+.seg { display: grid; grid-template-columns: repeat(2, 1fr); border: 2px solid #0D0C12; border-radius: 999px; overflow: hidden; }
 .seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.seg label { text-align: center; padding: 8px 4px; cursor: pointer; }
-.seg label + input + label { border-left: 1px solid rgba(10, 8, 22, 0.18); }
-.seg input:checked + label { background: #3D00FF; color: #FFFFFF; }
-.seg input:focus-visible + label { outline: 2px solid #3D00FF; outline-offset: 2px; }
-.panel-body input[type="range"] { width: 100%; accent-color: #3D00FF; }
+.seg label { text-align: center; padding: 8px 4px; cursor: pointer; font: 800 15px/1 var(--font-head); text-transform: uppercase; letter-spacing: 0.04em; }
+.seg input:checked + label { background: #4C02E8; color: #FFFFFF; }
+.seg input:focus-visible + label { outline: 3px solid #00CC66; outline-offset: -3px; }
+.panel-body input[type="range"] { width: 100%; accent-color: #4C02E8; }
 .panel-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-.panel-row b { font-weight: 500; color: #3D00FF; }
-.chk { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-.chk input { accent-color: #3D00FF; width: 16px; height: 16px; margin: 0; }
+.panel-row b { font: 800 15px/1 var(--font-head); color: #4C02E8; text-transform: uppercase; letter-spacing: 0.03em; }
+.chk { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; }
+.chk input { accent-color: #4C02E8; width: 16px; height: 16px; margin: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -346,256 +366,625 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
 <canvas id="hv-grid" aria-hidden="true"></canvas>
 
 <header class="nav" id="nav">
-  <a class="brand" href="#top" aria-label="Humanverse, początek strony"><svg class="wordmark" viewBox="86 94 5408 690" role="img" aria-label="Humanverse" xmlns="http://www.w3.org/2000/svg"><g class="wm-h" transform="translate(0.000000,900.000000) scale(0.100000,-0.100000)"><path d="M2750 7990 c-1256 -4 -1722 -8 -1740 -16 -14 -7 -36 -24 -50 -39 l-25 -27 -9 -356 c-13 -530 5 -667 91 -692 26 -7 546 -11 1723 -13 1592 -2 1687 -3 1713 -20 45 -29 57 -58 67 -168 8 -91 24 -1302 23 -1759 -8 -2760 -7 -3333 5 -3443 25 -236 41 -243 577 -239 544 3 537 2 549 143 4 41 7 634 9 1319 2 1387 -3 1288 70 1327 30 17 107 18 1363 16 1437 -3 1387 -1 1428 -56 21 -28 21 -29 26 -1275 3 -686 2 -1271 -2 -1301 -10 -83 6 -121 67 -151 l50 -25 450 1 c313 1 464 6 495 14 50 13 87 42 102 80 17 41 19 6587 2 6621 -25 51 -43 53 -547 57 -530 4 -560 1 -597 -61 -20 -31 -20 -57 -20 -1257 0 -1373 0 -1391 -59 -1444 -21 -19 -59 -19 -1384 -19 -1507 0 -1392 -5 -1424 68 -17 37 -18 125 -23 1325 -5 1202 -6 1287 -23 1317 -40 74 -67 77 -672 77 -286 1 -1292 -1 -2235 -4z"/> <path d="M19935 6399 c-225 -27 -255 -34 -318 -80 -37 -26 -103 -56 -203 -91 -88 -31 -159 -62 -178 -78 -17 -15 -69 -54 -115 -88 -135 -98 -168 -95 -314 31 -52 45 -108 83 -135 93 -26 9 -76 29 -112 44 -36 15 -81 33 -101 39 -19 6 -66 32 -104 56 -84 56 -101 60 -300 75 -173 14 -424 10 -650 -10 l-140 -12 -115 -56 c-63 -31 -137 -75 -164 -98 -27 -23 -70 -50 -95 -59 -208 -77 -386 -224 -541 -444 -34 -47 -78 -107 -98 -133 -43 -54 -94 -174 -117 -274 -9 -40 -32 -96 -55 -135 -81 -133 -82 -173 -77 -2074 3 -880 9 -1648 14 -1707 13 -162 46 -184 273 -181 69 1 246 2 394 2 335 2 377 10 410 81 8 18 12 488 16 1725 l5 1700 31 60 c17 33 39 85 48 116 10 37 35 81 70 126 53 68 178 183 198 183 6 0 54 19 107 41 90 39 102 42 196 43 89 1 106 -2 155 -26 30 -15 80 -36 110 -47 30 -12 78 -39 105 -61 28 -21 70 -54 95 -72 43 -33 101 -105 158 -198 l27 -45 6 -1725 c4 -1284 9 -1738 17 -1775 16 -66 44 -92 112 -105 227 -40 873 -40 962 0 56 26 53 -96 58 1830 5 1941 1 1802 60 1855 12 11 37 50 56 87 41 81 143 165 240 198 32 11 88 34 122 52 54 27 78 33 151 36 85 4 88 4 216 -48 l130 -53 116 -117 c129 -131 143 -154 171 -284 19 -88 20 -141 24 -1766 2 -921 6 -1689 9 -1706 14 -84 67 -93 585 -104 253 -5 429 -5 451 1 69 17 73 30 81 233 9 249 8 3198 -1 3399 -8 159 -9 164 -46 247 -21 47 -53 126 -70 175 -58 162 -106 257 -158 314 -27 30 -76 94 -108 143 -75 111 -159 201 -257 274 -42 32 -99 79 -127 105 -50 47 -268 169 -302 169 -9 0 -62 23 -117 50 -101 50 -101 50 -241 60 -77 6 -192 14 -255 19 -151 13 -176 12 -365 -10z"/> <path d="M23477 6402 c-143 -39 -150 -61 -151 -502 0 -421 16 -511 97 -545 60 -25 193 -37 477 -44 l285 -7 90 -41 c50 -23 109 -46 132 -52 49 -13 121 -68 187 -142 155 -175 86 -213 -394 -214 l-265 0 -91 -37 c-57 -22 -122 -40 -170 -46 -96 -11 -224 -71 -295 -137 -26 -24 -69 -55 -97 -69 -53 -27 -172 -103 -278 -178 -68 -47 -158 -149 -249 -279 -32 -46 -73 -102 -91 -124 -38 -47 -109 -238 -125 -334 -6 -38 -22 -87 -39 -116 -63 -108 -69 -129 -81 -256 -6 -69 -9 -214 -7 -329 5 -216 12 -249 67 -358 12 -23 32 -81 45 -130 13 -48 37 -114 53 -147 17 -33 36 -78 43 -100 15 -47 105 -181 165 -245 23 -25 74 -88 112 -140 103 -139 187 -212 348 -305 27 -15 69 -43 92 -61 24 -19 63 -39 86 -45 23 -6 68 -25 101 -41 33 -17 101 -39 152 -49 51 -10 133 -34 182 -53 117 -46 184 -56 374 -56 175 0 225 8 348 55 47 19 114 41 150 49 36 9 108 32 160 50 52 19 118 40 145 48 65 19 346 205 442 292 39 37 97 101 129 144 32 42 83 102 114 133 30 31 69 73 86 93 17 20 40 36 52 36 52 0 123 -96 154 -209 10 -36 34 -88 53 -116 18 -27 44 -72 56 -100 12 -27 36 -75 55 -105 18 -30 42 -92 54 -137 24 -90 88 -200 130 -220 36 -18 2124 -18 2160 0 14 7 34 30 45 52 20 39 20 65 25 1420 l5 1380 32 90 c18 50 39 121 48 160 10 45 30 92 55 130 21 33 48 83 58 110 67 167 86 197 188 292 55 50 129 114 166 142 37 28 69 55 73 61 4 6 30 22 58 36 29 15 75 44 103 65 33 25 72 44 115 54 35 9 105 31 154 48 87 30 96 32 255 32 l165 0 80 -37 c45 -20 110 -41 149 -47 47 -7 84 -20 115 -40 25 -17 68 -42 95 -57 60 -32 344 -262 403 -327 46 -50 72 -96 97 -175 10 -29 35 -79 57 -111 26 -39 46 -86 59 -137 10 -44 30 -106 44 -139 47 -118 47 -102 50 -1466 3 -1470 4 -1477 77 -1514 50 -26 218 -38 534 -39 391 -1 486 12 516 73 10 21 14 255 17 1161 5 1302 -1 1481 -47 1656 -37 140 -48 200 -61 341 -6 62 -15 125 -21 140 -6 16 -21 77 -35 137 -18 83 -31 119 -57 155 -19 25 -43 74 -55 109 -11 34 -36 81 -55 105 -19 23 -45 62 -57 87 -12 24 -39 67 -60 95 -21 27 -68 102 -106 165 -90 150 -323 390 -474 488 -52 34 -112 74 -134 89 -21 16 -62 42 -90 58 -29 17 -75 46 -102 66 -49 36 -111 62 -299 125 -55 19 -135 50 -177 70 -81 37 -83 38 -399 66 -105 9 -190 9 -375 0 -380 -19 -409 -23 -522 -75 -53 -25 -115 -51 -137 -57 -22 -7 -60 -23 -85 -35 -25 -12 -69 -30 -98 -40 -29 -9 -76 -33 -105 -52 -29 -20 -72 -45 -97 -56 -40 -18 -97 -57 -293 -200 -29 -21 -65 -50 -81 -65 -43 -41 -293 -335 -371 -437 -38 -49 -81 -104 -96 -122 -15 -17 -37 -57 -48 -88 -12 -32 -34 -76 -50 -99 -15 -22 -37 -70 -49 -107 -12 -36 -39 -96 -61 -133 -26 -45 -43 -90 -51 -134 -6 -37 -17 -89 -25 -117 -8 -27 -19 -95 -25 -150 -13 -122 -47 -338 -65 -420 -23 -101 -27 -233 -31 -1020 -2 -418 -4 -769 -5 -780 0 -11 3 -114 6 -230 4 -115 7 -238 8 -272 2 -48 -2 -66 -16 -80 -16 -17 -20 -14 -82 47 -43 42 -71 80 -81 110 -10 25 -28 72 -41 105 -14 33 -40 99 -58 147 -18 48 -47 110 -65 137 -17 28 -38 72 -46 98 -8 27 -30 73 -48 103 -19 30 -42 82 -51 115 -10 33 -34 92 -55 130 -21 39 -45 97 -55 130 -9 32 -28 82 -42 110 -14 27 -36 80 -49 118 -13 37 -32 80 -43 96 -34 48 -128 256 -155 343 -15 47 -42 108 -65 140 -21 32 -45 81 -51 110 -7 29 -25 78 -40 108 -15 30 -33 79 -40 108 -7 30 -28 77 -48 105 -33 49 -119 242 -163 367 -11 30 -35 78 -55 107 -20 29 -44 79 -55 112 -10 33 -28 80 -40 103 -12 24 -30 77 -41 118 -11 46 -33 97 -58 135 -22 34 -51 93 -64 131 -13 38 -34 90 -46 114 -13 25 -31 71 -41 102 -9 32 -33 80 -53 107 -42 57 -81 139 -125 266 -21 57 -48 110 -75 145 -23 30 -52 75 -65 99 -63 124 -207 257 -374 347 -72 39 -155 85 -183 103 -86 54 -195 63 -824 67 -490 3 -541 2 -603 -14z m1654 -2685 c19 -8 43 -24 54 -37 56 -63 -17 -441 -116 -603 -17 -27 -40 -74 -51 -105 -43 -115 -112 -222 -226 -351 -110 -125 -114 -129 -213 -176 l-100 -48 -191 -9 c-294 -14 -393 10 -480 115 -24 28 -75 87 -115 130 -79 86 -91 112 -119 262 -27 148 -16 320 28 440 18 48 91 145 149 200 56 53 205 156 255 177 67 28 1061 32 1125 5z"/> <path d="M14365 6399 c-33 -5 -71 -17 -85 -27 -58 -43 -55 28 -56 -1267 -1 -654 -4 -1293 -8 -1420 -7 -224 -8 -233 -42 -355 -39 -135 -61 -184 -106 -242 -16 -20 -38 -64 -49 -97 -27 -78 -54 -112 -207 -254 -153 -143 -293 -250 -347 -267 -22 -7 -75 -28 -118 -47 -77 -34 -82 -35 -275 -45 -364 -20 -661 34 -776 141 -28 26 -96 83 -150 126 -54 44 -117 105 -139 135 -23 30 -79 101 -125 158 -46 57 -95 129 -108 159 -14 30 -35 69 -48 87 -47 63 -57 95 -71 244 -8 81 -22 183 -31 227 -14 71 -17 221 -20 1364 -5 1413 -1 1321 -67 1362 -31 19 -48 19 -472 17 -417 -3 -442 -4 -480 -23 -83 -42 -77 97 -71 -1555 3 -1011 8 -1483 16 -1524 6 -32 24 -90 40 -128 16 -38 36 -110 44 -159 11 -65 24 -107 50 -153 19 -35 44 -95 55 -133 11 -37 34 -87 51 -110 17 -23 39 -67 50 -99 11 -32 33 -72 49 -89 40 -42 123 -160 156 -223 53 -97 486 -516 613 -591 26 -15 65 -40 86 -55 22 -15 59 -32 83 -37 23 -6 72 -31 109 -55 37 -24 74 -44 83 -44 9 0 50 -16 91 -35 48 -23 99 -39 144 -45 76 -10 129 -26 195 -59 70 -36 210 -58 416 -65 259 -9 423 4 506 39 117 49 403 140 523 165 51 10 68 20 125 74 58 54 80 68 160 96 91 33 97 37 250 175 148 135 246 235 392 405 101 117 258 368 278 446 6 23 22 58 36 78 41 60 54 90 69 163 8 39 30 101 49 140 26 51 42 105 62 209 14 76 38 184 53 239 l27 100 0 1380 c0 1555 7 1425 -77 1461 -39 17 -79 19 -458 20 -228 1 -442 -2 -475 -7z"/></g><g class="wm-v" transform="translate(0.000000,900.000000) scale(0.100000,-0.100000)"><path d="M36748 6390 c-93 -7 -112 -21 -134 -99 -9 -31 -29 -78 -44 -106 -16 -27 -38 -81 -50 -120 -12 -38 -37 -97 -55 -130 -18 -33 -38 -80 -45 -105 -6 -25 -29 -76 -50 -115 -21 -38 -45 -97 -55 -129 -9 -33 -34 -94 -54 -135 -21 -42 -44 -94 -51 -116 -7 -22 -28 -71 -48 -110 -19 -38 -41 -92 -49 -119 -9 -28 -30 -80 -48 -116 -18 -36 -40 -90 -48 -120 -9 -30 -30 -76 -46 -102 -16 -26 -39 -80 -51 -120 -12 -40 -37 -100 -55 -133 -18 -33 -41 -87 -50 -120 -10 -33 -33 -89 -51 -125 -19 -36 -45 -98 -58 -136 -13 -39 -35 -89 -49 -111 -14 -22 -34 -69 -45 -105 -12 -37 -34 -90 -50 -120 -17 -29 -38 -80 -47 -113 -9 -33 -32 -88 -51 -122 -19 -34 -44 -92 -55 -129 -11 -37 -31 -84 -45 -105 -13 -21 -33 -66 -44 -101 -12 -35 -37 -90 -55 -123 -18 -33 -41 -89 -50 -125 -23 -88 -107 -243 -140 -258 -47 -22 -73 5 -102 101 -8 28 -28 73 -43 101 -16 28 -36 78 -45 111 -10 33 -32 85 -50 115 -18 30 -40 80 -50 110 -9 30 -32 82 -50 115 -18 33 -43 92 -55 130 -13 39 -35 93 -51 120 -15 28 -35 77 -44 110 -9 33 -32 85 -50 115 -18 30 -40 78 -48 107 -9 28 -36 93 -61 144 -25 50 -46 99 -46 108 0 9 -19 52 -41 96 -23 44 -50 105 -61 135 -10 30 -34 84 -52 120 -19 36 -39 85 -46 110 -6 25 -27 71 -46 102 -19 32 -42 81 -50 110 -9 29 -29 77 -46 107 -17 30 -39 87 -50 125 -11 39 -34 95 -52 126 -19 30 -41 80 -51 110 -9 30 -32 82 -50 115 -18 33 -43 93 -55 133 -11 40 -34 94 -50 119 -16 25 -37 69 -46 97 -9 28 -31 78 -49 111 -18 33 -40 83 -48 110 -8 28 -30 82 -49 120 -20 39 -41 88 -47 110 -7 22 -17 53 -23 68 -22 57 -19 57 -592 57 -557 0 -571 -1 -582 -47 -8 -30 27 -129 71 -203 18 -30 40 -80 50 -110 10 -30 34 -86 55 -125 21 -38 46 -95 55 -125 10 -30 30 -80 45 -110 15 -30 35 -79 44 -108 8 -29 29 -78 46 -107 17 -30 42 -86 55 -126 14 -40 38 -95 53 -123 16 -28 39 -82 51 -120 12 -38 33 -85 47 -105 13 -20 34 -65 45 -101 11 -35 35 -91 53 -125 19 -33 42 -89 51 -125 9 -36 32 -91 51 -122 19 -31 42 -81 50 -110 9 -29 34 -85 55 -125 22 -39 47 -95 55 -124 9 -29 29 -76 45 -104 16 -29 36 -76 45 -106 9 -30 29 -78 45 -107 16 -28 40 -87 54 -129 14 -42 38 -97 53 -122 16 -25 37 -71 47 -101 10 -30 32 -84 50 -120 18 -36 40 -90 50 -120 9 -30 34 -86 55 -125 21 -38 43 -88 50 -110 7 -22 27 -67 46 -100 18 -33 38 -82 45 -110 13 -56 32 -98 61 -134 10 -13 29 -61 43 -106 14 -44 38 -102 55 -128 16 -26 37 -75 45 -109 9 -35 32 -91 51 -126 20 -34 42 -86 50 -115 9 -28 30 -79 49 -112 18 -33 40 -85 50 -115 10 -30 33 -82 52 -116 18 -34 40 -85 49 -115 9 -30 33 -85 54 -124 21 -38 46 -95 55 -125 22 -65 58 -104 111 -119 26 -7 215 -11 561 -11 l522 0 25 23 c34 29 120 200 139 274 9 32 33 89 55 127 22 37 46 91 53 120 6 28 26 78 44 111 19 33 41 87 50 120 9 33 32 87 50 120 18 33 40 85 50 115 9 30 32 82 50 115 18 33 41 87 50 120 9 33 28 79 41 102 13 23 38 81 55 130 17 48 42 106 55 129 13 23 35 74 49 113 13 40 38 96 54 124 16 29 35 75 42 102 6 28 29 82 50 120 20 39 43 93 49 120 7 28 29 82 50 120 21 39 45 94 54 124 9 30 29 78 45 106 16 29 37 79 47 111 9 33 34 93 54 134 21 41 45 100 54 129 9 30 32 86 52 124 20 38 43 92 51 120 8 28 32 85 53 127 21 41 46 100 55 130 10 30 30 78 45 105 15 28 35 75 45 105 10 30 32 82 50 115 18 33 40 86 49 118 9 32 30 79 46 105 16 26 37 79 48 117 24 84 29 97 64 155 14 25 34 72 43 105 10 33 32 87 50 120 19 33 39 80 45 105 7 24 28 76 47 114 19 39 42 91 49 117 8 26 37 91 64 143 61 117 67 174 23 203 -25 17 -63 18 -483 18 -250 0 -490 -2 -532 -5z"/> <path d="M43040 6389 c-24 -5 -52 -17 -62 -27 -18 -17 -18 -118 -18 -2526 0 -1996 2 -2513 12 -2534 29 -61 39 -62 521 -62 478 0 491 1 516 56 8 18 11 541 11 1988 l0 1963 23 21 c49 46 47 46 727 49 355 1 655 5 667 8 12 3 32 15 43 27 20 21 20 33 20 504 0 542 4 516 -75 534 -50 11 -2323 10 -2385 -1z"/> <path d="M47475 6380 c-144 -7 -171 -11 -270 -43 -61 -19 -148 -43 -195 -52 -130 -25 -161 -35 -200 -61 -19 -14 -65 -33 -101 -44 -37 -11 -78 -30 -93 -41 -15 -12 -53 -34 -84 -49 -187 -90 -497 -381 -601 -563 -13 -23 -41 -71 -62 -107 -21 -36 -45 -95 -54 -131 -8 -37 -32 -102 -52 -145 l-38 -79 -3 -176 c-5 -197 7 -298 42 -367 13 -26 31 -81 40 -122 10 -41 29 -93 43 -115 15 -22 41 -65 59 -97 50 -88 154 -206 259 -293 53 -44 118 -98 143 -119 26 -22 71 -50 101 -63 29 -13 67 -35 85 -48 17 -13 62 -35 99 -48 37 -14 85 -37 107 -52 21 -15 75 -37 118 -50 43 -13 106 -37 139 -54 33 -17 93 -38 134 -47 41 -8 108 -30 149 -49 41 -19 116 -43 166 -54 51 -11 118 -33 150 -49 37 -18 95 -35 155 -45 53 -9 124 -29 162 -46 37 -17 112 -40 168 -52 56 -12 134 -37 174 -55 41 -19 97 -39 127 -45 58 -12 87 -26 144 -64 21 -14 61 -32 90 -41 92 -26 124 -64 143 -168 16 -87 2 -126 -71 -203 -113 -117 -151 -139 -386 -229 -114 -43 -407 -59 -723 -38 l-167 12 -100 46 c-56 25 -106 46 -111 46 -32 0 -227 181 -280 260 -21 30 -49 72 -64 93 -16 24 -35 79 -53 155 -32 137 -45 167 -82 186 -46 24 -76 25 -499 28 l-412 3 -22 -22 c-44 -43 -36 -178 21 -357 16 -50 35 -131 44 -180 11 -66 23 -103 49 -145 19 -31 41 -80 50 -108 8 -29 36 -86 63 -125 26 -40 73 -111 103 -157 64 -96 294 -325 387 -386 33 -21 85 -55 118 -77 32 -21 63 -38 69 -38 6 0 41 -18 77 -40 37 -21 101 -48 143 -60 42 -11 103 -34 136 -51 46 -24 84 -34 168 -45 59 -8 146 -23 193 -33 224 -50 553 -54 760 -8 63 14 178 33 254 41 122 14 150 21 225 55 47 21 109 44 137 51 28 6 75 26 105 44 30 17 74 40 98 50 25 9 61 30 80 45 20 16 56 39 81 51 111 55 420 373 473 485 11 22 32 61 48 87 27 41 73 149 131 308 26 69 37 375 19 510 -19 146 -163 408 -275 502 -154 131 -359 272 -406 282 -19 3 -61 24 -95 45 -33 22 -87 47 -120 56 -33 9 -88 32 -122 50 -35 19 -100 44 -145 55 -46 11 -112 34 -148 51 -36 17 -101 37 -145 45 -44 9 -114 31 -155 49 -44 20 -114 40 -169 50 -51 9 -131 32 -178 51 -47 20 -119 42 -161 50 -43 8 -99 28 -129 44 -29 17 -86 37 -125 46 -40 8 -100 30 -134 48 -34 19 -88 45 -120 58 -62 25 -204 119 -240 160 -43 47 -104 161 -104 195 0 19 21 77 49 137 57 119 112 176 259 269 82 52 99 58 272 100 247 60 233 59 420 47 119 -7 189 -16 255 -34 49 -14 128 -34 174 -46 148 -35 276 -128 388 -278 64 -87 71 -102 119 -260 26 -88 39 -153 44 -223 11 -157 -36 -143 494 -147 412 -2 445 -1 465 15 33 27 38 70 31 263 -6 158 -10 182 -34 245 -15 39 -38 120 -51 181 -21 101 -34 131 -130 319 -66 129 -127 233 -160 274 -125 156 -330 333 -459 398 -28 14 -64 34 -79 45 -16 11 -61 33 -100 48 -40 15 -94 40 -122 54 -27 14 -88 33 -135 41 -46 8 -123 26 -170 39 -160 47 -225 55 -470 60 -129 2 -307 1 -395 -4z"/> <path d="M39865 6310 c-328 -24 -425 -39 -506 -81 -20 -10 -76 -28 -123 -40 -48 -12 -111 -36 -141 -55 -30 -18 -79 -42 -108 -53 -94 -35 -229 -117 -360 -218 -23 -18 -60 -47 -82 -63 -167 -129 -460 -462 -535 -610 -13 -25 -34 -59 -47 -76 -13 -17 -35 -59 -49 -94 -13 -34 -40 -84 -59 -111 -18 -27 -38 -72 -44 -101 -7 -28 -27 -86 -45 -127 -38 -84 -51 -129 -61 -211 -4 -30 -18 -89 -31 -130 -13 -41 -28 -97 -34 -125 -37 -164 -31 -779 9 -925 37 -138 58 -224 70 -289 7 -36 27 -94 45 -130 18 -36 43 -97 54 -136 12 -38 34 -90 50 -115 15 -25 38 -71 51 -103 13 -31 37 -74 53 -95 17 -20 41 -57 54 -82 93 -172 301 -411 494 -567 36 -29 88 -71 115 -94 28 -22 71 -51 97 -65 26 -13 62 -37 81 -53 18 -17 56 -39 84 -50 27 -11 72 -33 98 -50 26 -17 73 -38 104 -46 31 -9 86 -32 123 -51 48 -24 94 -38 165 -49 54 -9 134 -27 178 -41 218 -69 684 -71 856 -4 28 12 106 30 173 41 94 16 134 28 181 53 33 19 87 41 120 51 33 9 77 28 98 41 21 14 70 40 110 59 40 19 91 49 114 67 23 18 61 46 85 61 200 131 448 369 573 552 132 192 189 284 204 325 6 19 29 64 51 100 21 36 44 88 51 115 7 28 23 71 35 97 29 57 30 89 5 112 -17 15 -64 17 -534 17 -284 0 -523 -4 -532 -8 -17 -10 -95 -105 -142 -173 -90 -131 -391 -368 -509 -401 -33 -9 -85 -31 -115 -48 -74 -42 -170 -55 -399 -54 -226 1 -299 11 -393 57 -40 19 -89 38 -110 42 -21 3 -59 22 -85 40 -26 19 -76 52 -112 73 -161 99 -301 251 -424 461 -14 25 -35 56 -47 70 -11 14 -27 53 -35 85 -9 33 -31 87 -49 120 -40 72 -49 121 -35 174 21 78 -149 71 1837 71 l1782 0 28 24 28 24 0 314 0 313 -41 160 c-23 88 -47 188 -53 221 -6 34 -27 95 -45 135 -19 41 -40 101 -47 133 -7 33 -27 80 -46 107 -17 26 -44 76 -58 111 -14 34 -38 81 -54 103 -16 22 -38 60 -50 83 -91 180 -454 569 -638 685 -23 14 -56 39 -75 55 -33 28 -211 126 -278 153 -19 7 -59 28 -88 45 -29 18 -85 40 -125 49 -39 10 -109 33 -155 52 -73 30 -104 36 -270 52 -241 25 -363 30 -487 21z m350 -1043 c39 -13 106 -32 150 -41 48 -11 102 -31 135 -50 30 -18 80 -45 110 -60 147 -70 462 -378 487 -474 12 -49 -51 -119 -87 -97 -6 4 -475 7 -1041 7 -1119 0 -1051 -4 -1065 54 -10 37 3 71 44 117 21 23 57 68 80 100 24 31 46 57 50 57 4 0 27 20 52 45 25 25 65 60 90 77 25 17 59 43 76 58 59 50 260 150 337 165 40 9 106 26 147 40 104 33 110 34 245 30 96 -2 134 -8 190 -28z"/> <path d="M52450 6313 c-110 -5 -392 -34 -445 -45 -27 -6 -89 -28 -136 -49 -48 -20 -112 -42 -143 -48 -59 -11 -76 -18 -132 -56 -19 -13 -52 -29 -72 -36 -20 -6 -55 -24 -77 -39 -22 -15 -64 -39 -92 -53 -29 -14 -70 -38 -90 -55 -21 -16 -56 -39 -78 -50 -64 -33 -364 -324 -467 -454 -104 -130 -176 -239 -209 -313 -12 -28 -34 -68 -50 -90 -15 -22 -38 -66 -50 -99 -12 -32 -34 -79 -50 -105 -17 -26 -35 -79 -45 -124 -8 -43 -31 -111 -50 -151 -26 -57 -36 -97 -44 -172 -6 -55 -23 -162 -37 -239 -37 -197 -39 -487 -5 -680 12 -71 28 -179 36 -240 9 -77 23 -134 45 -190 18 -44 41 -116 51 -160 18 -75 48 -141 199 -430 59 -112 177 -275 311 -430 198 -229 623 -533 825 -590 33 -9 87 -32 121 -51 45 -25 90 -38 175 -53 63 -11 148 -32 189 -46 182 -62 610 -62 808 0 42 13 131 33 197 45 92 16 134 29 180 55 33 18 86 40 118 48 32 9 89 34 126 56 37 23 72 41 78 41 9 0 179 111 307 201 72 51 328 304 422 419 74 89 200 274 222 325 7 17 31 59 52 95 21 36 44 85 50 110 7 24 30 77 51 116 43 79 50 129 21 164 l-18 22 -495 0 c-559 0 -539 2 -605 -77 -239 -288 -412 -433 -614 -517 -209 -86 -181 -81 -442 -86 -263 -4 -352 5 -438 44 -30 15 -79 35 -109 45 -59 21 -231 131 -270 173 -14 15 -44 38 -68 51 -47 28 -168 162 -209 233 -15 25 -42 66 -60 89 -18 24 -43 65 -54 91 -12 26 -34 67 -49 92 -32 50 -81 212 -81 265 0 24 9 45 29 67 l29 33 1754 2 c1302 2 1759 6 1775 14 51 27 53 45 48 460 -5 414 -9 452 -54 558 -16 38 -37 107 -46 153 -11 54 -28 102 -50 138 -18 30 -40 80 -49 110 -8 30 -29 75 -46 100 -17 25 -42 68 -55 97 -25 56 -87 152 -144 223 -20 25 -54 72 -76 105 -42 62 -283 311 -370 381 -64 52 -179 128 -269 179 -40 23 -86 51 -102 62 -17 12 -53 31 -80 41 -27 11 -79 36 -114 55 -36 20 -92 40 -124 46 -33 6 -87 24 -121 41 -64 31 -137 44 -423 75 -136 14 -165 15 -312 8z m321 -1051 c53 -17 124 -36 158 -43 34 -6 86 -26 115 -44 29 -17 82 -45 117 -62 148 -69 432 -343 459 -442 8 -32 8 -47 -2 -68 -22 -47 -49 -54 -203 -51 -77 1 -536 1 -1019 0 -852 -3 -881 -2 -905 16 -40 30 -49 75 -23 125 55 111 337 374 457 427 22 10 66 33 97 53 32 19 77 37 100 41 24 4 85 20 136 37 127 42 170 48 302 44 94 -2 133 -9 211 -33z"/></g></svg></a>
-  <nav class="nav-links" aria-label="Główna nawigacja">
-    <a href="#marketing">Marketing Solutions</a>
-    <a href="#studio">Studio</a>
-    <a href="#jeden">Jeden.ai</a>
+  <a class="brand" href="#top"><svg class="wordmark" role="img" aria-label="Humanverse" viewBox="0 0 407 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip1)">
+<path d="M57.8522 21.4361L36.1987 21.4361L36.1987 6.32918e-06L9.09196e-06 0L7.52438e-06 8.96551L27.3578 8.96551L27.3578 51.8287L36.1987 51.8287L36.1987 30.3926L57.8522 30.3926L57.8522 51.8287L66.693 51.8287L66.6931 1.1661e-05L57.8522 1.01152e-05L57.8522 21.4361Z" fill="currentColor"/>
+<path d="M100.377 32.0866C100.377 38.2408 95.9434 43.2507 90.4878 43.2507C85.0322 43.2507 80.5985 38.2408 80.5985 32.0866L80.5985 12.3174L72.0952 12.3174L72.0952 32.0956C72.0952 43.0074 80.3497 51.8828 90.4967 51.8828C100.644 51.8828 108.898 43.0074 108.898 32.0956L108.898 12.2454L100.395 12.2454L100.395 32.0866L100.377 32.0866Z" fill="currentColor"/>
+<path d="M145.399 12.1643C141.845 12.1643 138.611 13.579 136.203 15.8677C133.795 13.579 130.561 12.1643 127.006 12.1643C119.569 12.1643 113.519 18.3005 113.519 25.8423L113.519 51.8288L122.093 51.8288L122.093 25.8423C122.093 23.0941 124.296 20.8595 127.006 20.8595C129.716 20.8595 131.92 23.0941 131.92 25.8423L131.92 51.8288L140.494 51.8288L140.494 25.8423C140.494 23.0941 142.698 20.8595 145.408 20.8595C148.118 20.8595 150.321 23.0941 150.321 25.8423L150.321 51.8288L158.896 51.8288L158.896 25.8423C158.896 18.3005 152.845 12.1643 145.408 12.1643L145.399 12.1643Z" fill="currentColor"/>
+<path d="M218.552 12.2003C208.405 12.2003 200.15 21.0757 200.15 31.9874L200.15 50.387L186.129 17.958C184.61 14.4439 181.189 12.1732 177.404 12.1732L168.821 12.1732L168.821 20.7963L174.587 20.7963C176.711 20.7963 178.63 22.0668 179.483 24.0401L179.483 24.0581L175.689 24.0581C168.154 24.0581 162.023 30.2754 162.023 37.9164C162.023 45.5573 168.154 51.7746 175.689 51.7746C178.026 51.7746 184.157 51.0628 188.262 44.3319L191.505 51.8287L208.662 51.8287L208.662 31.9874C208.662 25.8332 213.105 20.8234 218.552 20.8234C223.998 20.8234 228.441 25.8332 228.441 31.9874L228.441 51.7656L236.944 51.7656L236.944 31.9874C236.944 21.0757 228.69 12.2003 218.543 12.2003L218.552 12.2003ZM175.68 43.1515C172.837 43.1515 170.527 40.8088 170.527 37.9254C170.527 35.042 172.837 32.6993 175.68 32.6993L183.215 32.6993L183.268 32.8344C182.584 37.2766 180.736 43.1605 175.671 43.1605L175.68 43.1515Z" fill="currentColor"/>
+<path d="M268.612 12.1824L256.67 40.7819L244.452 12.1824L235.185 12.1824L252.12 51.8288L261.299 51.8288L277.835 12.1824L268.612 12.1824Z" fill="currentColor"/>
+<path d="M294.148 12.786C284.098 12.786 275.933 21.5803 275.933 32.393C275.933 43.2056 284.098 51.9999 294.148 51.9999C302.224 51.9999 309.093 46.3233 311.474 38.4571L302.642 38.4571C300.874 41.6378 297.72 43.7282 294.148 43.7282C289.367 43.7282 285.369 39.9889 284.356 34.961L312.194 34.961C312.309 34.114 312.363 33.267 312.363 32.384C312.363 30.2755 312.052 28.2301 311.465 26.3289C309.102 18.4626 302.224 12.777 294.139 12.777L294.148 12.786ZM285.662 26.3379C287.422 23.1571 290.567 21.0487 294.157 21.0487C297.746 21.0487 300.892 23.1662 302.651 26.3379L285.671 26.3379L285.662 26.3379Z" fill="currentColor"/>
+<path d="M316.299 51.8288L324.722 51.8288L324.722 20.8415L335.926 20.8415L335.926 12.1824L316.299 12.1824L316.299 51.8288Z" fill="currentColor"/>
+<path d="M353.937 28.906L352.524 28.4915C345.851 26.4911 345.878 25.0855 345.762 24.2475C345.647 23.4095 346.953 20.3189 352.533 20.3189L352.577 20.3189C355.465 20.3189 357.553 21.0127 358.762 22.3463C360.432 24.1844 360.237 26.9507 360.237 26.9777L360.237 27.9058L368.171 27.9058L368.171 26.9867C368.216 25.1576 367.94 20.6793 364.697 17.012C361.916 13.8764 357.846 12.2995 352.595 12.2815L352.542 12.2815C347.664 12.2815 343.39 13.8944 340.493 16.8138C338.37 18.9673 337.144 21.6705 337.161 24.2475C337.161 31.3388 343.47 34.1771 350.303 36.2045L351.76 36.619C353.857 37.2407 357.313 38.2409 359.215 39.2321C359.979 39.6375 360.21 40.6377 359.668 41.3315C358.788 42.4488 356.878 43.7914 352.764 43.7914C350.116 43.7914 348.099 43.0976 346.784 41.746C345.229 40.1511 345.078 38.0967 345.078 37.2858L337.153 37.1867C337.108 41.0252 338.556 44.7465 341.133 47.3956C343.088 49.423 346.722 51.8198 352.755 51.8198C359.464 51.8198 363.258 49.2158 365.257 47.0352C367.727 44.3591 368.447 41.2955 368.304 39.3312C367.834 32.9337 360.45 30.7892 353.928 28.897L353.937 28.906Z" fill="currentColor"/>
+<path d="M407 32.393C407 30.2845 406.689 28.2391 406.112 26.3379C403.739 18.4717 396.871 12.786 388.785 12.786C378.736 12.786 370.57 21.5803 370.57 32.393C370.57 43.2057 378.736 52 388.785 52C396.862 52 403.73 46.3233 406.112 38.4571L397.28 38.4571C395.511 41.6378 392.357 43.7283 388.785 43.7283C384.005 43.7283 380.007 39.9889 378.994 34.961L406.831 34.961C406.947 34.114 407 33.267 407 32.384L407 32.393ZM380.291 26.3379C382.05 23.1572 385.196 21.0487 388.785 21.0487C392.375 21.0487 395.52 23.1662 397.28 26.3379L380.3 26.3379L380.291 26.3379Z" fill="currentColor"/>
+</g>
+<defs>
+<clipPath id="clip1">
+<rect width="407" height="51.9999" fill="currentColor"/>
+</clipPath>
+</defs>
+</svg></a>
+  <nav class="nav-links" aria-label="Główna" data-i18n-attr="aria-label:nav.aria">
+    <a href="#creative" data-i18n="nav.creative">Kreacja</a>
+    <a href="#production" data-i18n="nav.production">Produkcja</a>
+    <a href="#jeden">jeden.ai</a>
+    <a href="#built" data-i18n="nav.team">Zespół</a>
     <a href="#altercast">AlterCast</a>
-    <a href="#zaufanie">AI Act</a>
   </nav>
-  <span class="lang">PL / EN</span>
-  <a class="nav-cta" href="#kontakt"><span class="cta-long">Porozmawiajmy</span><span class="cta-short">Kontakt</span></a>
+  <div class="lang" role="group" aria-label="Język" data-i18n-attr="aria-label:nav.lang">
+    <button type="button" data-lang="pl" aria-pressed="true">PL</button>
+    <button type="button" data-lang="en" aria-pressed="false">EN</button>
+  </div>
+  <a class="nav-cta" href="#contact" data-i18n="nav.cta">Porozmawiajmy</a>
 </header>
 
 <main>
-  <section id="top" class="scene hero on-violet" data-mode="fabric" data-bg="violet" aria-labelledby="hero-title">
+  <section id="top" class="scene hero s-violet" data-mode="fabric" data-bg="violet" aria-labelledby="hero-title">
     <div class="wrap">
-      <p class="eyebrow"><span class="hook" aria-hidden="true"></span>Ekosystem AI dla marketingu</p>
-      <h1 id="hero-title"><span class="h-a">Human</span>izujemy AI.</h1>
-      <p class="lead">Łączymy marketing, produkcję reklam i własne technologie. Od pomysłu na kampanię, przez spot i sesję zdjęciową, po tysiące wariantów contentu z legalnymi twarzami.</p>
+      <h1 id="hero-title" class="mega"><span class="a" data-i18n="hero.t1">Humanizujemy</span><span class="b" data-i18n="hero.t2">AI.</span></h1>
+      <p class="tagline" data-i18n="hero.tag">Kompletny pakiet kreatywny AI dla marketingu.</p>
       <div class="ctas">
-        <a class="btn primary" href="#kontakt">Porozmawiajmy o kampanii</a>
-        <a class="btn" href="#ekosystem">Zobacz, jak to działa <span class="arr" aria-hidden="true">↓</span></a>
+        <a class="btn primary" href="#contact" data-i18n="hero.cta1">Zacznij od jednej kampanii</a>
+        <a class="btn" href="#team" data-i18n="hero.cta2">Poznaj zespół</a>
       </div>
-      <div class="hero-foot">
-        <ul class="eco" aria-label="Ekosystem Humanverse">
-          <li>Marketing Solutions</li><li>Studio</li><li>Jeden.ai</li><li>AlterCast</li>
-        </ul>
-        <p class="hint"><span class="hint-mouse">Poruszaj kursorem. Kliknij, żeby puścić falę.</span><span class="hint-touch">Dotknij tła, żeby puścić falę.</span></p>
+      <div class="proof">
+        <div><b>#1</b><span data-i18n="hero.p1">Największy niezależny producent wideo z&nbsp;AI w&nbsp;Polsce.</span></div>
+        <div><b>3 → 30</b><span data-i18n="hero.p2">Z&nbsp;trzyosobowego zespołu do trzydziestu specjalistów w&nbsp;dwa lata.</span></div>
+        <div><b>100+</b><span data-i18n="hero.p3">Filmów z&nbsp;AI wyprodukowanych w&nbsp;samym 2026 roku.</span></div>
       </div>
     </div>
   </section>
 
-  <section id="ekosystem" class="scene on-violet" data-mode="fabric" data-bg="violet" aria-labelledby="eco-title">
+  <section id="about" class="scene s-green" data-mode="calm" data-bg="green" aria-labelledby="about-title">
     <div class="wrap">
-      <div class="copy">
-        <p class="eyebrow"><span class="hook" aria-hidden="true"></span>01 · Ekosystem</p>
-        <h2 id="eco-title">Jeden partner, cztery siły.</h2>
-        <p class="lead">Humanverse to już nie tylko dom produkcyjny. To pakiet rozwiązań, które razem prowadzą markę od strategii do skali.</p>
+      <h2 id="about-title" class="nots">
+        <span data-i18n="pos.n1">Nie tylko dom produkcyjny.</span>
+        <span data-i18n="pos.n2">Nie tylko agencja reklamowa.</span>
+        <span data-i18n="pos.n3">Nie tylko postprodukcja.</span>
+        <span class="b" data-i18n="pos.n4">Kompletny pakiet kreatywny AI dla marketingu.</span>
+      </h2>
+      <p class="lead" data-i18n="pos.lead">Filmy wysokobudżetowe, automatyczna produkcja treści na dużą skalę i&nbsp;licencjonowane twarze. A&nbsp;wszystko pomiędzy: storyboard, animatik, gotowy film. Jeden partner na cały proces kreacji i&nbsp;produkcji.</p>
+      <div class="trio">
+        <div><span class="k">Humanverse</span><span class="v" data-i18n="pos.hv">Filmy wysokobudżetowe i&nbsp;nadzór kreatywny</span></div>
+        <div><span class="k">jeden.ai</span><span class="v" data-i18n="pos.jd">Automatyczna produkcja treści na dużą skalę</span></div>
+        <div><span class="k">AlterCast</span><span class="v" data-i18n="pos.ac">Licencjonowane twarze</span><span class="partner" data-i18n="pos.acp">Osobna firma. Humanverse rozwija jej technologię.</span></div>
       </div>
-      <ol class="chain">
-        <li><span class="k">Strategia</span><h3>Marketing Solutions</h3><p>Rozwiązania marketingowe szyte pod cel: kampanie, content, wirtualni ambasadorzy, e-commerce, branding.</p><span class="who">dla: działy marketingu, agencje</span></li>
-        <li><span class="k">Produkcja</span><h3>Humanverse Studio</h3><p>Spoty TV i online, sesje foto AI, CGI, AIMatiki, muzyka i głos. Jakość, której oczekuje enterprise.</p><span class="who">dla: marki, agencje 360</span></li>
-        <li><span class="k">Skala</span><h3>Jeden.ai</h3><p>Platforma, która z jednego zdjęcia produktu robi komplet materiałów w standardzie marki.</p><span class="who">dla: e-commerce, performance</span></li>
-        <li><span class="k">Zaufanie</span><h3>AlterCast</h3><p>Marketplace licencjonowanych twarzy do produkcji AI. Zgoda, umowa i kontrola kontekstów.</p><span class="who">dla: marki, domy produkcyjne, ludzie</span></li>
-      </ol>
     </div>
   </section>
 
-  <section id="marketing" class="scene on-paper" data-mode="modules" data-bg="paper" aria-labelledby="ms-title">
+  <section id="team" class="scene s-violet" data-mode="fabric" data-bg="violet" aria-labelledby="team-title">
     <div class="wrap">
-      <div class="copy">
-        <p class="eyebrow"><span class="hook" aria-hidden="true"></span>02 · Marketing Solutions</p>
-        <h2 id="ms-title">Rozwiązania marketingowe, nie tylko produkcja.</h2>
-        <p class="lead">Najważniejsza sekcja strony. Marka kupuje tu wynik, a nie technologię, więc każde rozwiązanie opisujemy językiem celu: co dostajesz, w jakim czasie i jak to mierzymy.</p>
+      <h2 id="team-title" class="mega" style="text-align:center"><span class="a" data-i18n="team.t">Zespół</span></h2>
+      <figure class="team-figure"></figure>
+      <div class="team-cap">
+        <p class="statement sm" data-i18n="team.s">Trzy osoby → trzydzieści w&nbsp;dwa lata.</p>
+        <p class="body" data-i18n="team.b">Sprzedaż, Client Service i&nbsp;Creative zbudowaliśmy sami. Remote HQ, Warszawa i&nbsp;Sopot.</p>
       </div>
-      <div class="solutions">
-        <article class="sol"><span class="tag">Kampanie</span><h3>Kampanie AI 360°</h3><p>Insight, idea, key visual i spot. Potem adaptacje na wszystkie kanały bez kolejnej sesji zdjęciowej.</p><span class="ex">na start: idea + KV + spot 30 s</span></article>
-        <article class="sol"><span class="tag">Content</span><h3>Content always-on</h3><p>Stały strumień materiałów do social i performance. Warianty pod grupy docelowe i szybkie testy.</p><span class="ex">np. 50 wariantów pod 50 grup docelowych</span></article>
-        <article class="sol"><span class="tag">Twarze marki</span><h3>Wirtualni ambasadorzy</h3><p>Własna postać marki, awatary interaktywne i chatboty z wiedzą o ofercie. W 100% pod kontrolą marki.</p><span class="ex">twórcy MetaQueen, pierwszej wirtualnej influencerki w Polsce</span></article>
-        <article class="sol"><span class="tag">E-commerce</span><h3>Content produktowy</h3><p>Wizualizacje produktów, przymierzalnia AI i wideo produktowe. Tysiące SKU bez studia.</p><span class="ex">silnik: Jeden.ai</span></article>
-        <article class="sol"><span class="tag">Marka</span><h3>Branding i identyfikacja</h3><p>Nazwa, logo, identyfikacja i strona www. Szybciej dzięki AI, z decyzjami podejmowanymi przez ludzi.</p><span class="ex">brief → nazwa → znak → system</span></article>
-        <article class="sol"><span class="tag">Dźwięk</span><h3>Muzyka i głos AI</h3><p>Jingle i piosenki w wielu wariantach, lektor AI i licencjonowane klonowanie głosu.</p><span class="ex">głos ambasadora bez kolejnych sesji w studiu</span></article>
+      <p class="statement sm"><span data-i18n="team.g1">Rośliśmy razem z&nbsp;klientami.</span> <span class="b" data-i18n="team.g2">Z&nbsp;każdego spostrzeżenia rodziło się coś nowego.</span></p>
+      <div class="story">
+        <div><q data-i18n="team.q1">Czyja to twarz?</q><span class="to">→ AlterCast</span></div>
+        <div><q data-i18n="team.q2">Potrzebujemy tysięcy materiałów, nie jednego filmu.</q><span class="to">→ jeden.ai</span></div>
+        <div><q data-i18n="team.q3">Potrzebujemy też pomysłu, nie tylko realizacji.</q><span class="to">→ Creative</span></div>
       </div>
-      <p class="note"><span class="hook" aria-hidden="true"></span>Robocze nazwy i opisy. Podmienię je na treść z one-pagera.</p>
+      <p class="body" data-i18n="team.uc">Wyprodukowaliśmy kampanię UniCredit. To jak dotąd największa w&nbsp;Polsce kampania reklamowa oparta na AI.</p>
     </div>
   </section>
 
-  <section id="studio" class="scene on-ink" data-mode="frames" data-bg="ink" aria-labelledby="studio-title">
+  <section id="creative" class="scene s-white" data-mode="frames" data-bg="white" aria-labelledby="creative-title">
+    <div class="rail" aria-hidden="true"><div class="rail-mark"><svg aria-hidden="true" focusable="false" viewBox="0 0 407 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip2)">
+<path d="M57.8522 21.4361L36.1987 21.4361L36.1987 6.32918e-06L9.09196e-06 0L7.52438e-06 8.96551L27.3578 8.96551L27.3578 51.8287L36.1987 51.8287L36.1987 30.3926L57.8522 30.3926L57.8522 51.8287L66.693 51.8287L66.6931 1.1661e-05L57.8522 1.01152e-05L57.8522 21.4361Z" fill="white"/>
+<path d="M100.377 32.0866C100.377 38.2408 95.9434 43.2507 90.4878 43.2507C85.0322 43.2507 80.5985 38.2408 80.5985 32.0866L80.5985 12.3174L72.0952 12.3174L72.0952 32.0956C72.0952 43.0074 80.3497 51.8828 90.4967 51.8828C100.644 51.8828 108.898 43.0074 108.898 32.0956L108.898 12.2454L100.395 12.2454L100.395 32.0866L100.377 32.0866Z" fill="white"/>
+<path d="M145.399 12.1643C141.845 12.1643 138.611 13.579 136.203 15.8677C133.795 13.579 130.561 12.1643 127.006 12.1643C119.569 12.1643 113.519 18.3005 113.519 25.8423L113.519 51.8288L122.093 51.8288L122.093 25.8423C122.093 23.0941 124.296 20.8595 127.006 20.8595C129.716 20.8595 131.92 23.0941 131.92 25.8423L131.92 51.8288L140.494 51.8288L140.494 25.8423C140.494 23.0941 142.698 20.8595 145.408 20.8595C148.118 20.8595 150.321 23.0941 150.321 25.8423L150.321 51.8288L158.896 51.8288L158.896 25.8423C158.896 18.3005 152.845 12.1643 145.408 12.1643L145.399 12.1643Z" fill="white"/>
+<path d="M218.552 12.2003C208.405 12.2003 200.15 21.0757 200.15 31.9874L200.15 50.387L186.129 17.958C184.61 14.4439 181.189 12.1732 177.404 12.1732L168.821 12.1732L168.821 20.7963L174.587 20.7963C176.711 20.7963 178.63 22.0668 179.483 24.0401L179.483 24.0581L175.689 24.0581C168.154 24.0581 162.023 30.2754 162.023 37.9164C162.023 45.5573 168.154 51.7746 175.689 51.7746C178.026 51.7746 184.157 51.0628 188.262 44.3319L191.505 51.8287L208.662 51.8287L208.662 31.9874C208.662 25.8332 213.105 20.8234 218.552 20.8234C223.998 20.8234 228.441 25.8332 228.441 31.9874L228.441 51.7656L236.944 51.7656L236.944 31.9874C236.944 21.0757 228.69 12.2003 218.543 12.2003L218.552 12.2003ZM175.68 43.1515C172.837 43.1515 170.527 40.8088 170.527 37.9254C170.527 35.042 172.837 32.6993 175.68 32.6993L183.215 32.6993L183.268 32.8344C182.584 37.2766 180.736 43.1605 175.671 43.1605L175.68 43.1515Z" fill="white"/>
+<path d="M268.612 12.1824L256.67 40.7819L244.452 12.1824L235.185 12.1824L252.12 51.8288L261.299 51.8288L277.835 12.1824L268.612 12.1824Z" fill="white"/>
+<path d="M294.148 12.786C284.098 12.786 275.933 21.5803 275.933 32.393C275.933 43.2056 284.098 51.9999 294.148 51.9999C302.224 51.9999 309.093 46.3233 311.474 38.4571L302.642 38.4571C300.874 41.6378 297.72 43.7282 294.148 43.7282C289.367 43.7282 285.369 39.9889 284.356 34.961L312.194 34.961C312.309 34.114 312.363 33.267 312.363 32.384C312.363 30.2755 312.052 28.2301 311.465 26.3289C309.102 18.4626 302.224 12.777 294.139 12.777L294.148 12.786ZM285.662 26.3379C287.422 23.1571 290.567 21.0487 294.157 21.0487C297.746 21.0487 300.892 23.1662 302.651 26.3379L285.671 26.3379L285.662 26.3379Z" fill="white"/>
+<path d="M316.299 51.8288L324.722 51.8288L324.722 20.8415L335.926 20.8415L335.926 12.1824L316.299 12.1824L316.299 51.8288Z" fill="white"/>
+<path d="M353.937 28.906L352.524 28.4915C345.851 26.4911 345.878 25.0855 345.762 24.2475C345.647 23.4095 346.953 20.3189 352.533 20.3189L352.577 20.3189C355.465 20.3189 357.553 21.0127 358.762 22.3463C360.432 24.1844 360.237 26.9507 360.237 26.9777L360.237 27.9058L368.171 27.9058L368.171 26.9867C368.216 25.1576 367.94 20.6793 364.697 17.012C361.916 13.8764 357.846 12.2995 352.595 12.2815L352.542 12.2815C347.664 12.2815 343.39 13.8944 340.493 16.8138C338.37 18.9673 337.144 21.6705 337.161 24.2475C337.161 31.3388 343.47 34.1771 350.303 36.2045L351.76 36.619C353.857 37.2407 357.313 38.2409 359.215 39.2321C359.979 39.6375 360.21 40.6377 359.668 41.3315C358.788 42.4488 356.878 43.7914 352.764 43.7914C350.116 43.7914 348.099 43.0976 346.784 41.746C345.229 40.1511 345.078 38.0967 345.078 37.2858L337.153 37.1867C337.108 41.0252 338.556 44.7465 341.133 47.3956C343.088 49.423 346.722 51.8198 352.755 51.8198C359.464 51.8198 363.258 49.2158 365.257 47.0352C367.727 44.3591 368.447 41.2955 368.304 39.3312C367.834 32.9337 360.45 30.7892 353.928 28.897L353.937 28.906Z" fill="white"/>
+<path d="M407 32.393C407 30.2845 406.689 28.2391 406.112 26.3379C403.739 18.4717 396.871 12.786 388.785 12.786C378.736 12.786 370.57 21.5803 370.57 32.393C370.57 43.2057 378.736 52 388.785 52C396.862 52 403.73 46.3233 406.112 38.4571L397.28 38.4571C395.511 41.6378 392.357 43.7283 388.785 43.7283C384.005 43.7283 380.007 39.9889 378.994 34.961L406.831 34.961C406.947 34.114 407 33.267 407 32.384L407 32.393ZM380.291 26.3379C382.05 23.1572 385.196 21.0487 388.785 21.0487C392.375 21.0487 395.52 23.1662 397.28 26.3379L380.3 26.3379L380.291 26.3379Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip2">
+<rect width="407" height="51.9999" fill="white"/>
+</clipPath>
+</defs>
+</svg></div></div>
     <div class="wrap">
-      <div class="copy">
-        <p class="eyebrow"><span class="hook" aria-hidden="true"></span>03 · Studio i case studies</p>
-        <h2 id="studio-title">Produkcja reklam AI w jakości, której oczekuje enterprise.</h2>
-        <p class="lead">Siatka zamienia się w stykówkę kadrów, a kursor działa jak lupa montażysty. Tu wchodzi showreel i wybrane realizacje.</p>
-      </div>
-      <div class="studio-grid">
-        <div class="reel" role="img" aria-label="Miejsce na showreel">
-          <span class="meta">Showreel 2026 · 60 s</span>
-          <span class="play" aria-hidden="true"></span>
-          <span class="tc" id="reelTc">00:00:00:00</span>
+      <span class="kicker" data-i18n="cr.k">Kreacja</span>
+      <h2 id="creative-title" class="mega"><span class="a" data-i18n="cr.t1">Najpierw pomysł.</span><span class="b" data-i18n="cr.t2">Potem narzędzie.</span></h2>
+      <div class="split">
+        <div class="col">
+          <p class="statement sm"><span class="hl" data-i18n="cr.s1">Wewnątrz każdej produkcji.</span> <span data-i18n="cr.s2">Nadzór kreatywny nad studiem: pomysł, scenariusz, look, montaż finalny.</span></p>
+          <p class="lead" data-i18n="cr.l">Nie jesteśmy agencją reklamową. Pracujemy wewnątrz każdej produkcji i&nbsp;pilnujemy, żeby każdy kadr wynikał z&nbsp;pomysłu, od pierwszego szkicu po montaż finalny.</p>
         </div>
-        <ul class="cases" aria-label="Przykładowe realizacje">
-          <li><span class="f">Spot TV</span><span>Bankowość, z agencją kreatywną</span></li>
-          <li><span class="f">Spot TV</span><span>Farmacja, seria spotów</span></li>
-          <li><span class="f">Spot TV</span><span>Platforma inwestycyjna, z agencją globalną</span></li>
-          <li><span class="f">Sesja AI</span><span>Biżuteria, kampania produktowa</span></li>
-          <li><span class="f">100% AI</span><span>Beauty, pierwsza w Polsce reklama w pełni z AI</span></li>
-          <li><span class="f">Awatar</span><span>Postać historyczna dla uczelni</span></li>
+        <div class="col">
+          <div class="pair"><h3 data-i18n="cr.a.t">Audytujemy pomysły i&nbsp;scenariusze</h3><p class="body" data-i18n="cr.a.b">Te od agencji i&nbsp;te od klienta, zanim cokolwiek trafi do produkcji.</p></div>
+          <div class="pair"><h3 data-i18n="cr.p.t">Szlifujemy kreację pod AI</h3><p class="body" data-i18n="cr.p.b">Żeby pasowała do naszego procesu i&nbsp;wykorzystywała mocne strony AI, nie gubiąc pomysłu.</p></div>
+        </div>
+      </div>
+      <p class="stages">
+        <span data-i18n="cr.st1">Pomysł</span><span class="arrow" aria-hidden="true">→</span>
+        <span data-i18n="cr.st2">Scenariusz</span><span class="arrow" aria-hidden="true">→</span>
+        <span data-i18n="cr.st3">Look</span><span class="arrow" aria-hidden="true">→</span>
+        <span data-i18n="cr.st4">Montaż finalny</span>
+      </p>
+    </div>
+  </section>
+
+  <section id="production" class="scene s-violet" data-mode="process" data-bg="violet" aria-labelledby="production-title">
+    <div class="wrap">
+      <span class="kicker" data-i18n="pr.k">Produkcja</span>
+      <div class="split">
+        <div class="col">
+          <h2 id="production-title" class="mega"><span class="a" data-i18n="pr.t1">Cel</span><span class="b" data-i18n="pr.t2">ponad nowinkami</span></h2>
+          <p class="statement sm" data-i18n="pr.s">Narzędzie dopasowujemy do wizji. Nigdy odwrotnie.</p>
+          <ul class="paths">
+            <li><b data-i18n="pr.l1">Live action</b><span data-i18n="pr.l1d">Prawdziwy plan zdjęciowy, prawdziwe emocje, AI w&nbsp;postprodukcji.</span></li>
+            <li><b data-i18n="pr.l2">Hybryda</b><span data-i18n="pr.l2d">Prawdziwa gra aktorska, wygenerowany świat.</span></li>
+            <li><b data-i18n="pr.l3">W&nbsp;pełni AI</b><span data-i18n="pr.l3d">Niemożliwe wizualia, ekstremalna skala.</span></li>
+          </ul>
+          <p class="body" data-i18n="pr.fam">Każdy proces produkcji z&nbsp;AI zaprojektowaliśmy tak, żeby wyglądał znajomo:</p>
+          <ol class="chain">
+            <li data-i18n="pr.c1">Kreacja</li><li data-i18n="pr.c2">Preprodukcja</li><li data-i18n="pr.c3">Assety</li><li data-i18n="pr.c4">Montaż</li>
+            <li data-i18n="pr.c5">Animacja</li><li data-i18n="pr.c6">VFX / Online</li><li data-i18n="pr.c7">Korekcja kolorów</li><li data-i18n="pr.c8">Dostawa</li>
+          </ol>
+          <p class="body" data-i18n="pr.master">Jeden master dla każdego rynku: wersje językowe i&nbsp;warianty rynkowe z&nbsp;tego samego materiału.</p>
+        </div>
+        <div class="col" aria-hidden="true"></div>
+      </div>
+      <div class="rnd">
+        <span class="kicker">R&amp;D</span>
+        <p class="statement"><span data-i18n="rd.t1">R&amp;D to nie laboratorium. To każdy projekt.</span> <span class="b" data-i18n="rd.t2">Uczymy się w&nbsp;trakcie pracy, nie w&nbsp;izolacji.</span></p>
+        <ul class="dots">
+          <li data-i18n="rd.d1">Każda produkcja testuje coś nowego: modele, procesy, narzędzia.</li>
+          <li data-i18n="rd.d2">To, co działa, trafia od razu do kolejnego projektu.</li>
+          <li data-i18n="rd.d3">Współpraca akademicka z&nbsp;PJATK oraz R&amp;D z&nbsp;twórcami modeli i&nbsp;platform.</li>
         </ul>
       </div>
-      <p class="note"><span class="hook" aria-hidden="true"></span>Nazwy klientów i materiały pokażemy po ich akceptacji.</p>
     </div>
   </section>
 
-  <section id="jeden" class="scene split on-ink" data-mode="pipeline" data-bg="ink" aria-labelledby="jeden-title">
+  <section id="jeden" class="scene s-white" data-mode="pipeline" data-bg="white" aria-labelledby="jeden-title">
+    <div class="rail" aria-hidden="true"><div class="rail-mark"><svg aria-hidden="true" focusable="false" viewBox="0 0 407 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip3)">
+<path d="M57.8522 21.4361L36.1987 21.4361L36.1987 6.32918e-06L9.09196e-06 0L7.52438e-06 8.96551L27.3578 8.96551L27.3578 51.8287L36.1987 51.8287L36.1987 30.3926L57.8522 30.3926L57.8522 51.8287L66.693 51.8287L66.6931 1.1661e-05L57.8522 1.01152e-05L57.8522 21.4361Z" fill="white"/>
+<path d="M100.377 32.0866C100.377 38.2408 95.9434 43.2507 90.4878 43.2507C85.0322 43.2507 80.5985 38.2408 80.5985 32.0866L80.5985 12.3174L72.0952 12.3174L72.0952 32.0956C72.0952 43.0074 80.3497 51.8828 90.4967 51.8828C100.644 51.8828 108.898 43.0074 108.898 32.0956L108.898 12.2454L100.395 12.2454L100.395 32.0866L100.377 32.0866Z" fill="white"/>
+<path d="M145.399 12.1643C141.845 12.1643 138.611 13.579 136.203 15.8677C133.795 13.579 130.561 12.1643 127.006 12.1643C119.569 12.1643 113.519 18.3005 113.519 25.8423L113.519 51.8288L122.093 51.8288L122.093 25.8423C122.093 23.0941 124.296 20.8595 127.006 20.8595C129.716 20.8595 131.92 23.0941 131.92 25.8423L131.92 51.8288L140.494 51.8288L140.494 25.8423C140.494 23.0941 142.698 20.8595 145.408 20.8595C148.118 20.8595 150.321 23.0941 150.321 25.8423L150.321 51.8288L158.896 51.8288L158.896 25.8423C158.896 18.3005 152.845 12.1643 145.408 12.1643L145.399 12.1643Z" fill="white"/>
+<path d="M218.552 12.2003C208.405 12.2003 200.15 21.0757 200.15 31.9874L200.15 50.387L186.129 17.958C184.61 14.4439 181.189 12.1732 177.404 12.1732L168.821 12.1732L168.821 20.7963L174.587 20.7963C176.711 20.7963 178.63 22.0668 179.483 24.0401L179.483 24.0581L175.689 24.0581C168.154 24.0581 162.023 30.2754 162.023 37.9164C162.023 45.5573 168.154 51.7746 175.689 51.7746C178.026 51.7746 184.157 51.0628 188.262 44.3319L191.505 51.8287L208.662 51.8287L208.662 31.9874C208.662 25.8332 213.105 20.8234 218.552 20.8234C223.998 20.8234 228.441 25.8332 228.441 31.9874L228.441 51.7656L236.944 51.7656L236.944 31.9874C236.944 21.0757 228.69 12.2003 218.543 12.2003L218.552 12.2003ZM175.68 43.1515C172.837 43.1515 170.527 40.8088 170.527 37.9254C170.527 35.042 172.837 32.6993 175.68 32.6993L183.215 32.6993L183.268 32.8344C182.584 37.2766 180.736 43.1605 175.671 43.1605L175.68 43.1515Z" fill="white"/>
+<path d="M268.612 12.1824L256.67 40.7819L244.452 12.1824L235.185 12.1824L252.12 51.8288L261.299 51.8288L277.835 12.1824L268.612 12.1824Z" fill="white"/>
+<path d="M294.148 12.786C284.098 12.786 275.933 21.5803 275.933 32.393C275.933 43.2056 284.098 51.9999 294.148 51.9999C302.224 51.9999 309.093 46.3233 311.474 38.4571L302.642 38.4571C300.874 41.6378 297.72 43.7282 294.148 43.7282C289.367 43.7282 285.369 39.9889 284.356 34.961L312.194 34.961C312.309 34.114 312.363 33.267 312.363 32.384C312.363 30.2755 312.052 28.2301 311.465 26.3289C309.102 18.4626 302.224 12.777 294.139 12.777L294.148 12.786ZM285.662 26.3379C287.422 23.1571 290.567 21.0487 294.157 21.0487C297.746 21.0487 300.892 23.1662 302.651 26.3379L285.671 26.3379L285.662 26.3379Z" fill="white"/>
+<path d="M316.299 51.8288L324.722 51.8288L324.722 20.8415L335.926 20.8415L335.926 12.1824L316.299 12.1824L316.299 51.8288Z" fill="white"/>
+<path d="M353.937 28.906L352.524 28.4915C345.851 26.4911 345.878 25.0855 345.762 24.2475C345.647 23.4095 346.953 20.3189 352.533 20.3189L352.577 20.3189C355.465 20.3189 357.553 21.0127 358.762 22.3463C360.432 24.1844 360.237 26.9507 360.237 26.9777L360.237 27.9058L368.171 27.9058L368.171 26.9867C368.216 25.1576 367.94 20.6793 364.697 17.012C361.916 13.8764 357.846 12.2995 352.595 12.2815L352.542 12.2815C347.664 12.2815 343.39 13.8944 340.493 16.8138C338.37 18.9673 337.144 21.6705 337.161 24.2475C337.161 31.3388 343.47 34.1771 350.303 36.2045L351.76 36.619C353.857 37.2407 357.313 38.2409 359.215 39.2321C359.979 39.6375 360.21 40.6377 359.668 41.3315C358.788 42.4488 356.878 43.7914 352.764 43.7914C350.116 43.7914 348.099 43.0976 346.784 41.746C345.229 40.1511 345.078 38.0967 345.078 37.2858L337.153 37.1867C337.108 41.0252 338.556 44.7465 341.133 47.3956C343.088 49.423 346.722 51.8198 352.755 51.8198C359.464 51.8198 363.258 49.2158 365.257 47.0352C367.727 44.3591 368.447 41.2955 368.304 39.3312C367.834 32.9337 360.45 30.7892 353.928 28.897L353.937 28.906Z" fill="white"/>
+<path d="M407 32.393C407 30.2845 406.689 28.2391 406.112 26.3379C403.739 18.4717 396.871 12.786 388.785 12.786C378.736 12.786 370.57 21.5803 370.57 32.393C370.57 43.2057 378.736 52 388.785 52C396.862 52 403.73 46.3233 406.112 38.4571L397.28 38.4571C395.511 41.6378 392.357 43.7283 388.785 43.7283C384.005 43.7283 380.007 39.9889 378.994 34.961L406.831 34.961C406.947 34.114 407 33.267 407 32.384L407 32.393ZM380.291 26.3379C382.05 23.1572 385.196 21.0487 388.785 21.0487C392.375 21.0487 395.52 23.1662 397.28 26.3379L380.3 26.3379L380.291 26.3379Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip3">
+<rect width="407" height="51.9999" fill="white"/>
+</clipPath>
+</defs>
+</svg></div></div>
     <div class="wrap">
-      <div class="copy">
-        <p class="eyebrow"><span class="hook" aria-hidden="true"></span>04 · Jeden.ai</p>
-        <h2 id="jeden-title">Jedno zdjęcie. Jedna inteligencja. Nieskończona jakość.</h2>
-        <p class="lead">Platforma do automatyzacji contentu produktowego. Wrzucasz zdjęcie z telefonu, a pipeline ustawiony pod markę zwraca komplet materiałów.</p>
-        <ol class="flow">
-          <li><span class="f">Wejście</span><span>jedno zdjęcie produktu</span></li>
-          <li><span class="f">Pipeline</span><span>światło, tło i scena, styl marki</span></li>
-          <li><span class="f">Wyjście</span><span>packshoty, lifestyle, formaty social, banery i wideo</span></li>
-        </ol>
-        <div class="ctas"><a class="btn primary" href="#kontakt">Umów demo Jeden.ai</a></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="altercast" class="scene split on-paper theme-altercast" data-mode="face" data-bg="paper" aria-labelledby="ac-title">
-    <div class="wrap">
-      <div class="copy">
-        <p class="eyebrow"><span class="hook" aria-hidden="true"></span>05 · AlterCast</p>
-        <h2 id="ac-title">Legalne twarze do reklam tworzonych z AI.</h2>
-        <div class="sides">
-          <div class="side"><span class="who">Dla marek i agencji</span><p>Licencjonujesz wizerunek prawdziwej osoby do produkcji AI. Z umową, zgodą i jasnymi zasadami użycia.</p></div>
-          <div class="side orange"><span class="who">Dla ludzi</span><p>Udostępniasz swoją twarz i zarabiasz. Sam decydujesz, w jakich branżach i kontekstach może się pojawić.</p></div>
+      <div class="split">
+        <div class="col">
+          <svg class="brand-logo" role="img" aria-label="jeden.ai" viewBox="0 0 201 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip5)">
+<path d="M0 70V61.2859H7.3803V16.5719H17.3149V70H0ZM6.52716 5.85812C6.52716 2.57142 9.08149 0 12.3463 0C15.6112 0 18.2343 2.57142 18.2343 5.85812C18.2343 9.14481 15.6087 11.7162 12.3463 11.7162C9.08404 11.7162 6.52716 9.14481 6.52716 5.85812Z" fill="#0D0C12"/>
+<path d="M39.8608 54.715C28.225 54.715 20.1367 46.4291 20.1367 35.0717C20.1367 23.7144 28.2963 15.4285 39.7208 15.4285C50.506 15.4285 57.7437 23.6426 57.7437 35.0717C57.7437 36.0716 57.6724 37.2868 57.461 38.2149H30.4279C31.4924 43.0731 34.826 45.8573 39.9347 45.8573C44.0501 45.8573 46.7471 44.5704 49.1588 41.499L54.9067 47.5699C51.1452 52.4974 46.1079 54.7125 39.8634 54.7125L39.8608 54.715ZM30.4253 31.8568H48.023C47.3124 27.2139 44.1214 24.1426 39.5094 24.1426C34.8973 24.1426 31.4211 27.0704 30.4279 31.8568H30.4253Z" fill="#0D0C12"/>
+<path d="M78.1044 15.4285C82.9992 15.4285 87.4711 17.3564 89.3149 20.4996H89.5976C89.5263 19.9996 89.455 19.2844 89.455 17.2846V0H99.247V53.5716H90.1655V51.9283C90.1655 50.3567 90.2368 49.2851 90.3081 48.5724H90.0255C87.6851 52.5 83.073 54.7151 77.6791 54.7151C67.2479 54.7151 59.8701 46.6444 59.8701 35.0718C59.8701 23.4991 67.5331 15.4285 78.1044 15.4285ZM89.8115 34.9282C89.8115 28.5702 85.6248 24.1426 79.8082 24.1426C73.9915 24.1426 69.8735 28.5702 69.8735 34.9282C69.8735 41.2863 74.0603 45.7856 79.8082 45.7856C85.556 45.7856 89.8115 41.358 89.8115 34.9282Z" fill="#0D0C12"/>
+<path d="M122.002 54.715C110.366 54.715 102.278 46.4291 102.278 35.0717C102.278 23.7144 110.437 15.4285 121.862 15.4285C132.647 15.4285 139.885 23.6426 139.885 35.0717C139.885 36.0716 139.813 37.2868 139.602 38.2149H112.569C113.633 43.0731 116.967 45.8573 122.076 45.8573C126.191 45.8573 128.888 44.5704 131.3 41.499L137.048 47.5699C133.286 52.4974 128.249 54.7125 122.004 54.7125L122.002 54.715ZM112.564 31.8568H130.161C129.451 27.2139 126.26 24.1426 121.648 24.1426C117.036 24.1426 113.559 27.0704 112.566 31.8568H112.564Z" fill="#0D0C12"/>
+<path d="M201 16.5719V53.5716H191.068V25.1424H152.71V53.5716H142.775V16.5719H201Z" fill="#0D0C12"/>
+<path d="M156.13 51.1771C156.13 49.7414 157.329 48.5673 158.753 48.5673C160.177 48.5673 161.345 49.7414 161.345 51.1771C161.345 52.6128 160.146 53.787 158.753 53.787C157.36 53.787 156.13 52.6128 156.13 51.1771Z" fill="#FBAB22"/>
+<path d="M169.915 35.9794C172.474 35.9794 174.451 37.0895 175.324 38.6533H175.454C175.421 38.3918 175.39 38.0662 175.39 37.1536V36.5024H179.536V53.3973H175.39V52.6154C175.39 51.8642 175.423 51.4079 175.454 51.049H175.324C174.351 52.8102 172.278 53.9178 169.719 53.9178C164.923 53.9178 161.554 50.2311 161.554 44.9499C161.554 39.6686 165.117 35.9819 169.912 35.9819L169.915 35.9794ZM175.227 44.8832C175.227 41.9811 173.315 39.9583 170.659 39.9583C168.002 39.9583 166.123 41.9811 166.123 44.8832C166.123 47.7853 168.036 49.8722 170.659 49.8722C173.282 49.8722 175.227 47.8187 175.227 44.8832Z" fill="#FBAB22"/>
+<path d="M181.508 31.6107C181.508 30.111 182.707 28.9368 184.197 28.9368C185.687 28.9368 186.886 30.111 186.886 31.6107C186.886 33.1105 185.687 34.2847 184.197 34.2847C182.707 34.2847 181.508 33.1105 181.508 31.6107ZM181.963 53.3947V36.4998H186.499V53.3947H181.963Z" fill="#FBAB22"/>
+</g>
+<defs>
+<clipPath id="clip5">
+<rect width="201" height="70" fill="#0D0C12"/>
+</clipPath>
+</defs>
+</svg>
+          <h2 id="jeden-title" class="mega"><span class="b" data-i18n="jd.t1">Szyte na miarę</span><span class="a" data-i18n="jd.t2">twojej marki.</span></h2>
+          <p class="statement sm" data-i18n="jd.s">Nie narzędzie z&nbsp;półki, które pasuje do twojego procesu zaledwie w&nbsp;kilku procentach.</p>
+          <p class="lead" data-i18n="jd.l">Dopasowujemy jeden.ai do twoich produktów, danych, wytycznych marki i&nbsp;zespołu. W&nbsp;jego sercu jest system oparty na węzłach: każdy krok to blok, a&nbsp;bloki łączą się w&nbsp;dowolny proces.</p>
+          <p class="body" data-i18n="jd.r"><strong>Stworzone z&nbsp;myślą o&nbsp;retailu.</strong> Jedna baza produktów, każdy format, każdy cykl promocyjny. Generowane automatycznie, zatwierdzane przez ludzi.</p>
+          <div class="ctas"><a class="btn primary" href="#contact" data-i18n="jd.cta">Umów demo jeden.ai</a></div>
         </div>
-        <p><a class="textlink" href="https://altercast.ai" target="_blank" rel="noopener">Przejdź do altercast.ai ↗</a></p>
-        <p class="note"><span class="hook" aria-hidden="true"></span>Twarz z siatki patrzy za kursorem.</p>
+        <div class="col" aria-hidden="true"></div>
+      </div>
+      <div class="flow3">
+        <div><span class="k" data-i18n="jd.f1">Twoja firma</span><ul><li data-i18n="jd.f1a">Baza produktów</li><li data-i18n="jd.f1b">Ton marki i&nbsp;wytyczne</li><li data-i18n="jd.f1c">Brief twojego zespołu</li></ul></div>
+        <div><span class="k" data-i18n="jd.f2">Węzły jeden.ai</span><ul><li data-i18n="jd.f2a">Modele obrazu</li><li data-i18n="jd.f2b">Modele wideo</li><li data-i18n="jd.f2c">Tekst i&nbsp;głos</li><li data-i18n="jd.f2d">Wszystko, co ma API</li></ul></div>
+        <div><span class="k" data-i18n="jd.f3">Dowolny format</span><ul><li data-i18n="jd.f3a">E-commerce</li><li data-i18n="jd.f3b">Social i&nbsp;stories</li><li data-i18n="jd.f3c">Film i&nbsp;TV</li><li data-i18n="jd.f3d">Print i&nbsp;OOH</li></ul></div>
       </div>
     </div>
   </section>
 
-  <section id="zaufanie" class="scene on-paper" data-mode="calm" data-bg="paper" aria-labelledby="trust-title">
+  <section id="approach" class="scene s-green" data-mode="modules" data-bg="green" aria-labelledby="approach-title">
     <div class="wrap">
-      <div class="copy">
-        <p class="eyebrow"><span class="hook" aria-hidden="true"></span>06 · Odpowiedzialne AI</p>
-        <h2 id="trust-title">AI Act, licencje i prawa autorskie. Zanim o to zapytasz.</h2>
-      </div>
-      <div class="trust">
-        <div><h3>Oznaczanie treści AI</h3><p>Od 2 sierpnia 2026 r. obowiązuje art. 50 AI Act. Pomagamy markom oznaczać treści zgodnie z przepisami i współtworzymy standard dla branży.</p></div>
-        <div><h3>Licencjonowane wizerunki</h3><p>Twarze w naszych produkcjach mają zgodę i umowę. Dzięki AlterCast wiesz, czyj wizerunek kupujesz i na jakich zasadach.</p></div>
-        <div><h3>Prawa do materiałów</h3><p>Jasne zasady przeniesienia praw do contentu tworzonego z AI, zapisane w umowie.</p></div>
+      <span class="kicker" data-i18n="ap.k">Jak myślimy</span>
+      <h2 id="approach-title" class="mega long"><span class="a" data-i18n="ap.t1">Nie sprzedajemy AI.</span><span class="b" data-i18n="ap.t2">Sprzedajemy ludzką pracę.</span></h2>
+      <p class="lead" data-i18n="ap.l">Ludzka praca, ludzkie twarze, ludzkie wsparcie. Najpierw cel biznesowy, potem technologia.</p>
+      <ul class="values">
+        <li><b data-i18n="ap.v1">Relacje to wszystko.</b><span data-i18n="ap.v1d">Na AIVerse Conference nasi klienci dzielili się ze sceny własnymi wynikami sprzedaży.</span></li>
+        <li><b data-i18n="ap.v2">Słuchamy → rozumiemy → proponujemy.</b><span data-i18n="ap.v2d">Sprzedaż, Client Service i&nbsp;Creative działają jak jeden zespół.</span></li>
+        <li><b data-i18n="ap.v3">Szczerze o&nbsp;tym, co AI potrafi, a&nbsp;czego nie.</b><span data-i18n="ap.v3d">Mówimy o&nbsp;tym przed startem projektu, a&nbsp;nie po fakcie.</span></li>
+        <li><b data-i18n="ap.v4">Start za darmo.</b><span data-i18n="ap.v4d">Klienci płacą tam, gdzie wnosimy realną wartość.</span></li>
+        <li><b data-i18n="ap.v5">Znajomy proces. Nowy silnik.</b><span data-i18n="ap.v5d">Twój zespół pracuje w&nbsp;znany sobie sposób. AI działa pod spodem.</span></li>
+        <li><b data-i18n="ap.v6">Relacje ponad transakcjami.</b><span data-i18n="ap.v6d">Jedna osoba do kontaktu, wspólne cele, myślenie długofalowe.</span></li>
+      </ul>
+      <div class="split">
+        <blockquote class="quote"><p data-i18n="ap.q">„AI zmienia to, jak produkujemy. Nie zmienia tego, dlaczego ludzie kupują.”</p><cite data-i18n="ap.qc">Daniel Joński, Head of Sales</cite></blockquote>
+        <div class="col">
+          <p class="statement sm"><span data-i18n="ap.b1">Nasz zakład:</span> <span class="b" data-i18n="ap.b2">globalna firma usług marketingowych zbudowana na&nbsp;ludziach.</span></p>
+          <p class="body" data-i18n="ap.b3">Trwa rewolucja. Nie będziemy się ścigać z&nbsp;technologicznymi gigantami. W&nbsp;całym tym chaosie świadczymy usługi oparte na ludziach, a&nbsp;to wciąż się skaluje.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="kontakt" class="scene split on-violet" data-mode="logo" data-bg="violet" aria-labelledby="contact-title">
+  <section id="built" class="scene s-white" data-mode="modules" data-bg="white" aria-labelledby="built-title">
+    <div class="rail" aria-hidden="true"><div class="rail-mark"><svg aria-hidden="true" focusable="false" viewBox="0 0 407 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip4)">
+<path d="M57.8522 21.4361L36.1987 21.4361L36.1987 6.32918e-06L9.09196e-06 0L7.52438e-06 8.96551L27.3578 8.96551L27.3578 51.8287L36.1987 51.8287L36.1987 30.3926L57.8522 30.3926L57.8522 51.8287L66.693 51.8287L66.6931 1.1661e-05L57.8522 1.01152e-05L57.8522 21.4361Z" fill="white"/>
+<path d="M100.377 32.0866C100.377 38.2408 95.9434 43.2507 90.4878 43.2507C85.0322 43.2507 80.5985 38.2408 80.5985 32.0866L80.5985 12.3174L72.0952 12.3174L72.0952 32.0956C72.0952 43.0074 80.3497 51.8828 90.4967 51.8828C100.644 51.8828 108.898 43.0074 108.898 32.0956L108.898 12.2454L100.395 12.2454L100.395 32.0866L100.377 32.0866Z" fill="white"/>
+<path d="M145.399 12.1643C141.845 12.1643 138.611 13.579 136.203 15.8677C133.795 13.579 130.561 12.1643 127.006 12.1643C119.569 12.1643 113.519 18.3005 113.519 25.8423L113.519 51.8288L122.093 51.8288L122.093 25.8423C122.093 23.0941 124.296 20.8595 127.006 20.8595C129.716 20.8595 131.92 23.0941 131.92 25.8423L131.92 51.8288L140.494 51.8288L140.494 25.8423C140.494 23.0941 142.698 20.8595 145.408 20.8595C148.118 20.8595 150.321 23.0941 150.321 25.8423L150.321 51.8288L158.896 51.8288L158.896 25.8423C158.896 18.3005 152.845 12.1643 145.408 12.1643L145.399 12.1643Z" fill="white"/>
+<path d="M218.552 12.2003C208.405 12.2003 200.15 21.0757 200.15 31.9874L200.15 50.387L186.129 17.958C184.61 14.4439 181.189 12.1732 177.404 12.1732L168.821 12.1732L168.821 20.7963L174.587 20.7963C176.711 20.7963 178.63 22.0668 179.483 24.0401L179.483 24.0581L175.689 24.0581C168.154 24.0581 162.023 30.2754 162.023 37.9164C162.023 45.5573 168.154 51.7746 175.689 51.7746C178.026 51.7746 184.157 51.0628 188.262 44.3319L191.505 51.8287L208.662 51.8287L208.662 31.9874C208.662 25.8332 213.105 20.8234 218.552 20.8234C223.998 20.8234 228.441 25.8332 228.441 31.9874L228.441 51.7656L236.944 51.7656L236.944 31.9874C236.944 21.0757 228.69 12.2003 218.543 12.2003L218.552 12.2003ZM175.68 43.1515C172.837 43.1515 170.527 40.8088 170.527 37.9254C170.527 35.042 172.837 32.6993 175.68 32.6993L183.215 32.6993L183.268 32.8344C182.584 37.2766 180.736 43.1605 175.671 43.1605L175.68 43.1515Z" fill="white"/>
+<path d="M268.612 12.1824L256.67 40.7819L244.452 12.1824L235.185 12.1824L252.12 51.8288L261.299 51.8288L277.835 12.1824L268.612 12.1824Z" fill="white"/>
+<path d="M294.148 12.786C284.098 12.786 275.933 21.5803 275.933 32.393C275.933 43.2056 284.098 51.9999 294.148 51.9999C302.224 51.9999 309.093 46.3233 311.474 38.4571L302.642 38.4571C300.874 41.6378 297.72 43.7282 294.148 43.7282C289.367 43.7282 285.369 39.9889 284.356 34.961L312.194 34.961C312.309 34.114 312.363 33.267 312.363 32.384C312.363 30.2755 312.052 28.2301 311.465 26.3289C309.102 18.4626 302.224 12.777 294.139 12.777L294.148 12.786ZM285.662 26.3379C287.422 23.1571 290.567 21.0487 294.157 21.0487C297.746 21.0487 300.892 23.1662 302.651 26.3379L285.671 26.3379L285.662 26.3379Z" fill="white"/>
+<path d="M316.299 51.8288L324.722 51.8288L324.722 20.8415L335.926 20.8415L335.926 12.1824L316.299 12.1824L316.299 51.8288Z" fill="white"/>
+<path d="M353.937 28.906L352.524 28.4915C345.851 26.4911 345.878 25.0855 345.762 24.2475C345.647 23.4095 346.953 20.3189 352.533 20.3189L352.577 20.3189C355.465 20.3189 357.553 21.0127 358.762 22.3463C360.432 24.1844 360.237 26.9507 360.237 26.9777L360.237 27.9058L368.171 27.9058L368.171 26.9867C368.216 25.1576 367.94 20.6793 364.697 17.012C361.916 13.8764 357.846 12.2995 352.595 12.2815L352.542 12.2815C347.664 12.2815 343.39 13.8944 340.493 16.8138C338.37 18.9673 337.144 21.6705 337.161 24.2475C337.161 31.3388 343.47 34.1771 350.303 36.2045L351.76 36.619C353.857 37.2407 357.313 38.2409 359.215 39.2321C359.979 39.6375 360.21 40.6377 359.668 41.3315C358.788 42.4488 356.878 43.7914 352.764 43.7914C350.116 43.7914 348.099 43.0976 346.784 41.746C345.229 40.1511 345.078 38.0967 345.078 37.2858L337.153 37.1867C337.108 41.0252 338.556 44.7465 341.133 47.3956C343.088 49.423 346.722 51.8198 352.755 51.8198C359.464 51.8198 363.258 49.2158 365.257 47.0352C367.727 44.3591 368.447 41.2955 368.304 39.3312C367.834 32.9337 360.45 30.7892 353.928 28.897L353.937 28.906Z" fill="white"/>
+<path d="M407 32.393C407 30.2845 406.689 28.2391 406.112 26.3379C403.739 18.4717 396.871 12.786 388.785 12.786C378.736 12.786 370.57 21.5803 370.57 32.393C370.57 43.2057 378.736 52 388.785 52C396.862 52 403.73 46.3233 406.112 38.4571L397.28 38.4571C395.511 41.6378 392.357 43.7283 388.785 43.7283C384.005 43.7283 380.007 39.9889 378.994 34.961L406.831 34.961C406.947 34.114 407 33.267 407 32.384L407 32.393ZM380.291 26.3379C382.05 23.1572 385.196 21.0487 388.785 21.0487C392.375 21.0487 395.52 23.1662 397.28 26.3379L380.3 26.3379L380.291 26.3379Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip4">
+<rect width="407" height="51.9999" fill="white"/>
+</clipPath>
+</defs>
+</svg></div></div>
     <div class="wrap">
-      <div class="copy">
-        <p class="eyebrow"><span class="hook" aria-hidden="true"></span>07 · Kontakt</p>
-        <h2 id="contact-title">Porozmawiajmy.</h2>
-        <p class="lead">Napisz, czego potrzebujesz. Odpisze osoba odpowiedzialna za dany obszar.</p>
-        <form class="form" id="contactForm" novalidate>
-          <fieldset class="topics">
-            <legend>Temat</legend>
-            <input type="radio" name="topic" id="tp1" value="kampania" checked><label for="tp1">Kampania</label>
-            <input type="radio" name="topic" id="tp2" value="content"><label for="tp2">Content</label>
-            <input type="radio" name="topic" id="tp3" value="produkcja"><label for="tp3">Produkcja</label>
-            <input type="radio" name="topic" id="tp4" value="jeden"><label for="tp4">Jeden.ai</label>
-            <input type="radio" name="topic" id="tp5" value="ac-marka"><label for="tp5">AlterCast dla marki</label>
-            <input type="radio" name="topic" id="tp6" value="ac-twarz"><label for="tp6">AlterCast dla twarzy</label>
-          </fieldset>
-          <div class="row2">
-            <div class="field"><label for="f-name">Imię i nazwisko</label><input id="f-name" name="name" autocomplete="name" placeholder="Anna Kowalska"></div>
-            <div class="field"><label for="f-mail">E-mail służbowy</label><input id="f-mail" name="email" type="email" autocomplete="email" placeholder="anna@firma.pl"></div>
-          </div>
-          <div class="field"><label for="f-msg">Wiadomość</label><textarea id="f-msg" name="message" placeholder="Kampania na Q1, spot 30 s i adaptacje do social."></textarea></div>
-          <div class="ctas"><button class="btn primary" type="submit">Wyślij wiadomość</button></div>
-          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
-        </form>
-        <address>Humanverse sp. z o.o. · ul. Zaniemyska 5, 02-939 Warszawa</address>
+      <h2 id="built-title" class="mega"><span class="b" data-i18n="bt.t1">Jak jesteśmy</span><span class="a" data-i18n="bt.t2">zbudowani</span></h2>
+      <p class="statement sm" data-i18n="bt.s">Jeden zespół. Od pierwszej rozmowy do finalnego mastera.</p>
+      <p class="places">Remote HQ <span class="b">+</span> <span data-i18n="bt.waw">Warszawa</span> <span class="b">+</span> Sopot</p>
+
+      <div class="col">
+        <span class="kicker" data-i18n="bt.fk">Założyciele</span>
+        <div class="founders">
+          <div class="person"><div class="ph"></div><span class="nm">Krzysztof Kujawski</span><span class="rl">CEO</span><span class="bio" data-i18n="bt.f1">Z&nbsp;zawodu reżyser filmowy, seryjny przedsiębiorca. Zabiera głos w&nbsp;sprawie AI i&nbsp;AI Act.</span></div>
+          <div class="person"><div class="ph"></div><span class="nm">Paweł Mazurkiewicz</span><span class="rl">Creative Director</span><span class="bio" data-i18n="bt.f2">Około 20&nbsp;lat w&nbsp;kreacji, wielokrotny laureat nagrody Effie, prelegent na temat AI w&nbsp;reklamie.</span></div>
+          <div class="person"><div class="ph"></div><span class="nm">Jarosław Czajkowski</span><span class="rl">CTO / CFO</span><span class="bio" data-i18n="bt.f3">13&nbsp;lat w&nbsp;inżynierii oprogramowania. Od zera zbudował procesy produkcyjne Humanverse.</span></div>
+        </div>
+      </div>
+
+      <div class="depts">
+        <article class="dept">
+          <div class="char"><img src="img/char-new-business.webp" alt="" loading="lazy" decoding="async"></div>
+          <span class="kicker">New Business</span>
+          <p class="line" data-i18n="bt.d1">Najpierw cel biznesowy, potem technologia.</p>
+          <ul class="people">
+            <li><span class="av"></span><span><b>Daniel Joński</b><small>Head of Sales</small></span></li>
+            <li><span class="av"></span><span><b>Jan Tyszkiewicz</b><small>Growth Manager</small></span></li>
+          </ul>
+        </article>
+        <article class="dept">
+          <div class="char"><img src="img/char-client-service.webp" alt="" loading="lazy" decoding="async"></div>
+          <span class="kicker">Client Service</span>
+          <p class="line" data-i18n="bt.d2">Wprawiamy wszystko w&nbsp;ruch: relacje, rozwój, działanie, wskazywanie kierunku.</p>
+          <ul class="people">
+            <li><span class="av"></span><span><b>Monika Domagała-Szmidt</b><small>Client Service Director</small></span></li>
+            <li><span class="av"></span><span><b>Paulina Dłużniewska</b><small>Senior Account Manager</small></span></li>
+            <li><span class="av"></span><span><b>Iwona Polańska</b><small>Senior Account Manager</small></span></li>
+          </ul>
+        </article>
+        <article class="dept">
+          <div class="char"><img src="img/char-creative.webp" alt="" loading="lazy" decoding="async"></div>
+          <span class="kicker">Creative</span>
+          <p class="line" data-i18n="bt.d3">50&nbsp;lat kierowania kreacją, wewnątrz każdej produkcji.</p>
+          <ul class="people">
+            <li><span class="av"></span><span><b>Paweł Mazurkiewicz</b><small>Co-founder &amp; Creative Director</small></span></li>
+            <li><span class="av"></span><span><b>Piotr Soszyński</b><small>Creative Supervisor</small></span></li>
+          </ul>
+        </article>
+        <article class="dept">
+          <div class="char"><img src="img/char-production.webp" alt="" loading="lazy" decoding="async"></div>
+          <span class="kicker">Production</span>
+          <p class="line" data-i18n="bt.d4">Razem prowadzą każdą produkcję w&nbsp;Humanverse.</p>
+          <ul class="people">
+            <li><span class="av"></span><span><b>Ela Trosińska</b><small>Head of Production</small></span></li>
+            <li><span class="av"></span><span><b>Bartosz Grabarczyk</b><small>Head of Production &amp; R&amp;D</small></span></li>
+          </ul>
+        </article>
+        <article class="dept">
+          <div class="char"><img src="img/char-rnd.webp" alt="" loading="lazy" decoding="async"></div>
+          <span class="kicker">R&amp;D</span>
+          <p class="line" data-i18n="bt.d5">Każda produkcja testuje coś nowego. To, co działa, trafia do następnej.</p>
+          <ul class="people">
+            <li><span class="av"></span><span><b>Bartosz Grabarczyk</b><small>Head of Production &amp; R&amp;D</small></span></li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="careers">
+        <div class="col">
+          <span class="kicker" data-i18n="ca.k">Kariera</span>
+          <p class="statement"><span data-i18n="ca.t1">Przyszłość dzieje się teraz.</span> <span class="b" data-i18n="ca.t2">Buduj ją z&nbsp;nami.</span></p>
+          <p class="body" style="color:rgba(255,255,255,.86)" data-i18n="ca.l">Pomysły, sprawczość, wolność, rozwój. Pracujemy głównie zdalnie, ale regularnie się spotykamy.</p>
+        </div>
+        <div class="col">
+          <ul class="dots">
+            <li data-i18n="ca.d1">Co tydzień dowozisz prawdziwe projekty prawdziwym klientom.</li>
+            <li data-i18n="ca.d2">Widzisz wpływ na biznes i&nbsp;świętujesz kamienie milowe.</li>
+            <li data-i18n="ca.d3">Rozwijasz się w&nbsp;firmie, która działa jak startup.</li>
+          </ul>
+          <p class="mail"><code>work@humanverse.pro</code><button type="button" data-copy="work@humanverse.pro" data-i18n="ca.copy">Kopiuj adres</button></p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="plan" class="scene on-paper" data-mode="calm" data-bg="paper" aria-labelledby="plan-title">
+  <section id="trust" class="scene s-violet" data-mode="calm" data-bg="violet" aria-labelledby="trust-title">
     <div class="wrap">
-      <div class="copy">
-        <p class="eyebrow"><span class="hook" aria-hidden="true"></span>Notatki do planu</p>
-        <h2 id="plan-title">Plan w skrócie</h2>
+      <h2 id="trust-title" class="mega"><span class="a" data-i18n="tr.t1">Zbudowani</span><span class="b" data-i18n="tr.t2">na zaufaniu</span></h2>
+      <div class="trust-lines">
+        <p><span class="hl" data-i18n="tr.e">Etyka</span> · <span data-i18n="tr.ed">twarze z&nbsp;licencją i&nbsp;zgodą · nie udajemy · żadnych skrótów w&nbsp;kwestii praw</span></p>
+        <p><span class="hl" data-i18n="tr.x">Przejrzystość</span> · <span data-i18n="tr.xd">jasne harmonogramy i&nbsp;budżety · szczerze o&nbsp;tym, co potrafi AI · jeden wspólny status</span></p>
+        <p><span class="hl" data-i18n="tr.p">Partnerstwo</span> · <span data-i18n="tr.pd">jedna osoba do kontaktu · pomysły z&nbsp;własnej inicjatywy · gramy na długi dystans</span></p>
       </div>
-      <div class="notes">
-        <section aria-labelledby="n1"><h3 id="n1">Architektura marki</h3><p>Humanverse jest marką parasolową. Marketing Solutions i Studio to działy Humanverse w tym samym systemie wizualnym. Jeden.ai i AlterCast to marki produktowe: mają własne kolory tylko w swoich sekcjach i prowadzą do własnych stron.</p></section>
-        <section aria-labelledby="n2"><h3 id="n2">Mapa strony</h3><p>Strona główna, Marketing Solutions z podstroną każdego rozwiązania, Studio, Case studies, Jeden.ai, AlterCast, Odpowiedzialne AI, O nas, Insights, Kontakt. Wersje PL i EN.</p></section>
-        <section aria-labelledby="n3"><h3 id="n3">Siatka w wersji produkcyjnej</h3><p>WebGL: jeden canvas za całą stroną, tryby przełączane scrollem, 60 klatek na sekundę. Zapasowo Canvas 2D, a przy ustawieniu „ogranicz ruch” statyczna siatka. Na telefonie reakcja na dotyk i przechylenie. Ten prototyp to Canvas 2D bez bibliotek.</p></section>
-        <section aria-labelledby="n4"><h3 id="n4">Kolejne kroki</h3><ol><li>Materiały i decyzje</li><li>Strona główna w kodzie</li><li>Podstrony, CMS, formularze</li><li>Treści EN, testy, publikacja</li></ol></section>
+      <div class="split">
+        <p class="body" data-i18n="tr.s">Bezpieczeństwo to absolutny fundament Humanverse: jasno określone prawa, etyczna AI i&nbsp;pełna przejrzystość. Artykuł 50 AI Act obowiązuje od 2&nbsp;sierpnia 2026&nbsp;r. Pomagamy markom oznaczać treści generowane przez AI. Razem z&nbsp;kancelariami prawnymi i&nbsp;organizacjami branżowymi pracujemy nad wspólnym standardem.</p>
+        <blockquote class="quote"><p data-i18n="tr.q">„AI daje narzędzia. My dajemy człowieczeństwo.”</p></blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section id="altercast" class="scene s-yellow" data-mode="face" data-bg="yellow" aria-labelledby="ac-title">
+    <div class="wrap">
+      <div class="split">
+        <div class="col">
+          <svg class="ac-logo" role="img" aria-label="AlterCast" viewBox="0 0 1511 282" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip6)">
+<path d="M0 276.873L71.3348 5.46912H160.418L231.753 276.873H179.19L164.514 217.055H67.239L52.5625 276.873H0ZM79.185 169.884H151.885L119.119 37.6H112.293L79.5263 169.884H79.185Z" fill="#231F20"/>
+<path d="M397.632 276.873C385.003 276.873 374.764 272.771 366.914 264.909C359.064 257.047 354.968 246.451 354.968 233.462V125.105H301.723V84.7709H354.968V5.46912H403.776V84.4291H456.338V124.764H403.776V224.916C403.776 232.778 407.53 236.538 414.698 236.538H451.901V276.873H397.632Z" fill="#231F20"/>
+<path d="M238.922 84.4291V5.46912H287.73V224.916C287.73 232.778 291.484 236.538 298.652 236.538H335.855V276.873H281.586C268.958 276.873 258.718 272.771 250.868 264.909C243.018 257.047 238.922 246.451 238.922 233.462V84.4291Z" fill="#231F20"/>
+<path d="M558.39 282C539.277 282 522.552 277.898 507.876 269.695C493.199 261.491 481.936 250.211 473.744 235.171C465.553 220.131 461.457 202.698 461.457 182.531V177.745C461.457 157.578 465.553 140.145 473.403 125.105C481.253 110.407 492.517 98.7855 507.193 90.5818C521.528 82.3782 538.253 78.2764 557.366 78.2764C576.48 78.2764 592.522 82.3782 606.516 90.9236C620.51 99.4691 631.432 111.091 638.941 125.789C646.791 140.487 650.545 157.92 650.545 177.404V194.153H510.948C511.63 207.484 516.409 218.08 525.624 226.284C534.84 234.487 546.103 238.589 559.756 238.589C573.408 238.589 583.648 235.513 589.791 229.702C596.276 223.891 601.055 217.055 604.468 209.876L644.402 230.727C640.647 237.564 635.527 244.742 628.701 252.604C621.875 260.465 612.659 267.302 601.396 272.771C590.133 278.24 575.456 280.975 558.049 280.975L558.39 282ZM511.63 158.604H601.396C600.372 147.324 595.935 138.436 588.085 131.942C580.235 125.105 569.995 122.029 557.366 122.029C544.738 122.029 533.816 125.447 525.965 131.942C518.115 138.778 513.337 147.665 511.63 158.604Z" fill="#231F20"/>
+<path d="M671.709 276.873V84.4291H719.834V105.964H726.66C729.391 98.1019 734.169 92.6328 740.654 88.8728C747.139 85.1128 754.989 83.4037 763.522 83.4037H796.63V126.815H762.84C750.552 126.815 740.313 130.233 732.121 136.727C724.271 143.222 720.175 153.476 720.175 167.149V276.531H671.367L671.709 276.873Z" fill="#231F20"/>
+<path d="M887.417 282C854.992 282 829.393 272.771 810.28 253.971C791.166 235.171 781.609 207.825 781.609 171.935V110.065C781.609 74.1746 791.166 46.8291 810.28 28.0291C829.393 9.22909 854.992 0 887.417 0C919.842 0 944.075 8.88727 961.141 26.6618C978.207 44.4364 986.739 69.0473 986.739 99.8109V101.862H954.656V98.7855C954.656 78.2764 949.195 61.5273 938.273 48.5382C927.351 35.5491 910.285 29.0545 887.417 29.0545C864.549 29.0545 846.459 36.2327 833.489 50.2473C820.519 64.2618 814.034 84.0873 814.034 109.382V172.96C814.034 198.255 820.519 218.08 833.489 232.095C846.459 246.109 864.208 253.287 887.417 253.287C910.626 253.287 927.351 246.793 938.273 233.804C949.195 220.815 954.656 204.065 954.656 183.556V177.404H986.739V182.531C986.739 213.636 978.207 237.905 961.141 255.68C944.075 273.455 919.501 282.342 887.417 282.342V282Z" fill="white"/>
+<path d="M1074.12 282C1060.81 282 1048.86 279.607 1038.28 275.164C1027.36 270.378 1018.82 263.884 1012.68 254.996C1006.54 246.109 1003.46 235.513 1003.46 222.865C1003.46 210.218 1006.54 199.28 1012.68 190.735C1018.82 182.189 1027.36 176.036 1038.28 171.593C1049.2 167.491 1061.15 165.098 1074.8 165.098H1138.63V151.084C1138.63 137.753 1134.53 127.156 1126.68 119.295C1118.83 111.433 1107.22 107.673 1091.52 107.673C1075.82 107.673 1064.56 111.433 1056.03 118.611C1047.49 126.131 1041.69 135.702 1038.62 148.349L1009.95 139.12C1013.02 128.524 1017.8 118.953 1024.63 110.407C1031.45 101.862 1040.33 94.6837 1051.59 89.5564C1062.85 84.4291 1076.16 81.6946 1091.87 81.6946C1116.1 81.6946 1134.87 87.8473 1148.52 100.495C1161.83 113.142 1168.66 130.575 1168.66 153.476V239.273C1168.66 247.135 1172.42 250.895 1179.58 250.895H1196.99V276.873H1170.37C1161.83 276.873 1155.01 274.48 1149.89 269.695C1144.77 264.909 1142.04 258.415 1142.04 250.553V248.502H1137.26C1134.53 253.287 1130.78 258.415 1126 263.884C1121.22 269.353 1114.73 273.455 1106.54 277.215C1098.35 280.633 1087.43 282.342 1074.46 282.342L1074.12 282ZM1077.53 255.68C1095.62 255.68 1110.3 250.211 1121.56 239.615C1132.82 229.018 1138.28 213.978 1138.28 194.495V190.393H1075.48C1063.19 190.393 1053.3 193.127 1045.45 198.255C1037.6 203.382 1033.5 211.585 1033.5 222.182C1033.5 232.778 1037.6 240.982 1045.79 247.135C1053.98 253.287 1064.56 256.022 1077.19 256.022L1077.53 255.68Z" fill="white"/>
+<path d="M1285.39 282C1261.84 282 1242.04 276.531 1226 265.593C1209.96 254.655 1200.06 237.564 1196.65 213.978L1225.66 207.484C1227.71 219.789 1231.46 229.702 1237.26 236.88C1243.07 244.058 1249.89 249.185 1258.43 251.92C1266.96 254.996 1275.83 256.364 1285.39 256.364C1299.73 256.364 1310.65 253.629 1319.18 247.818C1327.71 242.007 1331.47 234.487 1331.47 224.916C1331.47 215.345 1327.37 208.167 1319.52 204.065C1311.67 199.964 1300.75 196.887 1287.1 194.153L1271.06 191.418C1258.77 189.367 1247.85 185.949 1237.61 181.847C1227.37 177.746 1219.52 171.593 1213.71 164.073C1207.91 156.553 1204.84 147.324 1204.84 135.702C1204.84 118.611 1211.32 105.28 1224.64 95.7091C1237.95 86.1382 1255.35 81.3528 1276.86 81.3528C1298.36 81.3528 1315.77 86.1382 1329.08 96.051C1342.39 105.622 1350.92 119.295 1354.68 137.069L1326.01 144.589C1323.62 130.916 1318.16 121.346 1309.28 115.876C1300.41 110.407 1289.83 107.673 1276.86 107.673C1263.89 107.673 1253.65 110.066 1246.14 114.851C1238.63 119.636 1234.88 126.815 1234.88 136.044C1234.88 145.273 1238.29 151.767 1245.46 155.869C1252.62 159.971 1262.18 163.389 1273.79 165.44L1289.83 168.175C1303.14 170.567 1315.43 173.644 1326.01 177.745C1336.59 181.847 1345.12 187.658 1351.61 194.836C1358.09 202.015 1361.16 212.269 1361.16 224.233C1361.16 242.691 1354.34 257.047 1340.34 267.302C1326.69 277.556 1307.92 282.342 1284.71 282.342L1285.39 282Z" fill="white"/>
+<path d="M1452.29 276.873C1441.37 276.873 1433.18 273.796 1427.38 267.986C1421.58 262.175 1418.5 253.971 1418.5 243.716V114.167H1361.5V87.5055H1418.5V5.46912H1449.22V87.1637H1511V113.825H1449.22V238.589C1449.22 246.451 1452.98 250.211 1460.49 250.211H1502.81V276.531H1452.63L1452.29 276.873Z" fill="white"/>
+<path d="M905.848 127.498C917.912 127.498 927.692 117.704 927.692 105.622C927.692 93.5399 917.912 83.7455 905.848 83.7455C893.784 83.7455 884.004 93.5399 884.004 105.622C884.004 117.704 893.784 127.498 905.848 127.498Z" fill="#231F20"/>
+</g>
+<defs>
+<clipPath id="clip6">
+<rect width="1511" height="282" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+          <h2 id="ac-title" class="ac-head"><span data-i18n="ac.t1">Marki chcą AI.</span> <span class="b" data-i18n="ac.t2">Ich prawnicy chcą odpowiedzi.</span></h2>
+          <p class="lead" data-i18n="ac.l">AlterCast to pierwszy na świecie globalny marketplace do licencjonowania wizerunku prawdziwych ludzi w&nbsp;erze AI. Legalny „Airbnb dla twarzy”.</p>
+        </div>
+        <div class="col" aria-hidden="true"></div>
+      </div>
+      <div class="cards3">
+        <div><b data-i18n="ac.c1">Brak zgody</b><p data-i18n="ac.c1d">Modele generatywne tworzą twarze, za którymi nikt nie stoi. Twarz, która wygląda jak prawdziwa osoba, to pozew czekający na złożenie.</p></div>
+        <div><b data-i18n="ac.c2">2&nbsp;tygodnie</b><small data-i18n="ac.c2s">czas tradycyjnego castingu</small><p data-i18n="ac.c2d">Casting, umowy, zdjęcia, dla każdego rynku. Produkcja z&nbsp;AI potrzebuje twarzy z&nbsp;uregulowanymi prawami w&nbsp;kilka minut.</p></div>
+        <div><b data-i18n="ac.c3">Ta sama twarz</b><small data-i18n="ac.c3s">każda marka, każdy model, każda kampania</small><p data-i18n="ac.c3d">Modele generatywne dążą do jednego wyglądu: zbyt symetrycznego, zbyt gładkiego, zbyt wypolerowanego.</p></div>
+      </div>
+      <div class="ac-box">
+        <p class="statement sm" data-i18n="ac.s">Prawdziwi ludzie licencjonują swoją twarz i&nbsp;dokładnie określają, do czego wolno jej używać, a&nbsp;do czego nie. Za każdym razem, gdy ich twarz pracuje, dostają zapłatę.</p>
+        <p class="body" data-i18n="ac.b">Marki przeglądają, licencjonują w&nbsp;kilka kliknięć i&nbsp;produkują, a&nbsp;zgoda jest udokumentowana od pierwszego kliknięcia. Jeden marketplace, twarze z&nbsp;każdego rynku. Działa od 11&nbsp;września 2026&nbsp;r.</p>
+        <p class="ac-note" data-i18n="ac.n">AlterCast to osobna firma. Humanverse buduje i&nbsp;rozwija jej technologię.</p>
+        <p><a class="btn primary" href="https://altercast.ai" target="_blank" rel="noopener" data-i18n="ac.cta">Przejdź do altercast.ai ↗</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="scene s-violet" data-mode="logo" data-bg="violet" aria-labelledby="contact-title">
+    <div class="wrap">
+      <div class="split">
+        <div class="col">
+          <h2 id="contact-title" class="mega"><span class="a" data-i18n="ct.t1">Zacznij od</span><span class="b" data-i18n="ct.t2">jednej kampanii.</span></h2>
+          <p class="lead" data-i18n="ct.l">Pilotaż na jednej kampanii. Jasny zakres. Jasny koszt jednego materiału. Mierzymy to względem tego, jak produkujesz dziś.</p>
+          <form class="form" id="contactForm" novalidate>
+            <fieldset class="topics">
+              <legend data-i18n="ct.topic">Temat</legend>
+              <input type="radio" name="topic" id="tp1" value="production" checked><label for="tp1" data-i18n="ct.tp1">Produkcja</label>
+              <input type="radio" name="topic" id="tp2" value="creative"><label for="tp2" data-i18n="ct.tp2">Kreacja</label>
+              <input type="radio" name="topic" id="tp3" value="jeden"><label for="tp3">jeden.ai</label>
+              <input type="radio" name="topic" id="tp4" value="partnership"><label for="tp4" data-i18n="ct.tp4">Partnerstwo</label>
+              <input type="radio" name="topic" id="tp5" value="careers"><label for="tp5" data-i18n="ct.tp5">Kariera</label>
+            </fieldset>
+            <div class="row2">
+              <div class="field"><label for="f-name" data-i18n="ct.name">Imię i&nbsp;nazwisko</label><input id="f-name" name="name" autocomplete="name" placeholder="Anna Kowalska"></div>
+              <div class="field"><label for="f-mail" data-i18n="ct.mail">Służbowy e-mail</label><input id="f-mail" name="email" type="email" autocomplete="email" placeholder="anna@firma.pl" data-i18n-attr="placeholder:ct.mailph"></div>
+            </div>
+            <div class="field"><label for="f-msg" data-i18n="ct.msg">Wiadomość</label><textarea id="f-msg" name="message" placeholder="Jedna kampania na Q1: 30-sekundowy film i wersje skrócone do social mediów." data-i18n-attr="placeholder:ct.msgph"></textarea></div>
+            <div class="ctas"><button class="btn primary" type="submit" data-i18n="ct.send">Wyślij wiadomość</button></div>
+            <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+          </form>
+          <address>Humanverse sp. z o.o. · ul. Zaniemyska 5, 02-939 Warszawa</address>
+        </div>
+        <div class="col" aria-hidden="true"></div>
       </div>
     </div>
   </section>
 </main>
 
 <footer class="site-foot">
-  <span>Humanverse v3 · koncept strony · wrzesień 2026</span>
-  <span>Logo odrysowane z prezentacji „V_H logos”, do podmiany na plik źródłowy</span>
+  <div class="logos"><svg role="img" aria-label="Humanverse" viewBox="0 0 407 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip7)">
+<path d="M57.8522 21.4361L36.1987 21.4361L36.1987 6.32918e-06L9.09196e-06 0L7.52438e-06 8.96551L27.3578 8.96551L27.3578 51.8287L36.1987 51.8287L36.1987 30.3926L57.8522 30.3926L57.8522 51.8287L66.693 51.8287L66.6931 1.1661e-05L57.8522 1.01152e-05L57.8522 21.4361Z" fill="white"/>
+<path d="M100.377 32.0866C100.377 38.2408 95.9434 43.2507 90.4878 43.2507C85.0322 43.2507 80.5985 38.2408 80.5985 32.0866L80.5985 12.3174L72.0952 12.3174L72.0952 32.0956C72.0952 43.0074 80.3497 51.8828 90.4967 51.8828C100.644 51.8828 108.898 43.0074 108.898 32.0956L108.898 12.2454L100.395 12.2454L100.395 32.0866L100.377 32.0866Z" fill="white"/>
+<path d="M145.399 12.1643C141.845 12.1643 138.611 13.579 136.203 15.8677C133.795 13.579 130.561 12.1643 127.006 12.1643C119.569 12.1643 113.519 18.3005 113.519 25.8423L113.519 51.8288L122.093 51.8288L122.093 25.8423C122.093 23.0941 124.296 20.8595 127.006 20.8595C129.716 20.8595 131.92 23.0941 131.92 25.8423L131.92 51.8288L140.494 51.8288L140.494 25.8423C140.494 23.0941 142.698 20.8595 145.408 20.8595C148.118 20.8595 150.321 23.0941 150.321 25.8423L150.321 51.8288L158.896 51.8288L158.896 25.8423C158.896 18.3005 152.845 12.1643 145.408 12.1643L145.399 12.1643Z" fill="white"/>
+<path d="M218.552 12.2003C208.405 12.2003 200.15 21.0757 200.15 31.9874L200.15 50.387L186.129 17.958C184.61 14.4439 181.189 12.1732 177.404 12.1732L168.821 12.1732L168.821 20.7963L174.587 20.7963C176.711 20.7963 178.63 22.0668 179.483 24.0401L179.483 24.0581L175.689 24.0581C168.154 24.0581 162.023 30.2754 162.023 37.9164C162.023 45.5573 168.154 51.7746 175.689 51.7746C178.026 51.7746 184.157 51.0628 188.262 44.3319L191.505 51.8287L208.662 51.8287L208.662 31.9874C208.662 25.8332 213.105 20.8234 218.552 20.8234C223.998 20.8234 228.441 25.8332 228.441 31.9874L228.441 51.7656L236.944 51.7656L236.944 31.9874C236.944 21.0757 228.69 12.2003 218.543 12.2003L218.552 12.2003ZM175.68 43.1515C172.837 43.1515 170.527 40.8088 170.527 37.9254C170.527 35.042 172.837 32.6993 175.68 32.6993L183.215 32.6993L183.268 32.8344C182.584 37.2766 180.736 43.1605 175.671 43.1605L175.68 43.1515Z" fill="white"/>
+<path d="M268.612 12.1824L256.67 40.7819L244.452 12.1824L235.185 12.1824L252.12 51.8288L261.299 51.8288L277.835 12.1824L268.612 12.1824Z" fill="white"/>
+<path d="M294.148 12.786C284.098 12.786 275.933 21.5803 275.933 32.393C275.933 43.2056 284.098 51.9999 294.148 51.9999C302.224 51.9999 309.093 46.3233 311.474 38.4571L302.642 38.4571C300.874 41.6378 297.72 43.7282 294.148 43.7282C289.367 43.7282 285.369 39.9889 284.356 34.961L312.194 34.961C312.309 34.114 312.363 33.267 312.363 32.384C312.363 30.2755 312.052 28.2301 311.465 26.3289C309.102 18.4626 302.224 12.777 294.139 12.777L294.148 12.786ZM285.662 26.3379C287.422 23.1571 290.567 21.0487 294.157 21.0487C297.746 21.0487 300.892 23.1662 302.651 26.3379L285.671 26.3379L285.662 26.3379Z" fill="white"/>
+<path d="M316.299 51.8288L324.722 51.8288L324.722 20.8415L335.926 20.8415L335.926 12.1824L316.299 12.1824L316.299 51.8288Z" fill="white"/>
+<path d="M353.937 28.906L352.524 28.4915C345.851 26.4911 345.878 25.0855 345.762 24.2475C345.647 23.4095 346.953 20.3189 352.533 20.3189L352.577 20.3189C355.465 20.3189 357.553 21.0127 358.762 22.3463C360.432 24.1844 360.237 26.9507 360.237 26.9777L360.237 27.9058L368.171 27.9058L368.171 26.9867C368.216 25.1576 367.94 20.6793 364.697 17.012C361.916 13.8764 357.846 12.2995 352.595 12.2815L352.542 12.2815C347.664 12.2815 343.39 13.8944 340.493 16.8138C338.37 18.9673 337.144 21.6705 337.161 24.2475C337.161 31.3388 343.47 34.1771 350.303 36.2045L351.76 36.619C353.857 37.2407 357.313 38.2409 359.215 39.2321C359.979 39.6375 360.21 40.6377 359.668 41.3315C358.788 42.4488 356.878 43.7914 352.764 43.7914C350.116 43.7914 348.099 43.0976 346.784 41.746C345.229 40.1511 345.078 38.0967 345.078 37.2858L337.153 37.1867C337.108 41.0252 338.556 44.7465 341.133 47.3956C343.088 49.423 346.722 51.8198 352.755 51.8198C359.464 51.8198 363.258 49.2158 365.257 47.0352C367.727 44.3591 368.447 41.2955 368.304 39.3312C367.834 32.9337 360.45 30.7892 353.928 28.897L353.937 28.906Z" fill="white"/>
+<path d="M407 32.393C407 30.2845 406.689 28.2391 406.112 26.3379C403.739 18.4717 396.871 12.786 388.785 12.786C378.736 12.786 370.57 21.5803 370.57 32.393C370.57 43.2057 378.736 52 388.785 52C396.862 52 403.73 46.3233 406.112 38.4571L397.28 38.4571C395.511 41.6378 392.357 43.7283 388.785 43.7283C384.005 43.7283 380.007 39.9889 378.994 34.961L406.831 34.961C406.947 34.114 407 33.267 407 32.384L407 32.393ZM380.291 26.3379C382.05 23.1572 385.196 21.0487 388.785 21.0487C392.375 21.0487 395.52 23.1662 397.28 26.3379L380.3 26.3379L380.291 26.3379Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip7">
+<rect width="407" height="51.9999" fill="white"/>
+</clipPath>
+</defs>
+</svg><svg role="img" aria-label="jeden.ai" viewBox="0 0 201 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip8)">
+<path d="M0 70V61.2859H7.3803V16.5719H17.3149V70H0ZM6.52716 5.85812C6.52716 2.57142 9.08149 0 12.3463 0C15.6112 0 18.2343 2.57142 18.2343 5.85812C18.2343 9.14481 15.6087 11.7162 12.3463 11.7162C9.08404 11.7162 6.52716 9.14481 6.52716 5.85812Z" fill="white"/>
+<path d="M39.8608 54.715C28.225 54.715 20.1367 46.4291 20.1367 35.0717C20.1367 23.7144 28.2963 15.4285 39.7208 15.4285C50.506 15.4285 57.7437 23.6426 57.7437 35.0717C57.7437 36.0716 57.6724 37.2868 57.461 38.2149H30.4279C31.4924 43.0731 34.826 45.8573 39.9347 45.8573C44.0501 45.8573 46.7471 44.5704 49.1588 41.499L54.9067 47.5699C51.1452 52.4974 46.1079 54.7125 39.8634 54.7125L39.8608 54.715ZM30.4253 31.8568H48.023C47.3124 27.2139 44.1214 24.1426 39.5094 24.1426C34.8973 24.1426 31.4211 27.0704 30.4279 31.8568H30.4253Z" fill="white"/>
+<path d="M78.1044 15.4285C82.9992 15.4285 87.4711 17.3564 89.3149 20.4996H89.5976C89.5263 19.9996 89.455 19.2844 89.455 17.2846V0H99.247V53.5716H90.1655V51.9283C90.1655 50.3567 90.2368 49.2851 90.3081 48.5724H90.0255C87.6851 52.5 83.073 54.7151 77.6791 54.7151C67.2479 54.7151 59.8701 46.6444 59.8701 35.0718C59.8701 23.4991 67.5331 15.4285 78.1044 15.4285ZM89.8115 34.9282C89.8115 28.5702 85.6248 24.1426 79.8082 24.1426C73.9915 24.1426 69.8735 28.5702 69.8735 34.9282C69.8735 41.2863 74.0603 45.7856 79.8082 45.7856C85.556 45.7856 89.8115 41.358 89.8115 34.9282Z" fill="white"/>
+<path d="M122.002 54.715C110.366 54.715 102.278 46.4291 102.278 35.0717C102.278 23.7144 110.437 15.4285 121.862 15.4285C132.647 15.4285 139.885 23.6426 139.885 35.0717C139.885 36.0716 139.813 37.2868 139.602 38.2149H112.569C113.633 43.0731 116.967 45.8573 122.076 45.8573C126.191 45.8573 128.888 44.5704 131.3 41.499L137.048 47.5699C133.286 52.4974 128.249 54.7125 122.004 54.7125L122.002 54.715ZM112.564 31.8568H130.161C129.451 27.2139 126.26 24.1426 121.648 24.1426C117.036 24.1426 113.559 27.0704 112.566 31.8568H112.564Z" fill="white"/>
+<path d="M201 16.5719V53.5716H191.068V25.1424H152.71V53.5716H142.775V16.5719H201Z" fill="white"/>
+<path d="M156.13 51.1771C156.13 49.7414 157.329 48.5673 158.753 48.5673C160.177 48.5673 161.345 49.7414 161.345 51.1771C161.345 52.6128 160.146 53.787 158.753 53.787C157.36 53.787 156.13 52.6128 156.13 51.1771Z" fill="#FBAB22"/>
+<path d="M169.915 35.9794C172.474 35.9794 174.451 37.0895 175.324 38.6533H175.454C175.421 38.3918 175.39 38.0662 175.39 37.1536V36.5024H179.536V53.3973H175.39V52.6154C175.39 51.8642 175.423 51.4079 175.454 51.049H175.324C174.351 52.8102 172.278 53.9178 169.719 53.9178C164.923 53.9178 161.554 50.2311 161.554 44.9499C161.554 39.6686 165.117 35.9819 169.912 35.9819L169.915 35.9794ZM175.227 44.8832C175.227 41.9811 173.315 39.9583 170.659 39.9583C168.002 39.9583 166.123 41.9811 166.123 44.8832C166.123 47.7853 168.036 49.8722 170.659 49.8722C173.282 49.8722 175.227 47.8187 175.227 44.8832Z" fill="#FBAB22"/>
+<path d="M181.508 31.6107C181.508 30.111 182.707 28.9368 184.197 28.9368C185.687 28.9368 186.886 30.111 186.886 31.6107C186.886 33.1105 185.687 34.2847 184.197 34.2847C182.707 34.2847 181.508 33.1105 181.508 31.6107ZM181.963 53.3947V36.4998H186.499V53.3947H181.963Z" fill="#FBAB22"/>
+</g>
+<defs>
+<clipPath id="clip8">
+<rect width="201" height="70" fill="white"/>
+</clipPath>
+</defs>
+</svg></div>
+  <span data-i18n="ft.c">Humanverse v3 · koncept strony · październik 2026</span>
+  <span data-i18n="ft.n">AlterCast to osobna firma.</span>
 </footer>
 
-<aside class="panel" aria-label="Panel konceptu">
+<aside class="panel" aria-label="Panel konceptu" data-i18n-attr="aria-label:pn.btn">
   <div class="panel-body" id="panelBody" hidden>
     <fieldset>
-      <legend>Tło hero</legend>
+      <legend data-i18n="pn.tr">Przejścia kolorów</legend>
       <div class="seg">
-        <input type="radio" name="heroBg" id="bg-violet" value="violet" checked><label for="bg-violet">Fiolet</label>
-        <input type="radio" name="heroBg" id="bg-ink" value="ink"><label for="bg-ink">Ink</label>
-        <input type="radio" name="heroBg" id="bg-paper" value="paper"><label for="bg-paper">Papier</label>
+        <input type="radio" name="trans" id="tr-soft" value="soft" checked><label for="tr-soft" data-i18n="pn.soft">Płynne</label>
+        <input type="radio" name="trans" id="tr-hard" value="hard"><label for="tr-hard" data-i18n="pn.hard">Ostre</label>
       </div>
     </fieldset>
     <div>
-      <div class="panel-row"><label class="lbl" for="intensity">Siła siatki</label><b id="intensityOut">100%</b></div>
+      <div class="panel-row"><label class="lbl" for="intensity" data-i18n="pn.int">Siła siatki</label><b id="intensityOut">100%</b></div>
       <input type="range" id="intensity" min="0" max="160" step="5" value="100">
     </div>
-    <div class="panel-row"><span class="lbl">Tryb siatki</span><b id="modeReadout">Tkanina</b></div>
-    <label class="chk" for="motion"><input type="checkbox" id="motion" checked>Animacja siatki</label>
+    <div class="panel-row"><span class="lbl" data-i18n="pn.mode">Tryb siatki</span><b id="modeReadout">Fabric</b></div>
+    <label class="chk" for="motion"><input type="checkbox" id="motion" checked><span data-i18n="pn.anim">Animuj siatkę</span></label>
   </div>
-  <button class="panel-toggle" id="panelToggle" type="button" aria-expanded="false" aria-controls="panelBody"><span class="hook" aria-hidden="true"></span>Panel konceptu</button>
+  <button class="panel-toggle" id="panelToggle" type="button" aria-expanded="false" aria-controls="panelBody" data-i18n="pn.btn">Panel konceptu</button>
 </aside>
 
+<script>window.HV_I18N = {"pl": {"nav.creative": "Kreacja", "nav.production": "Produkcja", "nav.team": "Zespół", "nav.cta": "Porozmawiajmy", "hero.t1": "Humanizujemy", "hero.t2": "AI.", "hero.tag": "Kompletny pakiet kreatywny AI dla marketingu.", "hero.cta1": "Zacznij od jednej kampanii", "hero.cta2": "Poznaj zespół", "hero.p1": "Największy niezależny producent wideo z&nbsp;AI w&nbsp;Polsce.", "hero.p2": "Z&nbsp;trzyosobowego zespołu do trzydziestu specjalistów w&nbsp;dwa lata.", "hero.p3": "Filmów z&nbsp;AI wyprodukowanych w&nbsp;samym 2026 roku.", "pos.n1": "Nie tylko dom produkcyjny.", "pos.n2": "Nie tylko agencja reklamowa.", "pos.n3": "Nie tylko postprodukcja.", "pos.n4": "Kompletny pakiet kreatywny AI dla marketingu.", "pos.lead": "Filmy wysokobudżetowe, automatyczna produkcja treści na dużą skalę i&nbsp;licencjonowane twarze. A&nbsp;wszystko pomiędzy: storyboard, animatik, gotowy film. Jeden partner na cały proces kreacji i&nbsp;produkcji.", "pos.hv": "Filmy wysokobudżetowe i&nbsp;nadzór kreatywny", "pos.jd": "Automatyczna produkcja treści na dużą skalę", "pos.ac": "Licencjonowane twarze", "pos.acp": "Osobna firma. Humanverse rozwija jej technologię.", "team.t": "Zespół", "team.s": "Trzy osoby → trzydzieści w&nbsp;dwa lata.", "team.b": "Sprzedaż, Client Service i&nbsp;Creative zbudowaliśmy sami. Remote HQ, Warszawa i&nbsp;Sopot.", "team.g1": "Rośliśmy razem z&nbsp;klientami.", "team.g2": "Z&nbsp;każdego spostrzeżenia rodziło się coś nowego.", "team.q1": "Czyja to twarz?", "team.q2": "Potrzebujemy tysięcy materiałów, nie jednego filmu.", "team.q3": "Potrzebujemy też pomysłu, nie tylko realizacji.", "team.uc": "Wyprodukowaliśmy kampanię UniCredit. To jak dotąd największa w&nbsp;Polsce kampania reklamowa oparta na AI.", "cr.k": "Kreacja", "cr.t1": "Najpierw pomysł.", "cr.t2": "Potem narzędzie.", "cr.s1": "Wewnątrz każdej produkcji.", "cr.s2": "Nadzór kreatywny nad studiem: pomysł, scenariusz, look, montaż finalny.", "cr.l": "Nie jesteśmy agencją reklamową. Pracujemy wewnątrz każdej produkcji i&nbsp;pilnujemy, żeby każdy kadr wynikał z&nbsp;pomysłu, od pierwszego szkicu po montaż finalny.", "cr.a.t": "Audytujemy pomysły i&nbsp;scenariusze", "cr.a.b": "Te od agencji i&nbsp;te od klienta, zanim cokolwiek trafi do produkcji.", "cr.p.t": "Szlifujemy kreację pod AI", "cr.p.b": "Żeby pasowała do naszego procesu i&nbsp;wykorzystywała mocne strony AI, nie gubiąc pomysłu.", "cr.st1": "Pomysł", "cr.st2": "Scenariusz", "cr.st3": "Look", "cr.st4": "Montaż finalny", "pr.k": "Produkcja", "pr.t1": "Cel", "pr.t2": "ponad nowinkami", "pr.s": "Narzędzie dopasowujemy do wizji. Nigdy odwrotnie.", "pr.l1": "Live action", "pr.l1d": "Prawdziwy plan zdjęciowy, prawdziwe emocje, AI w&nbsp;postprodukcji.", "pr.l2": "Hybryda", "pr.l2d": "Prawdziwa gra aktorska, wygenerowany świat.", "pr.l3": "W&nbsp;pełni AI", "pr.l3d": "Niemożliwe wizualia, ekstremalna skala.", "pr.fam": "Każdy proces produkcji z&nbsp;AI zaprojektowaliśmy tak, żeby wyglądał znajomo:", "pr.c1": "Kreacja", "pr.c2": "Preprodukcja", "pr.c3": "Assety", "pr.c4": "Montaż", "pr.c5": "Animacja", "pr.c6": "VFX / Online", "pr.c7": "Korekcja kolorów", "pr.c8": "Dostawa", "pr.master": "Jeden master dla każdego rynku: wersje językowe i&nbsp;warianty rynkowe z&nbsp;tego samego materiału.", "rd.t1": "R&amp;D to nie laboratorium. To każdy projekt.", "rd.t2": "Uczymy się w&nbsp;trakcie pracy, nie w&nbsp;izolacji.", "rd.d1": "Każda produkcja testuje coś nowego: modele, procesy, narzędzia.", "rd.d2": "To, co działa, trafia od razu do kolejnego projektu.", "rd.d3": "Współpraca akademicka z&nbsp;PJATK oraz R&amp;D z&nbsp;twórcami modeli i&nbsp;platform.", "jd.t1": "Szyte na miarę", "jd.t2": "twojej marki.", "jd.s": "Nie narzędzie z&nbsp;półki, które pasuje do twojego procesu zaledwie w&nbsp;kilku procentach.", "jd.l": "Dopasowujemy jeden.ai do twoich produktów, danych, wytycznych marki i&nbsp;zespołu. W&nbsp;jego sercu jest system oparty na węzłach: każdy krok to blok, a&nbsp;bloki łączą się w&nbsp;dowolny proces.", "jd.r": "<strong>Stworzone z&nbsp;myślą o&nbsp;retailu.<\/strong> Jedna baza produktów, każdy format, każdy cykl promocyjny. Generowane automatycznie, zatwierdzane przez ludzi.", "jd.cta": "Umów demo jeden.ai", "jd.f1": "Twoja firma", "jd.f1a": "Baza produktów", "jd.f1b": "Ton marki i&nbsp;wytyczne", "jd.f1c": "Brief twojego zespołu", "jd.f2": "Węzły jeden.ai", "jd.f2a": "Modele obrazu", "jd.f2b": "Modele wideo", "jd.f2c": "Tekst i&nbsp;głos", "jd.f2d": "Wszystko, co ma API", "jd.f3": "Dowolny format", "jd.f3a": "E-commerce", "jd.f3b": "Social i&nbsp;stories", "jd.f3c": "Film i&nbsp;TV", "jd.f3d": "Print i&nbsp;OOH", "ap.k": "Jak myślimy", "ap.t1": "Nie sprzedajemy AI.", "ap.t2": "Sprzedajemy ludzką pracę.", "ap.l": "Ludzka praca, ludzkie twarze, ludzkie wsparcie. Najpierw cel biznesowy, potem technologia.", "ap.v1": "Relacje to wszystko.", "ap.v1d": "Na AIVerse Conference nasi klienci dzielili się ze sceny własnymi wynikami sprzedaży.", "ap.v2": "Słuchamy → rozumiemy → proponujemy.", "ap.v2d": "Sprzedaż, Client Service i&nbsp;Creative działają jak jeden zespół.", "ap.v3": "Szczerze o&nbsp;tym, co AI potrafi, a&nbsp;czego nie.", "ap.v3d": "Mówimy o&nbsp;tym przed startem projektu, a&nbsp;nie po fakcie.", "ap.v4": "Start za darmo.", "ap.v4d": "Klienci płacą tam, gdzie wnosimy realną wartość.", "ap.v5": "Znajomy proces. Nowy silnik.", "ap.v5d": "Twój zespół pracuje w&nbsp;znany sobie sposób. AI działa pod spodem.", "ap.v6": "Relacje ponad transakcjami.", "ap.v6d": "Jedna osoba do kontaktu, wspólne cele, myślenie długofalowe.", "ap.q": "„AI zmienia to, jak produkujemy. Nie zmienia tego, dlaczego ludzie kupują.”", "ap.qc": "Daniel Joński, Head of Sales", "ap.b1": "Nasz zakład:", "ap.b2": "globalna firma usług marketingowych zbudowana na&nbsp;ludziach.", "ap.b3": "Trwa rewolucja. Nie będziemy się ścigać z&nbsp;technologicznymi gigantami. W&nbsp;całym tym chaosie świadczymy usługi oparte na ludziach, a&nbsp;to wciąż się skaluje.", "bt.t1": "Jak jesteśmy", "bt.t2": "zbudowani", "bt.s": "Jeden zespół. Od pierwszej rozmowy do finalnego mastera.", "bt.waw": "Warszawa", "bt.fk": "Założyciele", "bt.f1": "Z&nbsp;zawodu reżyser filmowy, seryjny przedsiębiorca. Zabiera głos w&nbsp;sprawie AI i&nbsp;AI Act.", "bt.f2": "Około 20&nbsp;lat w&nbsp;kreacji, wielokrotny laureat nagrody Effie, prelegent na temat AI w&nbsp;reklamie.", "bt.f3": "13&nbsp;lat w&nbsp;inżynierii oprogramowania. Od zera zbudował procesy produkcyjne Humanverse.", "bt.d1": "Najpierw cel biznesowy, potem technologia.", "bt.d2": "Wprawiamy wszystko w&nbsp;ruch: relacje, rozwój, działanie, wskazywanie kierunku.", "bt.d3": "50&nbsp;lat kierowania kreacją, wewnątrz każdej produkcji.", "bt.d4": "Razem prowadzą każdą produkcję w&nbsp;Humanverse.", "bt.d5": "Każda produkcja testuje coś nowego. To, co działa, trafia do następnej.", "ca.k": "Kariera", "ca.t1": "Przyszłość dzieje się teraz.", "ca.t2": "Buduj ją z&nbsp;nami.", "ca.l": "Pomysły, sprawczość, wolność, rozwój. Pracujemy głównie zdalnie, ale regularnie się spotykamy.", "ca.d1": "Co tydzień dowozisz prawdziwe projekty prawdziwym klientom.", "ca.d2": "Widzisz wpływ na biznes i&nbsp;świętujesz kamienie milowe.", "ca.d3": "Rozwijasz się w&nbsp;firmie, która działa jak startup.", "ca.copy": "Kopiuj adres", "tr.t1": "Zbudowani", "tr.t2": "na zaufaniu", "tr.e": "Etyka", "tr.ed": "twarze z&nbsp;licencją i&nbsp;zgodą · nie udajemy · żadnych skrótów w&nbsp;kwestii praw", "tr.x": "Przejrzystość", "tr.xd": "jasne harmonogramy i&nbsp;budżety · szczerze o&nbsp;tym, co potrafi AI · jeden wspólny status", "tr.p": "Partnerstwo", "tr.pd": "jedna osoba do kontaktu · pomysły z&nbsp;własnej inicjatywy · gramy na długi dystans", "tr.s": "Bezpieczeństwo to absolutny fundament Humanverse: jasno określone prawa, etyczna AI i&nbsp;pełna przejrzystość. Artykuł 50 AI Act obowiązuje od 2&nbsp;sierpnia 2026&nbsp;r. Pomagamy markom oznaczać treści generowane przez AI. Razem z&nbsp;kancelariami prawnymi i&nbsp;organizacjami branżowymi pracujemy nad wspólnym standardem.", "tr.q": "„AI daje narzędzia. My dajemy człowieczeństwo.”", "ac.t1": "Marki chcą AI.", "ac.t2": "Ich prawnicy chcą odpowiedzi.", "ac.l": "AlterCast to pierwszy na świecie globalny marketplace do licencjonowania wizerunku prawdziwych ludzi w&nbsp;erze AI. Legalny „Airbnb dla twarzy”.", "ac.c1": "Brak zgody", "ac.c1d": "Modele generatywne tworzą twarze, za którymi nikt nie stoi. Twarz, która wygląda jak prawdziwa osoba, to pozew czekający na złożenie.", "ac.c2": "2&nbsp;tygodnie", "ac.c2s": "czas tradycyjnego castingu", "ac.c2d": "Casting, umowy, zdjęcia, dla każdego rynku. Produkcja z&nbsp;AI potrzebuje twarzy z&nbsp;uregulowanymi prawami w&nbsp;kilka minut.", "ac.c3": "Ta sama twarz", "ac.c3s": "każda marka, każdy model, każda kampania", "ac.c3d": "Modele generatywne dążą do jednego wyglądu: zbyt symetrycznego, zbyt gładkiego, zbyt wypolerowanego.", "ac.s": "Prawdziwi ludzie licencjonują swoją twarz i&nbsp;dokładnie określają, do czego wolno jej używać, a&nbsp;do czego nie. Za każdym razem, gdy ich twarz pracuje, dostają zapłatę.", "ac.b": "Marki przeglądają, licencjonują w&nbsp;kilka kliknięć i&nbsp;produkują, a&nbsp;zgoda jest udokumentowana od pierwszego kliknięcia. Jeden marketplace, twarze z&nbsp;każdego rynku. Działa od 11&nbsp;września 2026&nbsp;r.", "ac.n": "AlterCast to osobna firma. Humanverse buduje i&nbsp;rozwija jej technologię.", "ac.cta": "Przejdź do altercast.ai ↗", "ct.t1": "Zacznij od", "ct.t2": "jednej kampanii.", "ct.l": "Pilotaż na jednej kampanii. Jasny zakres. Jasny koszt jednego materiału. Mierzymy to względem tego, jak produkujesz dziś.", "ct.topic": "Temat", "ct.tp1": "Produkcja", "ct.tp2": "Kreacja", "ct.tp4": "Partnerstwo", "ct.tp5": "Kariera", "ct.name": "Imię i&nbsp;nazwisko", "ct.mail": "Służbowy e-mail", "ct.msg": "Wiadomość", "ct.send": "Wyślij wiadomość", "ft.c": "Humanverse v3 · koncept strony · październik 2026", "ft.n": "AlterCast to osobna firma.", "pn.tr": "Przejścia kolorów", "pn.soft": "Płynne", "pn.hard": "Ostre", "pn.int": "Siła siatki", "pn.mode": "Tryb siatki", "pn.anim": "Animuj siatkę", "pn.btn": "Panel konceptu", "nav.aria": "Główna", "nav.lang": "Język", "ct.mailph": "anna@firma.pl", "ct.msgph": "Jedna kampania na Q1: 30-sekundowy film i wersje skrócone do social mediów.", "doc.title": "Humanverse v3", "ct.ok": "To prototyp. W wersji docelowej wiadomość trafi do osoby odpowiedzialnej za wybrany temat.", "ca.copied": "Skopiowano", "mode.fabric": "Tkanina", "mode.calm": "Spokój", "mode.modules": "Moduły", "mode.frames": "Kadry storyboardu", "mode.process": "Proces produkcji", "mode.pipeline": "Przepływ jeden.ai", "mode.face": "Twarz AlterCast", "mode.logo": "Znak Humanverse", "cv.module": "moduł", "cv.scene": "scena", "cv.shot": "ujęcie", "cv.idea": "Pomysł", "cv.script": "Scenariusz", "cv.look": "Look", "cv.cut": "Montaż finalny", "cv.in1": "Baza produktów", "cv.in2": "Wytyczne marki", "cv.in3": "Brief zespołu", "cv.n1": "Modele obrazu", "cv.n2": "Modele wideo", "cv.n3": "Tekst i głos", "cv.n4": "Dowolne API", "cv.o1": "E-commerce", "cv.o2": "Social i stories", "cv.o3": "Film i TV", "cv.o4": "Print i OOH", "cv.p1": "Kreacja", "cv.p2": "Preprodukcja", "cv.p3": "Assety", "cv.p4": "Montaż", "cv.p5": "Animacja", "cv.p6": "VFX / Online", "cv.p7": "Korekcja kolorów", "cv.p8": "Dostawa", "cv.ac1": "Licencja aktywna", "cv.ac2": "Zgoda udokumentowana", "team.alt": "Zespół Humanverse"}, "en": {"nav.creative": "Creative", "nav.production": "Production", "nav.team": "Team", "nav.cta": "Let's talk", "hero.t1": "Humanizing", "hero.t2": "AI.", "hero.tag": "A complete AI-based creative package for marketing.", "hero.cta1": "Start with one campaign", "hero.cta2": "Meet the team", "hero.p1": "The biggest independent AI video production company in Poland.", "hero.p2": "From a team of three to thirty specialists in two years.", "hero.p3": "AI videos produced in 2026 alone.", "pos.n1": "Not just a production house.", "pos.n2": "Not just an ad agency.", "pos.n3": "Not just post-production.", "pos.n4": "A complete AI-based creative package for marketing.", "pos.lead": "High-budget films, automated content at scale and licensed faces, plus everything in between: storyboard, animatic, final film. One partner for the whole creative and production process.", "pos.hv": "High-budget films and creative supervision", "pos.jd": "Automated content at scale", "pos.ac": "Licensed faces", "pos.acp": "A separate company. Humanverse develops its technology.", "team.t": "The team", "team.s": "Three people → thirty in two years.", "team.b": "Sales, Client Service and Creative built in-house. Remote HQ, Warsaw and Sopot.", "team.g1": "We grew with our clients.", "team.g2": "Every insight became something new.", "team.q1": "Whose face is this?", "team.q2": "We need thousands of assets, not one film.", "team.q3": "We need the idea too, not just the execution.", "team.uc": "We produced UniCredit's campaign, the biggest AI-driven ad campaign in Poland to date.", "cr.k": "Creative", "cr.t1": "Idea first.", "cr.t2": "Then the tool.", "cr.s1": "Inside every production.", "cr.s2": "Creative supervision of the studio: idea, script, look, final cut.", "cr.l": "We are not an ad agency. We work inside every production and make sure every frame answers to the idea, from the first draft to the final cut.", "cr.a.t": "We audit ideas and scripts", "cr.a.b": "From the agency and from the client, before anything goes into production.", "cr.p.t": "We polish the creative for AI", "cr.p.b": "So it fits our pipeline and plays to what AI does best, without losing the idea.", "cr.st1": "Idea", "cr.st2": "Script", "cr.st3": "Look", "cr.st4": "Final cut", "pr.k": "Production", "pr.t1": "Purpose", "pr.t2": "over novelty", "pr.s": "The tool fits the vision. Never the other way around.", "pr.l1": "Live action", "pr.l1d": "Real set, real emotion, AI in post.", "pr.l2": "Hybrid", "pr.l2d": "Real performance, generated world.", "pr.l3": "Full AI", "pr.l3d": "Impossible visuals, extreme scale.", "pr.fam": "We designed every AI production process to feel familiar:", "pr.c1": "Creative", "pr.c2": "Pre-production", "pr.c3": "Assets", "pr.c4": "Edit", "pr.c5": "Animation", "pr.c6": "VFX / Online", "pr.c7": "Grade", "pr.c8": "Delivery", "pr.master": "One master, every market: language versions and market-specific variants from the same material.", "rd.t1": "R&amp;D isn't a lab. It's every project.", "rd.t2": "We learn on the job, not in isolation.", "rd.d1": "Every production tests something new: models, pipelines, tools.", "rd.d2": "What works goes straight into the next project.", "rd.d3": "Academic collaboration with PJAIT, and R&amp;D with model and platform developers.", "jd.t1": "Built around", "jd.t2": "your brand.", "jd.s": "Not an off-the-shelf tool that fits your process in a few percent.", "jd.l": "We set jeden.ai up around your products, data, brand guidelines and team. At its heart is a node-based system: every step is a block, and blocks connect into any workflow.", "jd.r": "<strong>Built for retail.<\/strong> One product database, every format, every promo cycle. Generated automatically, approved by people.", "jd.cta": "Book a jeden.ai demo", "jd.f1": "Your business", "jd.f1a": "Product database", "jd.f1b": "Brand voice &amp; guidelines", "jd.f1c": "Your team's brief", "jd.f2": "jeden.ai nodes", "jd.f2a": "Image models", "jd.f2b": "Video models", "jd.f2c": "Text &amp; voice", "jd.f2d": "Anything with an API", "jd.f3": "Any format", "jd.f3a": "E-commerce", "jd.f3b": "Social &amp; stories", "jd.f3c": "Film &amp; TV", "jd.f3d": "Print &amp; OOH", "ap.k": "How we think", "ap.t1": "We don't sell AI.", "ap.t2": "We sell people.", "ap.l": "Human work, human faces, human support. Business goal first, technology second.", "ap.v1": "Relationships are everything.", "ap.v1d": "At the AIVerse Conference our clients shared their own sales results on stage.", "ap.v2": "Listen → understand → propose.", "ap.v2d": "Sales, Client Service and Creative work as one team.", "ap.v3": "Honest about what AI can and can't do.", "ap.v3d": "We say it before the project starts, not after.", "ap.v4": "Free to start.", "ap.v4d": "Clients pay where we add real value.", "ap.v5": "Familiar process. New engine.", "ap.v5d": "Your team works the way it knows. AI runs underneath.", "ap.v6": "Relationships over transactions.", "ap.v6d": "One point of contact, shared targets, long-term thinking.", "ap.q": "“AI changes how we produce. It doesn't change why people buy.”", "ap.qc": "Daniel Joński, Head of Sales", "ap.b1": "Our bet:", "ap.b2": "a global marketing services company built on people.", "ap.b3": "A revolution is happening. We won't race big tech. In all this chaos we deliver human services, and that still scales.", "bt.t1": "How we're", "bt.t2": "built", "bt.s": "One team. From first conversation to final master.", "bt.waw": "Warsaw", "bt.fk": "Founders", "bt.f1": "Film director by background and serial entrepreneur. A voice on AI and the AI Act.", "bt.f2": "About 20 years as a creative, multiple Effie Award winner, speaker on AI in advertising.", "bt.f3": "13 years in software engineering. Built Humanverse's production pipelines from scratch.", "bt.d1": "Business goal first, technology second.", "bt.d2": "Putting things in motion: relationships, growth, action, guidance.", "bt.d3": "50 years of creative direction, inside every production.", "bt.d4": "Together they run every production at Humanverse.", "bt.d5": "Every production tests something new. What works goes into the next one.", "ca.k": "Careers", "ca.t1": "The future is now.", "ca.t2": "Build it with us.", "ca.l": "Ideas, ownership, freedom, growth. Remote-first, but we get together regularly.", "ca.d1": "You ship real projects to real clients, every week.", "ca.d2": "You see business impact and celebrate milestones.", "ca.d3": "You grow in a company that acts like a startup.", "ca.copy": "Copy address", "tr.t1": "Built", "tr.t2": "on trust", "tr.e": "Ethics", "tr.ed": "licensed, consented faces · we don't pretend · no shortcuts on rights", "tr.x": "Transparency", "tr.xd": "clear timelines and budgets · honest about what AI can do · one shared status", "tr.p": "Partnership", "tr.pd": "one point of contact · proactive ideas · in it for the long run", "tr.s": "Safety is the absolute foundation of Humanverse: clear legal rights, ethical AI and full transparency. Article 50 of the AI Act has applied since 2 August 2026. We help brands label AI content and work with law firms and industry bodies on a common standard.", "tr.q": "“AI provides the tools. We provide the humanity.”", "ac.t1": "Brands want AI.", "ac.t2": "Their lawyers want answers.", "ac.l": "AlterCast is the world's first global marketplace for licensing real human likeness in the AI era. A legal “Airbnb for faces”.", "ac.c1": "No consent", "ac.c1d": "Generative models create faces with no one behind them. A face that looks like a real person is a lawsuit waiting to happen.", "ac.c2": "2 weeks", "ac.c2s": "the timeline of traditional casting", "ac.c2d": "Casting, contracts, shoot, for every market. AI production needs a cleared face in minutes.", "ac.c3": "Same face", "ac.c3s": "every brand, every model, every campaign", "ac.c3d": "Generative models converge on one look: too symmetrical, too smooth, too polished.", "ac.s": "Real people license their face, define exactly what it can and cannot be used for, and get paid every time it works.", "ac.b": "Brands browse, license in a few clicks and produce, with consent documented from the first click. One marketplace, faces from every market. Live since 11 September 2026.", "ac.n": "AlterCast is a separate company. Humanverse builds and develops its technology.", "ac.cta": "Go to altercast.ai ↗", "ct.t1": "Start with", "ct.t2": "one campaign.", "ct.l": "A pilot on one campaign. Clear scope. Clear cost per asset. Measured against how you produce today.", "ct.topic": "Topic", "ct.tp1": "Production", "ct.tp2": "Creative", "ct.tp4": "Partnership", "ct.tp5": "Careers", "ct.name": "Name", "ct.mail": "Work email", "ct.msg": "Message", "ct.send": "Send message", "ft.c": "Humanverse v3 · website concept · October 2026", "ft.n": "AlterCast is a separate company.", "pn.tr": "Colour transitions", "pn.soft": "Smooth", "pn.hard": "Sharp", "pn.int": "Grid strength", "pn.mode": "Grid mode", "pn.anim": "Animate the grid", "pn.btn": "Concept panel", "nav.aria": "Main", "nav.lang": "Language", "ct.mailph": "anna@company.com", "ct.msgph": "One campaign for Q1: a 30-second film and cutdowns for social.", "doc.title": "Humanverse v3", "ct.ok": "This is a prototype. In production the message goes to the person responsible for the topic you picked.", "ca.copied": "Copied", "mode.fabric": "Fabric", "mode.calm": "Calm", "mode.modules": "Modules", "mode.frames": "Storyboard frames", "mode.process": "Production process", "mode.pipeline": "jeden.ai pipeline", "mode.face": "AlterCast face", "mode.logo": "Humanverse mark", "cv.module": "module", "cv.scene": "scene", "cv.shot": "shot", "cv.idea": "Idea", "cv.script": "Script", "cv.look": "Look", "cv.cut": "Final cut", "cv.in1": "Product database", "cv.in2": "Brand guidelines", "cv.in3": "Team brief", "cv.n1": "Image models", "cv.n2": "Video models", "cv.n3": "Text & voice", "cv.n4": "Any API", "cv.o1": "E-commerce", "cv.o2": "Social & stories", "cv.o3": "Film & TV", "cv.o4": "Print & OOH", "cv.p1": "Creative", "cv.p2": "Pre-production", "cv.p3": "Assets", "cv.p4": "Edit", "cv.p5": "Animation", "cv.p6": "VFX / Online", "cv.p7": "Grade", "cv.p8": "Delivery", "cv.ac1": "Licence active", "cv.ac2": "Consent documented", "team.alt": "The Humanverse team"}};</script>
 <script>
 (() => {
   'use strict';
-  document.documentElement.lang = 'pl';
+  // Language switch, concept panel, contact form and copy button.
+  const DICT = window.HV_I18N || { pl: {}, en: {} };
+  let lang = 'pl';
+  try { const saved = localStorage.getItem('hv3-lang'); if (saved === 'en' || saved === 'pl') lang = saved; } catch (err) { /* storage unavailable */ }
+
+  const t = k => {
+    const d = DICT[lang] || {};
+    if (d[k] != null) return d[k];
+    return DICT.en && DICT.en[k] != null ? DICT.en[k] : k;
+  };
+  window.HV = { t, lang: () => lang };
+
+  function apply() {
+    document.documentElement.lang = lang;
+    const d = DICT[lang] || {};
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const v = d[el.dataset.i18n];
+      if (v != null && el.innerHTML !== v) el.innerHTML = v;
+    });
+    document.querySelectorAll('[data-i18n-attr]').forEach(el => {
+      el.dataset.i18nAttr.split(';').forEach(pair => {
+        const i = pair.indexOf(':');
+        const v = d[pair.slice(i + 1)];
+        if (v != null) el.setAttribute(pair.slice(0, i), v);
+      });
+    });
+    document.querySelectorAll('.lang button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
+    if (d['doc.title']) document.title = d['doc.title'];
+    if (window.HVGrid) window.HVGrid.refreshLabels();
+  }
+  document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => {
+    lang = b.dataset.lang;
+    try { localStorage.setItem('hv3-lang', lang); } catch (err) { /* storage unavailable */ }
+    apply();
+  }));
+
+  // concept panel
+  const toggle = document.getElementById('panelToggle');
+  const panelBody = document.getElementById('panelBody');
+  toggle.addEventListener('click', () => {
+    const open = panelBody.hidden;
+    panelBody.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+  document.querySelectorAll('input[name="trans"]').forEach(r => r.addEventListener('change', () => {
+    if (r.checked && window.HVGrid) window.HVGrid.setSmooth(r.value === 'soft');
+  }));
+  const range = document.getElementById('intensity');
+  const out = document.getElementById('intensityOut');
+  range.addEventListener('input', () => {
+    out.textContent = range.value + '%';
+    if (window.HVGrid) window.HVGrid.setIntensity(Number(range.value) / 100);
+  });
+  const motion = document.getElementById('motion');
+  motion.addEventListener('change', () => { if (window.HVGrid) window.HVGrid.setMotion(motion.checked); });
+  window.addEventListener('load', () => { if (window.HVGrid) motion.checked = window.HVGrid.motion; });
+
+  // contact form: a prototype, so it only confirms locally
+  const form = document.getElementById('contactForm');
+  const status = document.getElementById('formStatus');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    status.textContent = t('ct.ok');
+  });
+
+  // copy the careers address
+  document.querySelectorAll('[data-copy]').forEach(btn => btn.addEventListener('click', () => {
+    const text = btn.dataset.copy;
+    const done = () => { btn.textContent = t('ca.copied'); setTimeout(() => { btn.textContent = t('ca.copy'); }, 1800); };
+    const fallback = () => {
+      const code = btn.parentElement.querySelector('code');
+      if (!code) return;
+      const sel = window.getSelection();
+      const rng = document.createRange();
+      rng.selectNodeContents(code);
+      sel.removeAllRanges();
+      sel.addRange(rng);
+    };
+    try {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } catch (err) { fallback(); }
+  }));
+
+  apply();
+})();
+</script>
+<script>
+(() => {
+  'use strict';
+  // Living grid. One fixed canvas sits between the section backgrounds and their copy:
+  // each section paints its own colour, the canvas draws the lines in that section's line colour
+  // (clipped to the section), so copy never sits on a colour that changed under it.
   const canvas = document.getElementById('hv-grid');
-  const ctx = canvas.getContext('2d', { alpha: false });
+  const ctx = canvas.getContext('2d');
   if (!ctx) return;
+  const root = document.documentElement;
   const body = document.body;
   const nav = document.getElementById('nav');
   const readout = document.getElementById('modeReadout');
   const reduceMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
   let motionOn = !reduceMQ.matches;
+  const T = k => (window.HV && window.HV.t ? window.HV.t(k) : k);
 
-  // ---------- palettes per scene background ----------
-  const THEMES = {
-    violet: { bg: [61, 0, 255], line: [255, 255, 255], a: 0.18, hi: [255, 255, 255], ha: 0.95, acc: [255, 255, 255], txt: [255, 255, 255] },
-    ink:    { bg: [10, 8, 22], line: [138, 115, 255], a: 0.28, hi: [222, 214, 255], ha: 0.95, acc: [157, 147, 255], txt: [242, 240, 255] },
-    paper:  { bg: [247, 246, 251], line: [61, 0, 255], a: 0.12, hi: [61, 0, 255], ha: 0.78, acc: [61, 0, 255], txt: [10, 8, 22] }
+  // ---------- colour schemes (match the section classes in CSS) ----------
+  const SCHEMES = {
+    violet: { line: [255, 255, 255], a: 0.17, hi: [255, 255, 255], ha: 0.95, acc: [0, 204, 102], txt: [255, 255, 255], node: [255, 255, 255] },
+    green:  { line: [255, 255, 255], a: 0.34, hi: [255, 255, 255], ha: 1.0, acc: [76, 2, 232], txt: [13, 12, 18], node: [76, 2, 232] },
+    white:  { line: [76, 2, 232], a: 0.12, hi: [76, 2, 232], ha: 0.8, acc: [76, 2, 232], txt: [13, 12, 18], node: [76, 2, 232] },
+    yellow: { line: [35, 31, 32], a: 0.17, hi: [255, 255, 255], ha: 1.0, acc: [35, 31, 32], txt: [35, 31, 32], node: [35, 31, 32] }
   };
-  const COLOR_KEYS = ['bg', 'line', 'hi', 'acc', 'txt'];
-  let theme = THEMES.violet;
+  const COLOR_KEYS = ['hi', 'acc', 'txt', 'node'];
+  let scheme = SCHEMES.violet;
   const cur = {};
-  const copyTheme = () => { for (const k of COLOR_KEYS) cur[k] = theme[k].slice(); cur.a = theme.a; cur.ha = theme.ha; };
-  copyTheme();
+  const copyScheme = () => { for (const k of COLOR_KEYS) cur[k] = scheme[k].slice(); };
+  copyScheme();
 
   // ---------- grid modes ----------
-  const MODES = ['fabric', 'calm', 'modules', 'frames', 'pipeline', 'face', 'logo'];
+  const MODES = ['fabric', 'calm', 'modules', 'frames', 'process', 'pipeline', 'face', 'logo'];
   const CFG = {
     fabric:   { lens: 1.0,  alpha: 1.0,  hiR: 300, hi: 1.0,  amb: 1.0 },
     calm:     { lens: 0.22, alpha: 0.8,  hiR: 260, hi: 0.5,  amb: 0.35 },
     modules:  { lens: 0.6,  alpha: 1.1,  hiR: 300, hi: 0.9,  amb: 0.3 },
     frames:   { lens: 0.5,  alpha: 1.0,  hiR: 320, hi: 0.9,  amb: 0.2 },
-    pipeline: { lens: 0.35, alpha: 0.45, hiR: 280, hi: 0.45, amb: 0.3 },
+    process:  { lens: 0.35, alpha: 0.5,  hiR: 280, hi: 0.45, amb: 0.3 },
+    pipeline: { lens: 0.35, alpha: 0.5,  hiR: 280, hi: 0.45, amb: 0.3 },
     face:     { lens: 0.0,  alpha: 1.6,  hiR: 560, hi: 0.95, amb: 0.0 },
     logo:     { lens: 0.3,  alpha: 1.3,  hiR: 460, hi: 0.9,  amb: 0.0 }
   };
-  const MODE_NAMES = { fabric: 'Tkanina', calm: 'Spokój', modules: 'Moduły', frames: 'Kadry 16:9', pipeline: 'Pipeline', face: 'Twarz 3D', logo: 'Logo' };
   const wt = {};
   for (const m of MODES) wt[m] = m === 'fabric' ? 1 : 0;
   let target = 'fabric';
 
   let W = 1, H = 1, DPR = 1, CELL = 48, NX = 2, NY = 2, SV = 2, SH = 2, X0 = 0, Y0 = 0, SIG2 = 45000;
-  let intensity = 1, time = 0, last = 0, raf = 0, running = false;
+  let intensity = 1, time = 0, last = 0, raf = 0, running = false, seamPx = 0, smooth = true;
   const ptr = { x: 0, y: 0, tx: 0, ty: 0, px: 0, py: 0, pt: 0, lastMove: -1e9 };
   const ripples = [];
   let lastRipple = 0;
@@ -607,7 +996,8 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
   const rgba = (c, a) => 'rgba(' + (c[0] | 0) + ',' + (c[1] | 0) + ',' + (c[2] | 0) + ',' + clamp(a, 0, 1).toFixed(3) + ')';
   const hash = (a, b) => { const s = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return s - Math.floor(s); };
   const pad2 = n => String(Math.max(0, n)).padStart(2, '0');
-  const MONO = '500 11px "IBM Plex Mono", ui-monospace, Menlo, monospace';
+  const MONO = '500 11px "Space Grotesk", ui-sans-serif, system-ui, sans-serif';
+  const LABEL = '700 13px "Barlow Condensed", "Arial Narrow", sans-serif';
 
   // paired lines: cards (modules) and 16:9 frames with gutters
   let PM = null, PF = null;
@@ -619,7 +1009,7 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
   const pairX = (P, i) => P.ox + Math.floor(i / 2) * (P.cw + P.g) + (i % 2) * P.cw;
   const pairY = (P, j) => P.oy + Math.floor(j / 2) * (P.ch + P.g) + (j % 2) * P.ch;
 
-  // face: a procedural head, drawn as a wireframe from the same lines
+  // face: a procedural head drawn as a wireframe from the same lines
   const face = { cx: 0, cy: 0, S: 100, A: 0.74, vr: new Float32Array(2), yaw: 0, pitch: 0, cy1: 1, sy1: 0, cp: 1, sp: 0 };
   function faceHalf(v) {
     if (v <= -1 || v >= 1) return 0;
@@ -655,8 +1045,8 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
   }
   function buildFace() {
     const narrow = W < 900;
-    face.S = Math.min(H * 0.33, narrow ? W * 0.42 : W * 0.21);
-    face.cx = narrow ? W * 0.5 : W * 0.71;
+    face.S = Math.min(H * 0.33, narrow ? W * 0.42 : W * 0.2);
+    face.cx = narrow ? W * 0.5 : W * 0.72;
     face.cy = H * 0.53;
     face.vr = new Float32Array(NX * 2);
     for (let i = 0; i < NX; i++) {
@@ -676,7 +1066,7 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
   const logo = { ox: 0, oy: 0, s: 1, cx: 0, cy: 0, nF: 1, nL: 1, nR: 1, nFH: 1, nC: 1 };
   function buildLogo() {
     const narrow = W < 900;
-    logo.s = Math.min((narrow ? W * 0.78 : W * 0.4) / 105, (H * 0.5) / 80);
+    logo.s = Math.min((narrow ? W * 0.78 : W * 0.38) / 105, (H * 0.5) / 80);
     logo.cx = narrow ? W * 0.5 : W * 0.72;
     logo.cy = H * 0.5;
     logo.ox = logo.cx - 52.5 * logo.s;
@@ -688,30 +1078,39 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
     logo.nC = Math.max(1, NY - logo.nFH);
   }
 
-  // Jeden.ai pipeline: 1 input -> 3 steps -> 8 outputs, pinned to lattice nodes
-  const pipe = { nodes: [], edges: [] };
-  function buildPipeline() {
+  // node graphs drawn over a dimmed lattice: jeden.ai (inputs -> nodes -> formats) and the production process
+  const graphs = { pipeline: { nodes: [], edges: [] }, process: { nodes: [], edges: [] } };
+  function buildGraphs() {
     const narrow = W < 900;
     const col = f => Math.round((W * f - X0) / CELL);
     const row = f => Math.round((H * f - Y0) / CELL);
-    const c0 = col(narrow ? 0.12 : 0.53), c1 = col(narrow ? 0.45 : 0.68), c2 = col(narrow ? 0.8 : 0.84);
-    const mid = row(0.52);
-    const src = { c: c0, r: mid, label: '1 × zdjęcie', kind: 'src' };
-    const procs = [
-      { c: c1, r: mid - 3, label: 'światło', kind: 'proc' },
-      { c: c1, r: mid, label: 'tło i scena', kind: 'proc' },
-      { c: c1, r: mid + 3, label: 'styl marki', kind: 'proc' }
-    ];
-    const outs = ['packshot', 'lifestyle', 'social 1:1', 'story 9:16', 'baner', 'karta produktu', 'wideo', 'wariant A/B']
-      .map((label, k) => ({ c: c2, r: mid - 7 + k * 2, label, kind: 'out' }));
-    pipe.nodes = [src].concat(procs, outs);
-    pipe.edges = procs.map(p => [src, p]).concat(outs.map((q, k) => [procs[Math.min(2, Math.floor(k / 3))], q]));
+    // jeden.ai
+    const cI = col(narrow ? 0.12 : 0.52), cN = col(narrow ? 0.46 : 0.68), cO = col(narrow ? 0.8 : 0.84);
+    const ins = ['cv.in1', 'cv.in2', 'cv.in3'].map((k, i) => ({ c: cI, r: row(0.32 + i * 0.18), k, kind: 'src' }));
+    const mids = ['cv.n1', 'cv.n2', 'cv.n3', 'cv.n4'].map((k, i) => ({ c: cN, r: row(0.26 + i * 0.16), k, kind: 'proc' }));
+    const outs = ['cv.o1', 'cv.o2', 'cv.o3', 'cv.o4'].map((k, i) => ({ c: cO, r: row(0.26 + i * 0.16), k, kind: 'out' }));
+    const pe = [];
+    for (const a of ins) for (const b of mids) pe.push([a, b]);
+    mids.forEach((m, i) => { pe.push([m, outs[i]]); pe.push([m, outs[(i + 1) % 4]]); });
+    graphs.pipeline = { nodes: ins.concat(mids, outs), edges: pe };
+    // production process: a two-row snake, 8 steps
+    const xs = narrow ? [0.12, 0.37, 0.63, 0.88] : [0.56, 0.67, 0.78, 0.89];
+    const y1 = row(narrow ? 0.78 : 0.36), y2 = row(narrow ? 0.9 : 0.6);
+    const steps = [];
+    for (let i = 0; i < 8; i++) {
+      const top = i < 4;
+      const xi = top ? i : 7 - i;
+      steps.push({ c: col(xs[xi]), r: top ? y1 : y2, k: 'cv.p' + (i + 1), kind: i === 0 ? 'src' : i === 7 ? 'out' : 'proc', below: true });
+    }
+    const se = [];
+    for (let i = 0; i < 7; i++) se.push([steps[i], steps[i + 1]]);
+    graphs.process = { nodes: steps, edges: se, straight: true };
   }
 
   // base positions: each mode maps (line index, t along the line) to a point
   const VF = {}, HF = {};
-  VF.fabric = VF.calm = VF.pipeline = (i, t, p) => { p.x = X0 + i * CELL; p.y = -CELL + t * (H + 2 * CELL); };
-  HF.fabric = HF.calm = HF.pipeline = (j, t, p) => { p.y = Y0 + j * CELL; p.x = -CELL + t * (W + 2 * CELL); };
+  VF.fabric = VF.calm = VF.pipeline = VF.process = (i, t, p) => { p.x = X0 + i * CELL; p.y = -CELL + t * (H + 2 * CELL); };
+  HF.fabric = HF.calm = HF.pipeline = HF.process = (j, t, p) => { p.y = Y0 + j * CELL; p.x = -CELL + t * (W + 2 * CELL); };
   VF.modules = (i, t, p) => { p.x = pairX(PM, i); p.y = -CELL + t * (H + 2 * CELL); };
   HF.modules = (j, t, p) => { p.y = pairY(PM, j); p.x = -CELL + t * (W + 2 * CELL); };
   VF.frames = (i, t, p) => { p.x = pairX(PF, i); p.y = -CELL + t * (H + 2 * CELL); };
@@ -742,9 +1141,23 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
     p.y = logo.oy + y * logo.s;
   };
 
+  // ---------- sections ----------
+  const scenes = Array.from(document.querySelectorAll('[data-mode]'));
+  function linkScenes() {
+    scenes.forEach((s, i) => {
+      const prev = i ? scenes[i - 1].dataset.bg : s.dataset.bg;
+      s.dataset.prev = prev;
+      s.style.setProperty('--prev-bg', 'var(--c-' + prev + ')');
+    });
+  }
+  function applySeam() {
+    seamPx = smooth ? Math.round(clamp(H * 0.2, 110, 210)) : 0;
+    root.style.setProperty('--seam', seamPx + 'px');
+  }
+
   function resize() {
     DPR = Math.min(window.devicePixelRatio || 1, 2);
-    W = Math.max(1, document.documentElement.clientWidth || window.innerWidth);
+    W = Math.max(1, root.clientWidth || window.innerWidth);
     H = Math.max(1, window.innerHeight);
     canvas.width = Math.round(W * DPR);
     canvas.height = Math.round(H * DPR);
@@ -766,7 +1179,8 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
     PF = makePairs(fw, fw * 9 / 16, CELL * 0.5);
     buildFace();
     buildLogo();
-    buildPipeline();
+    buildGraphs();
+    applySeam();
     if (ptr.lastMove < 0) { ptr.x = ptr.tx = W * 0.62; ptr.y = ptr.ty = H * 0.45; }
     requestDraw();
   }
@@ -825,14 +1239,13 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
       const px = P.cw + P.g, py = P.ch + P.g;
       const p = Math.floor((ptr.x - P.ox) / px), q = Math.floor((ptr.y - P.oy) / py);
       const xa = P.ox + p * px, ya = P.oy + q * py;
-      const lab = dom === 'modules' ? 'moduł ' + pad2(p) + '·' + pad2(q) : 'SC ' + pad2(p) + ' · TK ' + pad2(q);
+      const lab = dom === 'modules' ? T('cv.module') + ' ' + pad2(p) + '·' + pad2(q) : T('cv.scene') + ' ' + pad2(p) + ' · ' + T('cv.shot') + ' ' + pad2(q);
       return [xa, ya, xa + P.cw, ya + P.ch, lab, dom === 'frames'];
     }
     const i = Math.floor((ptr.x - X0) / CELL), j = Math.floor((ptr.y - Y0) / CELL);
     const xa = X0 + i * CELL, ya = Y0 + j * CELL;
     return [xa, ya, xa + CELL, ya + CELL, 'x ' + pad2(i) + ' · y ' + pad2(j), false];
   }
-
   function timecode() {
     const f = Math.floor(time / 40);
     return '00:' + pad2(Math.floor(f / 1500) % 60) + ':' + pad2(Math.floor(f / 25) % 60) + ':' + pad2(f % 25);
@@ -854,10 +1267,8 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
     for (const m of MODES) wt[m] += ((m === target ? 1 : 0) - wt[m]) * aw;
     computeMix(true);
 
-    const ac = 1 - Math.exp(-dt / 300);
-    for (const k of COLOR_KEYS) for (let n = 0; n < 3; n++) cur[k][n] += (theme[k][n] - cur[k][n]) * ac;
-    cur.a += (theme.a - cur.a) * ac;
-    cur.ha += (theme.ha - cur.ha) * ac;
+    const ac = 1 - Math.exp(-dt / 260);
+    for (const k of COLOR_KEYS) for (let n = 0; n < 3; n++) cur[k][n] += (scheme[k][n] - cur[k][n]) * ac;
 
     for (let r = ripples.length - 1; r >= 0; r--) {
       const R = ripples[r];
@@ -887,8 +1298,30 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
     }
     mix.lens *= animated ? 0.36 * intensity : 0;
     mix.amb *= animated ? intensity : 0;
-    face.cy1 = Math.cos(face.yaw); face.sy1 = Math.sin(face.yaw);
-    face.cp = Math.cos(face.pitch); face.sp = Math.sin(face.pitch);
+  }
+
+  // ---------- regions: the sections currently on screen ----------
+  const regions = [];
+  let activeRegion = null;
+  function computeRegions() {
+    regions.length = 0;
+    activeRegion = null;
+    for (const s of scenes) {
+      const r = s.getBoundingClientRect();
+      if (r.bottom <= 0 || r.top >= H) continue;
+      const g = { top: r.top, bottom: r.bottom, own: SCHEMES[s.dataset.bg], prev: SCHEMES[s.dataset.prev] || SCHEMES[s.dataset.bg], ownKey: s.dataset.bg, prevKey: s.dataset.prev || s.dataset.bg, el: s };
+      regions.push(g);
+      if (s === activeScene) activeRegion = g;
+    }
+    // the nav follows whatever colour sits under it
+    const y = 34;
+    for (const g of regions) {
+      if (y >= g.top && y < g.bottom) {
+        const k = seamPx > 0 && y - g.top < seamPx * 0.5 ? g.prevKey : g.ownKey;
+        if (body.dataset.nav !== k) body.dataset.nav = k;
+        break;
+      }
+    }
   }
 
   // ---------- drawing ----------
@@ -905,11 +1338,12 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
 
   function draw() {
     prepAct();
+    computeRegions();
     face.cy1 = Math.cos(face.yaw); face.sy1 = Math.sin(face.yaw);
     face.cp = Math.cos(face.pitch); face.sp = Math.sin(face.pitch);
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = rgb(cur.bg);
-    ctx.fillRect(0, 0, W, H);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    if (!regions.length) return;
 
     const path = new Path2D();
     for (let i = 0; i < NX; i++) {
@@ -918,34 +1352,60 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
     for (let j = 0; j < NY; j++) {
       for (let k = 0; k < SH; k++) { posH(j, k / (SH - 1)); if (k) path.lineTo(o.x, o.y); else path.moveTo(o.x, o.y); }
     }
+    // on phones the scene art sits behind the copy, so it steps back a little
+    const dim = W < 900 ? 1 - 0.4 * (wt.face + wt.logo + wt.pipeline + wt.process) : 1;
+    const c = focusCenter();
     ctx.lineCap = 'butt';
     ctx.lineJoin = 'round';
-    // on phones the scene art sits behind the copy, so it steps back a little
-    const dim = W < 900 ? 1 - 0.4 * (wt.face + wt.logo + wt.pipeline) : 1;
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = rgba(cur.line, cur.a * mix.alpha * dim);
-    ctx.stroke(path);
-
-    if (mix.hi > 0.01) {
-      const c = focusCenter();
-      const g = ctx.createRadialGradient(c[0], c[1], 0, c[0], c[1], Math.max(10, mix.hiR));
-      const a = cur.ha * mix.hi;
-      g.addColorStop(0, rgba(cur.hi, a));
-      g.addColorStop(0.38, rgba(cur.hi, a * 0.38));
-      g.addColorStop(1, rgba(cur.hi, 0));
-      ctx.strokeStyle = g;
-      ctx.lineWidth = 1.3;
+    for (const g of regions) {
+      const top = Math.max(0, g.top), bot = Math.min(H, g.bottom);
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, top, W, bot - top);
+      ctx.clip();
+      let st;
+      if (seamPx > 0 && g.prev !== g.own && g.top + seamPx > 0) {
+        const lg = ctx.createLinearGradient(0, g.top, 0, g.top + seamPx);
+        lg.addColorStop(0, rgba(g.prev.line, g.prev.a * mix.alpha * dim));
+        lg.addColorStop(1, rgba(g.own.line, g.own.a * mix.alpha * dim));
+        st = lg;
+      } else {
+        st = rgba(g.own.line, g.own.a * mix.alpha * dim);
+      }
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = st;
       ctx.stroke(path);
+      if (mix.hi > 0.01) {
+        const rg = ctx.createRadialGradient(c[0], c[1], 0, c[0], c[1], Math.max(10, mix.hiR));
+        const a = g.own.ha * mix.hi * dim;
+        rg.addColorStop(0, rgba(g.own.hi, a));
+        rg.addColorStop(0.38, rgba(g.own.hi, a * 0.38));
+        rg.addColorStop(1, rgba(g.own.hi, 0));
+        ctx.strokeStyle = rg;
+        ctx.lineWidth = 1.3;
+        ctx.stroke(path);
+      }
+      ctx.restore();
     }
 
+    // overlays belong to the active section and never spill into its neighbours
+    if (!activeRegion) return;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, Math.max(0, activeRegion.top + seamPx * 0.6), W, Math.min(H, activeRegion.bottom) - Math.max(0, activeRegion.top + seamPx * 0.6));
+    ctx.clip();
     const geo = wt.face + wt.logo;
+    const graph = wt.pipeline + wt.process;
     const nodesA = (wt.fabric + wt.calm * 0.4 + wt.modules * 0.7) * (1 - geo);
     if (nodesA > 0.03) drawNodes(nodesA);
     if (wt.frames > 0.02) drawFrames(wt.frames);
-    const brA = (wt.fabric + wt.calm * 0.5 + wt.modules + wt.frames) * (1 - geo - wt.pipeline);
+    const brA = (wt.fabric + wt.calm * 0.5 + wt.modules + wt.frames) * (1 - geo - graph);
     if (brA > 0.03) drawBracket(brA);
-    if (wt.pipeline > 0.02) drawPipeline(wt.pipeline);
-    if (wt.face > 0.02) drawFaceExtras(wt.face);
+    if (wt.pipeline > 0.02) drawGraph(graphs.pipeline, wt.pipeline * dim);
+    if (wt.process > 0.02) drawGraph(graphs.process, wt.process * dim);
+    // on phones the face sits behind the copy, so it drops the pupils, scan line and labels
+    if (wt.face > 0.02 && W >= 900) drawFaceExtras(wt.face);
+    ctx.restore();
     ctx.globalAlpha = 1;
   }
 
@@ -967,7 +1427,7 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
 
   function drawNodes(alpha) {
     const R = 240;
-    ctx.fillStyle = rgb(cur.hi);
+    ctx.fillStyle = rgb(cur.node);
     for (let i = 0; i < NX; i++) {
       for (let j = 0; j < NY; j++) {
         if (!latticeNode(i, j)) continue;
@@ -982,15 +1442,14 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
   }
 
   function corners(xa, ya, xb, yb) {
-    return [[xa, ya], [xb, ya], [xb, yb], [xa, yb]].map(c => { o.x = c[0]; o.y = c[1]; displace(o); return [o.x, o.y]; });
+    return [[xa, ya], [xb, ya], [xb, yb], [xa, yb]].map(q => { o.x = q[0]; o.y = q[1]; displace(o); return [o.x, o.y]; });
   }
 
   function drawBracket(alpha) {
     const q = corners(br.x0, br.y0, br.x1, br.y1);
     const L = clamp((br.x1 - br.x0) * 0.22, 6, 18);
-    ctx.save();
     ctx.globalAlpha = alpha;
-    ctx.strokeStyle = rgb(cur.hi);
+    ctx.strokeStyle = rgb(cur.node);
     ctx.lineWidth = 1.6;
     ctx.beginPath();
     ctx.moveTo(q[0][0], q[0][1] + L); ctx.lineTo(q[0][0], q[0][1]); ctx.lineTo(q[0][0] + L, q[0][1]);
@@ -1013,15 +1472,15 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
       ctx.fillStyle = rgb(cur.txt);
       ctx.fillText('REC ' + timecode(), tx + 9, ty);
     }
-    ctx.restore();
+    ctx.globalAlpha = 1;
   }
 
+  const STAGES = ['cv.idea', 'cv.script', 'cv.look', 'cv.cut'];
   function drawFrames(alpha) {
     const P = PF, px = P.cw + P.g, py = P.ch + P.g;
     const pMax = Math.floor((NX - 2) / 2), qMax = Math.floor((NY - 2) / 2);
     const hp = Math.floor((ptr.x - P.ox) / px), hq = Math.floor((ptr.y - P.oy) / py);
-    ctx.save();
-    ctx.font = '500 10px "IBM Plex Mono", ui-monospace, Menlo, monospace';
+    ctx.font = LABEL;
     ctx.textBaseline = 'top';
     ctx.textAlign = 'left';
     for (let p = 0; p <= pMax; p++) {
@@ -1034,88 +1493,92 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
         const h = hash(p, q);
         if (!hv && h < 0.66) continue;
         const c = corners(xa, ya, xb, yb);
-        ctx.globalAlpha = alpha * (hv ? 0.2 : 0.06 + 0.04 * Math.sin(time * 0.0012 + h * 40));
+        ctx.globalAlpha = alpha * (hv ? 0.16 : 0.05 + 0.035 * Math.sin(time * 0.0012 + h * 40));
         ctx.fillStyle = rgb(cur.acc);
         ctx.beginPath();
         ctx.moveTo(c[0][0], c[0][1]); ctx.lineTo(c[1][0], c[1][1]); ctx.lineTo(c[2][0], c[2][1]); ctx.lineTo(c[3][0], c[3][1]);
         ctx.closePath();
         ctx.fill();
         if (h > 0.9 && !hv) {
-          ctx.globalAlpha = alpha * 0.35;
+          ctx.globalAlpha = alpha * 0.45;
           ctx.fillStyle = rgb(cur.txt);
-          ctx.fillText('SC ' + pad2(p) + ' · TK ' + pad2(q), c[0][0] + 8, c[0][1] + 7);
+          ctx.fillText(T(STAGES[Math.floor(h * 1000) % 4]).toUpperCase(), c[0][0] + 8, c[0][1] + 7);
         }
       }
     }
-    ctx.restore();
+    ctx.globalAlpha = 1;
   }
 
   function bez(t, a, b, c, d) { const s = 1 - t; return s * s * s * a + 3 * s * s * t * b + 3 * s * t * t * c + t * t * t * d; }
 
-  function drawPipeline(alpha) {
+  function drawGraph(G, alpha) {
     const narrow = W < 900;
     const P = new Map();
-    for (const n of pipe.nodes) { o.x = X0 + n.c * CELL; o.y = Y0 + n.r * CELL; displace(o); P.set(n, [o.x, o.y]); }
-    ctx.save();
+    for (const n of G.nodes) { o.x = X0 + n.c * CELL; o.y = Y0 + n.r * CELL; displace(o); P.set(n, [o.x, o.y]); }
     ctx.lineWidth = 1.4;
     ctx.strokeStyle = rgb(cur.acc);
-    ctx.globalAlpha = alpha * 0.75;
+    ctx.globalAlpha = alpha * 0.8;
     ctx.setLineDash([3, 7]);
     ctx.lineDashOffset = -time * 0.03;
     const packets = [];
-    pipe.edges.forEach((ed, k) => {
-      const A = P.get(ed[0]), B = P.get(ed[1]), mx = (A[0] + B[0]) / 2;
+    G.edges.forEach((ed, k) => {
+      const A = P.get(ed[0]), B = P.get(ed[1]);
       ctx.beginPath();
       ctx.moveTo(A[0], A[1]);
-      ctx.bezierCurveTo(mx, A[1], mx, B[1], B[0], B[1]);
-      ctx.stroke();
       const t = (time * 0.00032 + k * 0.137) % 1;
-      packets.push([bez(t, A[0], mx, mx, B[0]), bez(t, A[1], A[1], B[1], B[1])]);
+      if (G.straight) {
+        ctx.lineTo(B[0], B[1]);
+        packets.push([A[0] + (B[0] - A[0]) * t, A[1] + (B[1] - A[1]) * t]);
+      } else {
+        const mx = (A[0] + B[0]) / 2;
+        ctx.bezierCurveTo(mx, A[1], mx, B[1], B[0], B[1]);
+        packets.push([bez(t, A[0], mx, mx, B[0]), bez(t, A[1], A[1], B[1], B[1])]);
+      }
+      ctx.stroke();
     });
     ctx.setLineDash([]);
     ctx.globalAlpha = alpha;
     ctx.fillStyle = rgb(cur.hi);
     for (const pk of packets) ctx.fillRect(pk[0] - 2, pk[1] - 2, 4, 4);
-    ctx.font = MONO;
+    ctx.font = LABEL;
     ctx.textBaseline = 'middle';
-    for (const n of pipe.nodes) {
-      const q = P.get(n), s = n.kind === 'src' ? 14 : n.kind === 'proc' ? 11 : 8;
+    for (const n of G.nodes) {
+      const q = P.get(n), s = n.kind === 'src' ? 14 : n.kind === 'proc' ? 11 : 9;
       ctx.globalAlpha = alpha;
       if (n.kind === 'proc') {
-        ctx.fillStyle = rgb(cur.bg); ctx.fillRect(q[0] - s / 2, q[1] - s / 2, s, s);
-        ctx.strokeStyle = rgb(cur.acc); ctx.lineWidth = 1.5; ctx.strokeRect(q[0] - s / 2, q[1] - s / 2, s, s);
+        ctx.strokeStyle = rgb(cur.acc); ctx.lineWidth = 1.6; ctx.strokeRect(q[0] - s / 2, q[1] - s / 2, s, s);
       } else {
         ctx.fillStyle = rgb(n.kind === 'src' ? cur.hi : cur.acc);
         ctx.fillRect(q[0] - s / 2, q[1] - s / 2, s, s);
       }
-      if (narrow && n.kind !== 'src') continue;
-      ctx.globalAlpha = alpha * 0.85;
+      if (narrow && !(n.kind === 'src' || n.kind === 'out')) continue;
+      ctx.globalAlpha = alpha * 0.9;
       ctx.fillStyle = rgb(cur.txt);
-      if (n.kind === 'src') { ctx.textAlign = 'center'; ctx.fillText(n.label, q[0], q[1] - 20); }
-      else if (n.kind === 'proc') { ctx.textAlign = 'center'; ctx.fillText(n.label, q[0], q[1] - 18); }
-      else { ctx.textAlign = 'left'; ctx.fillText(n.label, q[0] + 12, q[1]); }
+      const label = T(n.k).toUpperCase();
+      if (n.below) { ctx.textAlign = 'center'; ctx.fillText(label, q[0], q[1] + 20); }
+      else if (n.kind === 'out') { ctx.textAlign = 'left'; ctx.fillText(label, q[0] + 13, q[1]); }
+      else { ctx.textAlign = 'center'; ctx.fillText(label, q[0], q[1] - 18); }
     }
-    ctx.restore();
+    ctx.globalAlpha = 1;
   }
 
   function drawFaceExtras(alpha) {
-    ctx.save();
-    // scanning beam in AlterCast orange
+    // scanning beam in white, the AlterCast secondary colour
     const ph = (time % 4200) / 4200, v = -1.05 + ph * 2.5;
     if (v > -0.96 && v < 0.96) {
       const hw = faceHalf(v);
       ctx.beginPath();
       for (let k = 0; k <= 48; k++) { faceProject(-hw + 2 * hw * (k / 48), v, o); if (k) ctx.lineTo(o.x, o.y); else ctx.moveTo(o.x, o.y); }
-      ctx.strokeStyle = 'rgb(251,170,25)';
-      ctx.globalAlpha = alpha * 0.2; ctx.lineWidth = 8; ctx.stroke();
-      ctx.globalAlpha = alpha; ctx.lineWidth = 1.6; ctx.stroke();
+      ctx.strokeStyle = 'rgb(255,255,255)';
+      ctx.globalAlpha = alpha * 0.35; ctx.lineWidth = 8; ctx.stroke();
+      ctx.globalAlpha = alpha; ctx.lineWidth = 1.8; ctx.stroke();
     }
-    // pupils follow the cursor, with a blink every few seconds
+    // pupils follow the cursor, with a blink every few seconds (the dot in AlterCast's C)
     const gx = clamp((ptr.x - face.cx) / W, -0.5, 0.5) * 0.07;
     const gy = clamp((ptr.y - face.cy) / H, -0.5, 0.5) * 0.05;
     const blink = time % 5600 < 150 ? 0.15 : 1;
-    const r = Math.max(3, face.S * 0.028);
-    ctx.fillStyle = 'rgb(0,112,231)';
+    const r = Math.max(3, face.S * 0.03);
+    ctx.fillStyle = 'rgb(35,31,32)';
     ctx.globalAlpha = alpha;
     for (const ex of [-0.3, 0.3]) {
       faceProject(ex + gx, -0.12 + gy, o);
@@ -1124,13 +1587,13 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
     if (W >= 900) {
       faceProject(0.6, -0.8, o);
       const lx = o.x + 22, ly = o.y;
-      ctx.font = MONO; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
-      ctx.fillStyle = 'rgb(251,170,25)'; ctx.fillRect(lx, ly - 4, 8, 8);
-      ctx.globalAlpha = alpha * 0.85; ctx.fillStyle = rgb(cur.txt);
-      ctx.fillText('AC-0427 · licencja aktywna', lx + 16, ly);
-      ctx.fillText('wykluczenia: polityka, erotyka', lx + 16, ly + 17);
+      ctx.font = LABEL; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+      ctx.fillStyle = 'rgb(255,255,255)'; ctx.fillRect(lx, ly - 5, 10, 10);
+      ctx.globalAlpha = alpha * 0.9; ctx.fillStyle = 'rgb(35,31,32)';
+      ctx.fillText(T('cv.ac1').toUpperCase(), lx + 18, ly);
+      ctx.fillText(T('cv.ac2').toUpperCase(), lx + 18, ly + 18);
     }
-    ctx.restore();
+    ctx.globalAlpha = 1;
   }
 
   // ---------- loop ----------
@@ -1150,14 +1613,19 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
   function stop() { running = false; cancelAnimationFrame(raf); }
   function snap() {
     for (const m of MODES) wt[m] = m === target ? 1 : 0;
-    copyTheme();
+    copyScheme();
     ripples.length = 0;
     face.yaw = -0.35; face.pitch = 0.05;
     computeMix(false);
     const bt = bracketTarget();
     br.x0 = bt[0]; br.y0 = bt[1]; br.x1 = bt[2]; br.y1 = bt[3]; br.lab = bt[4]; br.rec = false; br.ok = true;
   }
-  function requestDraw() { if (running) return; snap(); draw(); }
+  let staticQueued = false;
+  function requestDraw() {
+    if (running || staticQueued) return;
+    staticQueued = true;
+    requestAnimationFrame(() => { staticQueued = false; if (running) return; snap(); draw(); });
+  }
 
   function addRipple(x, y, strength, wid) {
     ripples.push({ x, y, rad: 0, wid, amp: 18 * strength * intensity, life: 1, v: 0.62, dur: 1500 });
@@ -1177,27 +1645,27 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
     }
   }, { passive: true });
   window.addEventListener('pointerdown', e => {
-    if (e.target.closest && e.target.closest('a, button, input, textarea, label, select, .panel')) return;
+    if (e.target.closest && e.target.closest('a, button, input, textarea, label, select, .panel, figure')) return;
     ptr.tx = e.clientX; ptr.ty = e.clientY; ptr.lastMove = performance.now();
     if (running) addRipple(e.clientX, e.clientY, 1, 30);
   }, { passive: true });
-  document.documentElement.addEventListener('mouseleave', () => { ptr.lastMove = -1e9; });
+  root.addEventListener('mouseleave', () => { ptr.lastMove = -1e9; });
   window.addEventListener('blur', () => { ptr.lastMove = -1e9; });
 
   let resizeT = 0;
   window.addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(resize, 80); });
   document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
-  window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 24); }, { passive: true });
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 24);
+    requestDraw();
+  }, { passive: true });
 
-  // ---------- scenes ----------
-  const scenes = Array.from(document.querySelectorAll('[data-mode]'));
   let activeScene = scenes[0];
   function setScene(el) {
     activeScene = el;
     target = el.dataset.mode;
-    theme = THEMES[el.dataset.bg] || THEMES.violet;
-    body.dataset.scene = el.dataset.bg;
-    if (readout) readout.textContent = MODE_NAMES[target] || target;
+    scheme = SCHEMES[el.dataset.bg] || SCHEMES.violet;
+    if (readout) readout.textContent = T('mode.' + target);
     requestDraw();
   }
   if ('IntersectionObserver' in window) {
@@ -1207,52 +1675,16 @@ address { font-style: normal; font-family: var(--font-mono); font-size: 12.5px; 
     scenes.forEach(s => io.observe(s));
   }
 
-  // ---------- concept panel ----------
-  const toggle = document.getElementById('panelToggle');
-  const panelBody = document.getElementById('panelBody');
-  toggle.addEventListener('click', () => {
-    const open = panelBody.hidden;
-    panelBody.hidden = !open;
-    toggle.setAttribute('aria-expanded', String(open));
-  });
-  const heroEls = [document.getElementById('top'), document.getElementById('ekosystem')];
-  function setHeroBg(bg) {
-    for (const el of heroEls) {
-      el.dataset.bg = bg;
-      el.classList.remove('on-violet', 'on-ink', 'on-paper');
-      el.classList.add('on-' + bg);
-    }
-    if (heroEls.indexOf(activeScene) !== -1) setScene(activeScene);
-  }
-  document.querySelectorAll('input[name="heroBg"]').forEach(r => r.addEventListener('change', () => {
-    if (!r.checked) return;
-    setHeroBg(r.value);
-    try { localStorage.setItem('hv3-hero-bg', r.value); } catch (err) { /* storage unavailable */ }
-  }));
-  try {
-    const saved = localStorage.getItem('hv3-hero-bg');
-    const radio = saved && document.getElementById('bg-' + saved);
-    if (radio) { radio.checked = true; setHeroBg(saved); }
-  } catch (err) { /* storage unavailable */ }
+  // public hooks for the page script (panel, language)
+  window.HVGrid = {
+    setIntensity(v) { intensity = v; requestDraw(); },
+    setMotion(on) { motionOn = on; if (on) start(); else { stop(); requestDraw(); } },
+    setSmooth(on) { smooth = on; applySeam(); requestDraw(); },
+    refreshLabels() { if (readout) readout.textContent = T('mode.' + target); requestDraw(); },
+    get motion() { return motionOn; }
+  };
 
-  const range = document.getElementById('intensity'), out = document.getElementById('intensityOut');
-  range.addEventListener('input', () => { intensity = Number(range.value) / 100; out.textContent = range.value + '%'; requestDraw(); });
-  const motion = document.getElementById('motion');
-  motion.checked = motionOn;
-  motion.addEventListener('change', () => {
-    motionOn = motion.checked;
-    if (motionOn) start(); else { stop(); requestDraw(); }
-  });
-
-  const form = document.getElementById('contactForm'), status = document.getElementById('formStatus');
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    status.textContent = 'To prototyp. W wersji produkcyjnej wiadomość trafi do osoby od wybranego tematu.';
-  });
-
-  const tc = document.getElementById('reelTc');
-  setInterval(() => { if (tc && running) tc.textContent = timecode(); }, 200);
-
+  linkScenes();
   resize();
   setScene(activeScene);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => requestDraw());
