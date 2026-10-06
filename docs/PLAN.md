@@ -18,17 +18,18 @@ Prototyp: [`prototype/index.html`](../prototype/index.html) (otwórz w przegląd
 
 | # | Sekcja | Tło | Siatka |
 | --- | --- | --- | --- |
-| 0 | Hero: „Humanizujemy AI.” + tagline z decku + 3 liczby | fiolet | tkanina (gnie się do kursora, fala po kliknięciu) |
-| 1 | Pozycjonowanie („Not just…”) + trzy marki | zieleń | spokojna |
-| 2 | The Team: zdjęcie zespołu, 3 → 30, „rośliśmy z klientami” | fiolet | tkanina |
-| 3 | Kreacja: „Idea first. Then the tool.” / Inside every production | biel + pasek z logo | kadry storyboardu |
-| 4 | Produkcja + R&D | fiolet | proces produkcji (8 kroków) |
-| 5 | jeden.ai | biel + pasek | pipeline węzłów |
-| 6 | Jak myślimy (podejście do biznesu) | zieleń | moduły |
-| 7 | Jak jesteśmy zbudowani: założyciele, działy (New Business, Client Service, Creative, Production, R&D), kariera | biel + pasek | moduły |
-| 8 | Built on trust: etyka, AI Act | fiolet | spokojna |
-| 9 | AlterCast (osobna spółka) | żółty + biel | twarz 3D patrząca za kursorem |
-| 10 | Kontakt: „Zacznijmy od jednej kampanii” | fiolet | linie składają się w znak ┐H |
+| 0 | Hero: „Humanizujemy AI.” + tagline z decku, pod przyciskami reel od krawędzi do krawędzi (autoplay, bez dźwięku, w pętli, bez playera) | fiolet | tkanina (gnie się do kursora, fala po kliknięciu) |
+| 1 | Realizacje: siatka 3 × 3 z dziewięcioma ostatnimi produkcjami (pętle 3 s lub GIF). Kliknięcie otwiera czarną zaokrągloną nakładkę z filmem na 80% szerokości, dużym tytułem, podtytułem i opisem | biel + pasek | moduły |
+| 2 | Pozycjonowanie („Not just…”) + trzy marki | zieleń | spokojna |
+| 3 | The Team: zdjęcie zespołu, 3 → 30, „rośliśmy z klientami” | fiolet | tkanina |
+| 4 | Kreacja: „Idea first. Then the tool.” / Inside every production | biel + pasek z logo | kadry storyboardu |
+| 5 | Produkcja + R&D | fiolet | proces produkcji (8 kroków) |
+| 6 | jeden.ai | biel + pasek | pipeline węzłów |
+| 7 | Jak myślimy (podejście do biznesu) | zieleń | moduły |
+| 8 | Jak jesteśmy zbudowani: najpierw działy (New Business, Client Service, Creative, Production, R&D) z postaciami 3D schowanymi za kartami i ludźmi w kółkach, potem założyciele, na końcu kariera | biel + pasek | moduły |
+| 9 | Built on trust: etyka, AI Act | fiolet | spokojna |
+| 10 | AlterCast (osobna spółka) | żółty + biel | twarz 3D patrząca za kursorem |
+| 11 | Kontakt: „Zacznijmy od jednej kampanii” | fiolet | linie składają się w znak ┐H |
 
 ## 3. System wizualny (z decku)
 
@@ -45,6 +46,8 @@ Na telefonie i na tablecie w pionie tekst zajmuje całą szerokość, więc siat
 ## 5. Technologia
 
 - Produkcyjnie: Next.js na Vercelu, CMS na case studies, zespół i aktualności, PL/EN.
+- Realizacje w CMS: jeden wpis na projekt z polami tytuł, podtytuł (klient · format · rok), opis, pętla 3 s (MP4 bez dźwięku albo GIF), film, kolejność. Na stronie głównej jest dziewięć pierwszych wpisów.
+- Reel: plik MP4 (H.264, 1080p, bez dźwięku, najlepiej poniżej 15 MB) albo strumień z Vimeo lub Mux. Przy „ogranicz ruch” reel i pętle stoją na pierwszej klatce.
 - Siatka: WebGL w wersji produkcyjnej. Prototyp to Canvas 2D bez bibliotek, 60 kl./s; przy „ogranicz ruch” siatka jest statyczna.
 
 ## 6. Otwarte kwestie
