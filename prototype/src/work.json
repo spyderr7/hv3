@@ -1,0 +1,141 @@
+{
+ "_how_to_edit": "One entry per project, in display order (nine entries fill the 3 x 3 grid). Media go in prototype/media/: reel.mp4 for the hero, and per project work/<id>-loop.mp4 (or .gif) for the tile and work/<id>-film.mp4 for the overlay. Missing files show a placeholder. Rebuild with: python3 prototype/src/build.py",
+ "reel": "media/reel.mp4",
+ "projects": [
+  {
+   "id": "01",
+   "title": {
+    "pl": "Projekt 01",
+    "en": "Project 01"
+   },
+   "sub": {
+    "pl": "Klient · format · rok",
+    "en": "Client · format · year"
+   },
+   "desc": {
+    "pl": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt. Każdy z dziewięciu projektów ma własny tytuł, podtytuł, opis, pętlę i film.",
+    "en": "Room for the project description: the challenge, what we did and the result. Each of the nine projects has its own title, subtitle, description, loop and film."
+   }
+  },
+  {
+   "id": "02",
+   "title": {
+    "pl": "Projekt 02",
+    "en": "Project 02"
+   },
+   "sub": {
+    "pl": "Klient · format · rok",
+    "en": "Client · format · year"
+   },
+   "desc": {
+    "pl": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.",
+    "en": "Room for the project description: the challenge, what we did and the result."
+   }
+  },
+  {
+   "id": "03",
+   "title": {
+    "pl": "Projekt 03",
+    "en": "Project 03"
+   },
+   "sub": {
+    "pl": "Klient · format · rok",
+    "en": "Client · format · year"
+   },
+   "desc": {
+    "pl": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.",
+    "en": "Room for the project description: the challenge, what we did and the result."
+   }
+  },
+  {
+   "id": "04",
+   "title": {
+    "pl": "Projekt 04",
+    "en": "Project 04"
+   },
+   "sub": {
+    "pl": "Klient · format · rok",
+    "en": "Client · format · year"
+   },
+   "desc": {
+    "pl": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.",
+    "en": "Room for the project description: the challenge, what we did and the result."
+   }
+  },
+  {
+   "id": "05",
+   "title": {
+    "pl": "Projekt 05",
+    "en": "Project 05"
+   },
+   "sub": {
+    "pl": "Klient · format · rok",
+    "en": "Client · format · year"
+   },
+   "desc": {
+    "pl": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.",
+    "en": "Room for the project description: the challenge, what we did and the result."
+   }
+  },
+  {
+   "id": "06",
+   "title": {
+    "pl": "Projekt 06",
+    "en": "Project 06"
+   },
+   "sub": {
+    "pl": "Klient · format · rok",
+    "en": "Client · format · year"
+   },
+   "desc": {
+    "pl": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.",
+    "en": "Room for the project description: the challenge, what we did and the result."
+   }
+  },
+  {
+   "id": "07",
+   "title": {
+    "pl": "Projekt 07",
+    "en": "Project 07"
+   },
+   "sub": {
+    "pl": "Klient · format · rok",
+    "en": "Client · format · year"
+   },
+   "desc": {
+    "pl": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.",
+    "en": "Room for the project description: the challenge, what we did and the result."
+   }
+  },
+  {
+   "id": "08",
+   "title": {
+    "pl": "Projekt 08",
+    "en": "Project 08"
+   },
+   "sub": {
+    "pl": "Klient · format · rok",
+    "en": "Client · format · year"
+   },
+   "desc": {
+    "pl": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.",
+    "en": "Room for the project description: the challenge, what we did and the result."
+   }
+  },
+  {
+   "id": "09",
+   "title": {
+    "pl": "Projekt 09",
+    "en": "Project 09"
+   },
+   "sub": {
+    "pl": "Klient · format · rok",
+    "en": "Client · format · year"
+   },
+   "desc": {
+    "pl": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.",
+    "en": "Room for the project description: the challenge, what we did and the result."
+   }
+  }
+ ]
+}

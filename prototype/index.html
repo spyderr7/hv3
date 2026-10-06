@@ -135,11 +135,16 @@ body[data-nav="yellow"] .lang button[aria-pressed="true"] { color: #FFFFFF; }
 .nav-toggle[aria-expanded="true"] .nav-ico::before { top: 4px; transform: rotate(45deg); }
 .nav-toggle[aria-expanded="true"] .nav-ico::after { top: 4px; transform: rotate(-45deg); }
 
-/* 900-1100px: all links stay in the bar, just tighter */
-@media (max-width: 1100px) {
+/* 900-1140px: all six links stay in the bar, just tighter; 900-1000px: tighter still, so links, language pill and CTA share one row */
+@media (max-width: 1140px) {
   .nav { gap: 16px; }
   .nav-links { gap: 14px; font-size: 16px; }
   .nav-cta { padding: 0 14px; font-size: 16px; }
+}
+@media (max-width: 1000px) {
+  .nav { gap: 12px; }
+  .nav-links { gap: 10px; font-size: 15px; }
+  .wordmark { height: 20px; }
 }
 /* below 900px: the links become a full-width panel under the bar, opened by the menu button */
 @media (max-width: 899.98px) {
@@ -257,14 +262,133 @@ body[data-nav="yellow"] .lang button[aria-pressed="true"] { color: #FFFFFF; }
 .ctas { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; }
 
 /* ---------- hero ---------- */
-.hero { justify-content: flex-end; min-height: 94vh; min-height: 94svh; padding-bottom: clamp(36px, 6vh, 64px); }
+/* the reel closes the hero: no padding under it, and it steps out of the section gutters to run edge to edge */
+.hero { justify-content: flex-end; min-height: 94vh; min-height: 94svh; padding-bottom: 0; }
 .tagline { font: 800 clamp(24px, 2.7vw, 46px)/1.05 var(--font-head); color: var(--c-green); max-width: 22ch; }
-.proof { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 2px solid var(--line); }
-.proof > div { display: grid; gap: 4px; align-content: start; padding: 16px 20px 0 0; }
-.proof b { font: 800 clamp(44px, 5.4vw, 92px)/0.9 var(--font-head); color: var(--fg); }
-.proof > div > span { font-weight: 700; font-size: clamp(14px, 1.05vw, 17px); color: var(--fg-dim); max-width: 28ch; }
-/* single column: the number sits above its text, so all three texts start at the same x */
-@media (max-width: 700px) { .proof { grid-template-columns: 1fr; } .proof > div { gap: 2px; padding: 14px 0 0; } }
+.reel {
+  position: relative; z-index: 2; box-sizing: border-box; flex: none;
+  width: calc(100% + var(--gutter) * 2); margin: clamp(44px, 6.4vw, 104px) 0 0 calc(var(--gutter) * -1);
+  aspect-ratio: 16 / 9; overflow: hidden; background: var(--black);
+}
+.reel-video { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; background: var(--black); }
+/* no player: where a browser would draw its own start button over a video that cannot autoplay (iOS low-power mode), hide it */
+.reel-video::-webkit-media-controls, .reel-video::-webkit-media-controls-start-playback-button,
+.work-loop::-webkit-media-controls, .work-loop::-webkit-media-controls-start-playback-button { display: none !important; -webkit-appearance: none; }
+/* placeholder until the reel file exists: a dark panel with a running timecode (25 fps, driven by work.js) */
+.reel-slate {
+  --pad: clamp(16px, 3.4vw, 56px);
+  position: absolute; inset: 0; box-sizing: border-box; overflow: hidden;
+  display: grid; grid-template-rows: auto 1fr auto auto; justify-items: start; row-gap: clamp(6px, 1vw, 14px);
+  padding: var(--pad) max(var(--gutter), var(--pad));
+  color: #FFFFFF;
+  background:
+    radial-gradient(70% 95% at 90% 6%, rgba(76, 2, 232, 0.62), transparent 64%),
+    radial-gradient(55% 75% at 2% 108%, rgba(0, 204, 102, 0.2), transparent 66%),
+    var(--black);
+}
+.reel-video ~ .reel-slate { display: none; }
+.reel.no-video .reel-video { display: none; }
+.reel.no-video .reel-slate { display: grid; }
+.reel-pill {
+  grid-row: 1; display: inline-flex; align-items: center; padding: 8px 16px 7px; border-radius: 999px;
+  background: var(--c-green); color: var(--black);
+  font: 800 clamp(14px, 1.3vw, 18px)/1 var(--font-head); letter-spacing: 0.06em; text-transform: uppercase;
+}
+.reel-t { grid-row: 3; font: 800 min(200px, max(11vw, min(13.4vw, 64px)))/0.86 var(--font-head); letter-spacing: -0.008em; text-transform: uppercase; color: #FFFFFF; }
+.reel-note { grid-row: 4; max-width: 46ch; font: 500 clamp(13px, 1.25vw, 19px)/1.4 var(--font-body); color: rgba(255, 255, 255, 0.8); }
+@media (max-width: 480px) { .reel-note { font-size: clamp(11.5px, 3.4vw, 13px); } }
+.reel-tc {
+  position: absolute; top: var(--pad); right: max(var(--gutter), var(--pad));
+  display: inline-flex; align-items: center; min-height: 1.9em; padding: 0 0.1em;
+  font: 700 clamp(13px, 1.5vw, 22px)/1 var(--font-body); font-variant-numeric: tabular-nums; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.88);
+}
+
+/* ---------- work: nine tiles that open an overlay ---------- */
+.work-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(26px, 3vw, 44px) clamp(14px, 1.8vw, 28px); }
+.work-item { min-width: 0; }
+/* 420-759px: two columns, the first tile spans both (1 + 4 rows, no orphan); under 420px a single column */
+@media (max-width: 759.98px) {
+  .work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .work-item:first-child { grid-column: 1 / -1; }
+}
+@media (max-width: 419.98px) { .work-grid { grid-template-columns: minmax(0, 1fr); } }
+/* the whole tile is the button */
+.work-tile {
+  display: block; width: 100%; margin: 0; padding: 0; border: 0; border-radius: 18px; background: none;
+  color: inherit; font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.work-tile:focus-visible { outline: 3px solid var(--c-violet); outline-offset: 6px; }
+.work-media {
+  position: relative; display: block; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; isolation: isolate;
+  background: var(--black); container-type: inline-size;
+}
+.work-loop, .work-slate { transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.work-loop { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+.work-tile:hover .work-loop, .work-tile:focus-visible .work-loop,
+.work-tile:hover .work-slate, .work-tile:focus-visible .work-slate { transform: scale(1.045); }
+.work-cap { display: grid; gap: 4px; padding: 14px 2px 0; }
+.work-title { display: block; font: 800 24px/1.02 var(--font-head); letter-spacing: 0.005em; text-transform: uppercase; color: var(--fg); transition: color 0.2s ease; }
+.work-sub { display: block; font: 500 14px/1.35 var(--font-body); color: var(--fg-dim); }
+.work-tile:hover .work-title, .work-tile:focus-visible .work-title { color: var(--c-violet); }
+
+/* placeholder until a loop exists: the project number on a dark panel with a slow drift of brand colour */
+.work-slate {
+  position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 0.5em;
+  overflow: hidden; color: #FFFFFF; background: var(--black);
+}
+.work-slate::before, .work-slate::after { content: ""; position: absolute; border-radius: 50%; pointer-events: none; }
+.work-slate::before {
+  left: -12%; top: -30%; width: 90%; height: 150%;
+  background: radial-gradient(closest-side, rgba(76, 2, 232, 0.8), rgba(76, 2, 232, 0));
+  animation: slate-a 15s ease-in-out infinite alternate;
+}
+.work-slate::after {
+  right: -18%; bottom: -42%; width: 78%; height: 130%;
+  background: radial-gradient(closest-side, rgba(0, 204, 102, 0.36), rgba(0, 204, 102, 0));
+  animation: slate-b 19s ease-in-out infinite alternate;
+}
+.work-item:nth-child(3n + 2) .work-slate::before { animation-delay: -5s; }
+.work-item:nth-child(3n + 2) .work-slate::after { animation-delay: -9s; }
+.work-item:nth-child(3n) .work-slate::before { animation-delay: -10s; }
+.work-item:nth-child(3n) .work-slate::after { animation-delay: -4s; }
+@keyframes slate-a { from { transform: translate(-6%, -6%) scale(1); } to { transform: translate(34%, 12%) scale(1.18); } }
+@keyframes slate-b { from { transform: translate(8%, 6%) scale(1.08); } to { transform: translate(-40%, -16%) scale(0.86); } }
+html.motion-off .work-slate::before, html.motion-off .work-slate::after { animation-play-state: paused; }
+.work-slate b { position: relative; z-index: 1; font: 800 96px/0.84 var(--font-head); font-size: 34cqw; letter-spacing: -0.01em; }
+.work-slate small { position: relative; z-index: 1; font: 700 14px/1 var(--font-head); font-size: clamp(14px, 4.4cqw, 26px); letter-spacing: 0.06em; color: rgba(255, 255, 255, 0.8); }
+
+/* overlay: a black rounded frame, the film at 80% of the page width, then a big subtitle and the description */
+.work-dialog {
+  box-sizing: border-box; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+  background: transparent; color: #FFFFFF; overflow: hidden;
+}
+.work-dialog[open] { display: grid; place-items: center; }
+.work-dialog::backdrop { background: rgba(13, 12, 18, 0.72); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.wd-frame {
+  box-sizing: border-box; position: relative; width: 80vw; max-height: 92vh; max-height: 92dvh; overflow-y: auto; overscroll-behavior: contain;
+  --wd-pad: clamp(16px, 2.4vw, 32px); padding: var(--wd-pad); border-radius: 28px; background: var(--black); color: #FFFFFF;
+  scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+@media (max-width: 600px) { .wd-frame { width: calc(100vw - 32px); border-radius: 22px; } }
+/* sticky and pulled over the media's corner, so the close button stays in reach while the text scrolls */
+.wd-close {
+  position: sticky; top: 12px; z-index: 3; display: grid; place-items: center; width: 44px; height: 44px; box-sizing: border-box;
+  margin: 12px 12px -56px auto; padding: 0; border-radius: 50%; cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.6); background: rgba(13, 12, 18, 0.72); color: #FFFFFF;
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.wd-close svg { width: 20px; height: 20px; display: block; }
+.wd-close:hover { background: #FFFFFF; border-color: #FFFFFF; color: var(--black); }
+.wd-close:focus-visible { outline: 3px solid var(--c-green); outline-offset: 3px; }
+/* full width of the frame; on a short window it narrows (still 16:9) so the film and the title below it stay in view */
+.wd-media { position: relative; width: min(100%, calc((92vh - var(--wd-pad) * 2 - 180px) * 16 / 9)); width: min(100%, calc((92dvh - var(--wd-pad) * 2 - 180px) * 16 / 9)); aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; isolation: isolate; background: #000000; container-type: inline-size; }
+.wd-media > video, .wd-media > img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+.wd-media > video[controls] { object-fit: contain; }
+.wd-title { margin: clamp(18px, 2.4vw, 32px) 0 0; font: 800 clamp(36px, 4.6vw, 72px)/0.95 var(--font-head); text-transform: uppercase; color: #FFFFFF; text-wrap: balance; overflow-wrap: anywhere; }
+.wd-sub { margin: 10px 0 0; font: 700 20px/1.2 var(--font-head); letter-spacing: 0.04em; text-transform: uppercase; color: var(--c-green); }
+.wd-desc { margin: 18px 0 0; max-width: 70ch; font: 400 17px/1.55 var(--font-body); color: rgba(255, 255, 255, 0.8); }
+.wd-sub:empty, .wd-desc:empty { display: none; }
 
 /* positioning */
 .nots { display: grid; gap: 2px; }
@@ -342,22 +466,29 @@ body[data-nav="yellow"] .lang button[aria-pressed="true"] { color: #FFFFFF; }
 .person .rl { font: 800 16px/1.1 var(--font-head); text-transform: uppercase; letter-spacing: 0.03em; color: var(--c-violet); }
 .person .bio { font-weight: 500; font-size: 14px; color: var(--fg-dim); }
 @media (max-width: 760px) { .founders { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; } .person .bio { display: none; } .person .nm { font-size: 18px; } .person .rl { font-size: 13px; } }
-.depts { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
-.dept { display: grid; gap: 10px; align-content: start; padding: 16px 16px 18px; border-radius: 26px; background: var(--card); }
-.dept .char { height: 150px; display: grid; place-items: end center; }
-.dept .char img { max-height: 150px; max-width: 100%; width: auto; display: block; }
-.dept .char:empty { background: radial-gradient(circle at 50% 70%, rgba(76, 2, 232, 0.14), transparent 60%); }
+/* Each character stands BEHIND its card: the 3D figure is cut flat at the waist, and that cut sits exactly on the card's top
+   edge (the card is opaque and the figure is not tucked under it). The card's top margin reserves the figure's height, so
+   cards still align in their rows. The figure box keeps clear of the card's rounded corners, so the cut always lands on the
+   straight part of the edge. */
+.depts { --char-h: 150px; --dept-r: 26px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px 12px; }
+.dept { position: relative; margin-top: var(--char-h); display: grid; gap: 10px; align-content: start; padding: 16px 14px 18px; border-radius: var(--dept-r); background: var(--card); }
+.dept .char {
+  position: absolute; left: 0; right: 0; bottom: 100%; height: var(--char-h); box-sizing: border-box; padding: 0 var(--dept-r);
+  display: flex; justify-content: center; align-items: flex-end; pointer-events: none;
+}
+.dept .char img { display: block; height: 100%; width: auto; max-width: 100%; object-fit: contain; object-position: center bottom; }
 .dept .kicker { justify-self: center; }
 .dept .line { font-weight: 700; font-size: 15px; line-height: 1.35; text-align: center; }
 .dept .people { display: grid; gap: 6px; border-top: 2px solid var(--line); padding-top: 10px; }
-.dept .people li { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 10px; align-items: center; }
-.dept .people .av { width: 38px; height: 50px; border-radius: 50%; overflow: hidden; background: linear-gradient(160deg, var(--c-green), var(--c-violet)); }
-.dept .people .av img { width: 100%; height: 100%; object-fit: cover; display: block; transform: scale(1.04); }
+.dept .people li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 8px; align-items: center; }
+.dept .people .av { width: 44px; height: 44px; aspect-ratio: 1 / 1; border-radius: 50%; overflow: hidden; background: linear-gradient(160deg, var(--c-green), var(--c-violet)); }
+.dept .people .av img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; display: block; transform: scale(1.04); }
 .dept .people b { display: block; font: 800 17px/1.05 var(--font-head); }
 .dept .people small { display: block; font-weight: 500; font-size: 12.5px; color: var(--fg-dim); line-height: 1.25; }
 @media (max-width: 1180px) { .depts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 760px) { .depts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 460px) { .depts { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .depts { --char-h: 130px; } }
 .places { font: 800 clamp(26px, 3vw, 48px)/1 var(--font-head); text-transform: uppercase; }
 .places .b { color: var(--c-green-ink); }
 .careers { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 40px); padding: clamp(22px, 3vw, 40px); border-radius: 30px; background: var(--c-violet); color: #FFFFFF; }
@@ -456,6 +587,11 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
   .btn { transition: none; }
   .btn:hover { transform: none; }
   .nav-ico::before, .nav-ico::after { transition: none; }
+  /* work tiles: no drifting colour on the placeholders, no zoom on hover (videos and the timecode are stopped by work.js) */
+  .work-slate::before, .work-slate::after { animation: none; }
+  .work-loop, .work-slate, .work-title, .wd-close { transition: none; }
+  .work-tile:hover .work-loop, .work-tile:focus-visible .work-loop,
+  .work-tile:hover .work-slate, .work-tile:focus-visible .work-slate { transform: none; }
 }
 </style>
 </head>
@@ -483,6 +619,7 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
 </svg></a>
   <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="navLinks"><span class="nav-ico" aria-hidden="true"></span><span class="nav-toggle-text" data-i18n="nav.menu">Menu</span></button>
   <nav class="nav-links" id="navLinks" aria-label="Główna" data-i18n-attr="aria-label:nav.aria">
+    <a href="#work" data-i18n="nav.work">Realizacje</a>
     <a href="#creative" data-i18n="nav.creative">Kreacja</a>
     <a href="#production" data-i18n="nav.production">Produkcja</a>
     <a href="#jeden">jeden.ai</a>
@@ -505,11 +642,103 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
         <a class="btn primary" href="#contact" data-i18n="hero.cta1">Zacznij od jednej kampanii</a>
         <a class="btn" href="#team" data-i18n="hero.cta2">Poznaj zespół</a>
       </div>
-      <div class="proof">
-        <div><b>#1</b><span data-i18n="hero.p1">Największy niezależny producent wideo z&nbsp;AI w&nbsp;Polsce.</span></div>
-        <div><b>3 <span class="arr">→</span> 30</b><span data-i18n="hero.p2">Z&nbsp;trzyosobowego zespołu do trzydziestu specjalistów w&nbsp;dwa lata.</span></div>
-        <div><b>100+</b><span data-i18n="hero.p3">Filmów z&nbsp;AI wyprodukowanych w&nbsp;samym 2026 roku.</span></div>
-      </div>
+    </div>
+    <div class="reel"><div class="reel-slate">
+      <span class="reel-pill">Reel</span>
+      <p class="reel-t" data-i18n="reel.t">Showreel 2026</p>
+      <p class="reel-note" data-i18n="reel.note">Autoplay, bez dźwięku, w&nbsp;pętli, od krawędzi do krawędzi. Tu trafi plik z&nbsp;reelem.</p>
+      <span class="reel-tc" aria-hidden="true">00:00:00:00</span>
+    </div></div>
+  </section>
+
+  <section id="work" class="scene s-white" data-mode="modules" data-bg="white" aria-labelledby="work-title">
+    <div class="rail" aria-hidden="true"><div class="rail-mark"><svg aria-hidden="true" focusable="false" viewBox="0 0 407 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip2)">
+<path d="M57.8522 21.4361L36.1987 21.4361L36.1987 6.32918e-06L9.09196e-06 0L7.52438e-06 8.96551L27.3578 8.96551L27.3578 51.8287L36.1987 51.8287L36.1987 30.3926L57.8522 30.3926L57.8522 51.8287L66.693 51.8287L66.6931 1.1661e-05L57.8522 1.01152e-05L57.8522 21.4361Z" fill="white"/>
+<path d="M100.377 32.0866C100.377 38.2408 95.9434 43.2507 90.4878 43.2507C85.0322 43.2507 80.5985 38.2408 80.5985 32.0866L80.5985 12.3174L72.0952 12.3174L72.0952 32.0956C72.0952 43.0074 80.3497 51.8828 90.4967 51.8828C100.644 51.8828 108.898 43.0074 108.898 32.0956L108.898 12.2454L100.395 12.2454L100.395 32.0866L100.377 32.0866Z" fill="white"/>
+<path d="M145.399 12.1643C141.845 12.1643 138.611 13.579 136.203 15.8677C133.795 13.579 130.561 12.1643 127.006 12.1643C119.569 12.1643 113.519 18.3005 113.519 25.8423L113.519 51.8288L122.093 51.8288L122.093 25.8423C122.093 23.0941 124.296 20.8595 127.006 20.8595C129.716 20.8595 131.92 23.0941 131.92 25.8423L131.92 51.8288L140.494 51.8288L140.494 25.8423C140.494 23.0941 142.698 20.8595 145.408 20.8595C148.118 20.8595 150.321 23.0941 150.321 25.8423L150.321 51.8288L158.896 51.8288L158.896 25.8423C158.896 18.3005 152.845 12.1643 145.408 12.1643L145.399 12.1643Z" fill="white"/>
+<path d="M218.552 12.2003C208.405 12.2003 200.15 21.0757 200.15 31.9874L200.15 50.387L186.129 17.958C184.61 14.4439 181.189 12.1732 177.404 12.1732L168.821 12.1732L168.821 20.7963L174.587 20.7963C176.711 20.7963 178.63 22.0668 179.483 24.0401L179.483 24.0581L175.689 24.0581C168.154 24.0581 162.023 30.2754 162.023 37.9164C162.023 45.5573 168.154 51.7746 175.689 51.7746C178.026 51.7746 184.157 51.0628 188.262 44.3319L191.505 51.8287L208.662 51.8287L208.662 31.9874C208.662 25.8332 213.105 20.8234 218.552 20.8234C223.998 20.8234 228.441 25.8332 228.441 31.9874L228.441 51.7656L236.944 51.7656L236.944 31.9874C236.944 21.0757 228.69 12.2003 218.543 12.2003L218.552 12.2003ZM175.68 43.1515C172.837 43.1515 170.527 40.8088 170.527 37.9254C170.527 35.042 172.837 32.6993 175.68 32.6993L183.215 32.6993L183.268 32.8344C182.584 37.2766 180.736 43.1605 175.671 43.1605L175.68 43.1515Z" fill="white"/>
+<path d="M268.612 12.1824L256.67 40.7819L244.452 12.1824L235.185 12.1824L252.12 51.8288L261.299 51.8288L277.835 12.1824L268.612 12.1824Z" fill="white"/>
+<path d="M294.148 12.786C284.098 12.786 275.933 21.5803 275.933 32.393C275.933 43.2056 284.098 51.9999 294.148 51.9999C302.224 51.9999 309.093 46.3233 311.474 38.4571L302.642 38.4571C300.874 41.6378 297.72 43.7282 294.148 43.7282C289.367 43.7282 285.369 39.9889 284.356 34.961L312.194 34.961C312.309 34.114 312.363 33.267 312.363 32.384C312.363 30.2755 312.052 28.2301 311.465 26.3289C309.102 18.4626 302.224 12.777 294.139 12.777L294.148 12.786ZM285.662 26.3379C287.422 23.1571 290.567 21.0487 294.157 21.0487C297.746 21.0487 300.892 23.1662 302.651 26.3379L285.671 26.3379L285.662 26.3379Z" fill="white"/>
+<path d="M316.299 51.8288L324.722 51.8288L324.722 20.8415L335.926 20.8415L335.926 12.1824L316.299 12.1824L316.299 51.8288Z" fill="white"/>
+<path d="M353.937 28.906L352.524 28.4915C345.851 26.4911 345.878 25.0855 345.762 24.2475C345.647 23.4095 346.953 20.3189 352.533 20.3189L352.577 20.3189C355.465 20.3189 357.553 21.0127 358.762 22.3463C360.432 24.1844 360.237 26.9507 360.237 26.9777L360.237 27.9058L368.171 27.9058L368.171 26.9867C368.216 25.1576 367.94 20.6793 364.697 17.012C361.916 13.8764 357.846 12.2995 352.595 12.2815L352.542 12.2815C347.664 12.2815 343.39 13.8944 340.493 16.8138C338.37 18.9673 337.144 21.6705 337.161 24.2475C337.161 31.3388 343.47 34.1771 350.303 36.2045L351.76 36.619C353.857 37.2407 357.313 38.2409 359.215 39.2321C359.979 39.6375 360.21 40.6377 359.668 41.3315C358.788 42.4488 356.878 43.7914 352.764 43.7914C350.116 43.7914 348.099 43.0976 346.784 41.746C345.229 40.1511 345.078 38.0967 345.078 37.2858L337.153 37.1867C337.108 41.0252 338.556 44.7465 341.133 47.3956C343.088 49.423 346.722 51.8198 352.755 51.8198C359.464 51.8198 363.258 49.2158 365.257 47.0352C367.727 44.3591 368.447 41.2955 368.304 39.3312C367.834 32.9337 360.45 30.7892 353.928 28.897L353.937 28.906Z" fill="white"/>
+<path d="M407 32.393C407 30.2845 406.689 28.2391 406.112 26.3379C403.739 18.4717 396.871 12.786 388.785 12.786C378.736 12.786 370.57 21.5803 370.57 32.393C370.57 43.2057 378.736 52 388.785 52C396.862 52 403.73 46.3233 406.112 38.4571L397.28 38.4571C395.511 41.6378 392.357 43.7283 388.785 43.7283C384.005 43.7283 380.007 39.9889 378.994 34.961L406.831 34.961C406.947 34.114 407 33.267 407 32.384L407 32.393ZM380.291 26.3379C382.05 23.1572 385.196 21.0487 388.785 21.0487C392.375 21.0487 395.52 23.1662 397.28 26.3379L380.3 26.3379L380.291 26.3379Z" fill="white"/>
+</g>
+<defs>
+<clipPath id="clip2">
+<rect width="407" height="51.9999" fill="white"/>
+</clipPath>
+</defs>
+</svg></div></div>
+    <div class="wrap">
+      <span class="kicker" data-i18n="work.k">Realizacje</span>
+      <h2 id="work-title" class="mega"><span class="a" data-i18n="work.t1">Najnowsze</span><span class="b" data-i18n="work.t2">produkcje.</span></h2>
+      <p class="lead" data-i18n="work.l">Dziewięć naszych ostatnich produkcji. Kliknij, żeby zobaczyć film i&nbsp;opis projektu.</p>
+      <ul class="work-grid" role="list">
+      <li class="work-item">
+        <button class="work-tile" type="button" aria-haspopup="dialog" data-id="01" data-loop="" data-film="">
+          <span class="work-media"><span class="work-slate" aria-hidden="true"><b>01</b><small data-i18n="work.slate">Pętla · 3&nbsp;s</small></span></span>
+          <span class="work-cap"><span class="work-title" data-i18n="work.01.t">Projekt 01</span><span class="work-sub" data-i18n="work.01.s">Klient · format · rok</span></span>
+        </button>
+        <p class="work-desc" data-i18n="work.01.d" hidden>Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt. Każdy z dziewięciu projektów ma własny tytuł, podtytuł, opis, pętlę i film.</p>
+      </li>
+      <li class="work-item">
+        <button class="work-tile" type="button" aria-haspopup="dialog" data-id="02" data-loop="" data-film="">
+          <span class="work-media"><span class="work-slate" aria-hidden="true"><b>02</b><small data-i18n="work.slate">Pętla · 3&nbsp;s</small></span></span>
+          <span class="work-cap"><span class="work-title" data-i18n="work.02.t">Projekt 02</span><span class="work-sub" data-i18n="work.02.s">Klient · format · rok</span></span>
+        </button>
+        <p class="work-desc" data-i18n="work.02.d" hidden>Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.</p>
+      </li>
+      <li class="work-item">
+        <button class="work-tile" type="button" aria-haspopup="dialog" data-id="03" data-loop="" data-film="">
+          <span class="work-media"><span class="work-slate" aria-hidden="true"><b>03</b><small data-i18n="work.slate">Pętla · 3&nbsp;s</small></span></span>
+          <span class="work-cap"><span class="work-title" data-i18n="work.03.t">Projekt 03</span><span class="work-sub" data-i18n="work.03.s">Klient · format · rok</span></span>
+        </button>
+        <p class="work-desc" data-i18n="work.03.d" hidden>Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.</p>
+      </li>
+      <li class="work-item">
+        <button class="work-tile" type="button" aria-haspopup="dialog" data-id="04" data-loop="" data-film="">
+          <span class="work-media"><span class="work-slate" aria-hidden="true"><b>04</b><small data-i18n="work.slate">Pętla · 3&nbsp;s</small></span></span>
+          <span class="work-cap"><span class="work-title" data-i18n="work.04.t">Projekt 04</span><span class="work-sub" data-i18n="work.04.s">Klient · format · rok</span></span>
+        </button>
+        <p class="work-desc" data-i18n="work.04.d" hidden>Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.</p>
+      </li>
+      <li class="work-item">
+        <button class="work-tile" type="button" aria-haspopup="dialog" data-id="05" data-loop="" data-film="">
+          <span class="work-media"><span class="work-slate" aria-hidden="true"><b>05</b><small data-i18n="work.slate">Pętla · 3&nbsp;s</small></span></span>
+          <span class="work-cap"><span class="work-title" data-i18n="work.05.t">Projekt 05</span><span class="work-sub" data-i18n="work.05.s">Klient · format · rok</span></span>
+        </button>
+        <p class="work-desc" data-i18n="work.05.d" hidden>Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.</p>
+      </li>
+      <li class="work-item">
+        <button class="work-tile" type="button" aria-haspopup="dialog" data-id="06" data-loop="" data-film="">
+          <span class="work-media"><span class="work-slate" aria-hidden="true"><b>06</b><small data-i18n="work.slate">Pętla · 3&nbsp;s</small></span></span>
+          <span class="work-cap"><span class="work-title" data-i18n="work.06.t">Projekt 06</span><span class="work-sub" data-i18n="work.06.s">Klient · format · rok</span></span>
+        </button>
+        <p class="work-desc" data-i18n="work.06.d" hidden>Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.</p>
+      </li>
+      <li class="work-item">
+        <button class="work-tile" type="button" aria-haspopup="dialog" data-id="07" data-loop="" data-film="">
+          <span class="work-media"><span class="work-slate" aria-hidden="true"><b>07</b><small data-i18n="work.slate">Pętla · 3&nbsp;s</small></span></span>
+          <span class="work-cap"><span class="work-title" data-i18n="work.07.t">Projekt 07</span><span class="work-sub" data-i18n="work.07.s">Klient · format · rok</span></span>
+        </button>
+        <p class="work-desc" data-i18n="work.07.d" hidden>Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.</p>
+      </li>
+      <li class="work-item">
+        <button class="work-tile" type="button" aria-haspopup="dialog" data-id="08" data-loop="" data-film="">
+          <span class="work-media"><span class="work-slate" aria-hidden="true"><b>08</b><small data-i18n="work.slate">Pętla · 3&nbsp;s</small></span></span>
+          <span class="work-cap"><span class="work-title" data-i18n="work.08.t">Projekt 08</span><span class="work-sub" data-i18n="work.08.s">Klient · format · rok</span></span>
+        </button>
+        <p class="work-desc" data-i18n="work.08.d" hidden>Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.</p>
+      </li>
+      <li class="work-item">
+        <button class="work-tile" type="button" aria-haspopup="dialog" data-id="09" data-loop="" data-film="">
+          <span class="work-media"><span class="work-slate" aria-hidden="true"><b>09</b><small data-i18n="work.slate">Pętla · 3&nbsp;s</small></span></span>
+          <span class="work-cap"><span class="work-title" data-i18n="work.09.t">Projekt 09</span><span class="work-sub" data-i18n="work.09.s">Klient · format · rok</span></span>
+        </button>
+        <p class="work-desc" data-i18n="work.09.d" hidden>Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.</p>
+      </li>
+      </ul>
     </div>
   </section>
 
@@ -550,7 +779,7 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
 
   <section id="creative" class="scene s-white" data-mode="frames" data-bg="white" aria-labelledby="creative-title">
     <div class="rail" aria-hidden="true"><div class="rail-mark"><svg aria-hidden="true" focusable="false" viewBox="0 0 407 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip2)">
+<g clip-path="url(#clip3)">
 <path d="M57.8522 21.4361L36.1987 21.4361L36.1987 6.32918e-06L9.09196e-06 0L7.52438e-06 8.96551L27.3578 8.96551L27.3578 51.8287L36.1987 51.8287L36.1987 30.3926L57.8522 30.3926L57.8522 51.8287L66.693 51.8287L66.6931 1.1661e-05L57.8522 1.01152e-05L57.8522 21.4361Z" fill="white"/>
 <path d="M100.377 32.0866C100.377 38.2408 95.9434 43.2507 90.4878 43.2507C85.0322 43.2507 80.5985 38.2408 80.5985 32.0866L80.5985 12.3174L72.0952 12.3174L72.0952 32.0956C72.0952 43.0074 80.3497 51.8828 90.4967 51.8828C100.644 51.8828 108.898 43.0074 108.898 32.0956L108.898 12.2454L100.395 12.2454L100.395 32.0866L100.377 32.0866Z" fill="white"/>
 <path d="M145.399 12.1643C141.845 12.1643 138.611 13.579 136.203 15.8677C133.795 13.579 130.561 12.1643 127.006 12.1643C119.569 12.1643 113.519 18.3005 113.519 25.8423L113.519 51.8288L122.093 51.8288L122.093 25.8423C122.093 23.0941 124.296 20.8595 127.006 20.8595C129.716 20.8595 131.92 23.0941 131.92 25.8423L131.92 51.8288L140.494 51.8288L140.494 25.8423C140.494 23.0941 142.698 20.8595 145.408 20.8595C148.118 20.8595 150.321 23.0941 150.321 25.8423L150.321 51.8288L158.896 51.8288L158.896 25.8423C158.896 18.3005 152.845 12.1643 145.408 12.1643L145.399 12.1643Z" fill="white"/>
@@ -562,7 +791,7 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
 <path d="M407 32.393C407 30.2845 406.689 28.2391 406.112 26.3379C403.739 18.4717 396.871 12.786 388.785 12.786C378.736 12.786 370.57 21.5803 370.57 32.393C370.57 43.2057 378.736 52 388.785 52C396.862 52 403.73 46.3233 406.112 38.4571L397.28 38.4571C395.511 41.6378 392.357 43.7283 388.785 43.7283C384.005 43.7283 380.007 39.9889 378.994 34.961L406.831 34.961C406.947 34.114 407 33.267 407 32.384L407 32.393ZM380.291 26.3379C382.05 23.1572 385.196 21.0487 388.785 21.0487C392.375 21.0487 395.52 23.1662 397.28 26.3379L380.3 26.3379L380.291 26.3379Z" fill="white"/>
 </g>
 <defs>
-<clipPath id="clip2">
+<clipPath id="clip3">
 <rect width="407" height="51.9999" fill="white"/>
 </clipPath>
 </defs>
@@ -624,7 +853,7 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
 
   <section id="jeden" class="scene s-white" data-mode="pipeline" data-bg="white" aria-labelledby="jeden-title">
     <div class="rail" aria-hidden="true"><div class="rail-mark"><svg aria-hidden="true" focusable="false" viewBox="0 0 407 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip3)">
+<g clip-path="url(#clip4)">
 <path d="M57.8522 21.4361L36.1987 21.4361L36.1987 6.32918e-06L9.09196e-06 0L7.52438e-06 8.96551L27.3578 8.96551L27.3578 51.8287L36.1987 51.8287L36.1987 30.3926L57.8522 30.3926L57.8522 51.8287L66.693 51.8287L66.6931 1.1661e-05L57.8522 1.01152e-05L57.8522 21.4361Z" fill="white"/>
 <path d="M100.377 32.0866C100.377 38.2408 95.9434 43.2507 90.4878 43.2507C85.0322 43.2507 80.5985 38.2408 80.5985 32.0866L80.5985 12.3174L72.0952 12.3174L72.0952 32.0956C72.0952 43.0074 80.3497 51.8828 90.4967 51.8828C100.644 51.8828 108.898 43.0074 108.898 32.0956L108.898 12.2454L100.395 12.2454L100.395 32.0866L100.377 32.0866Z" fill="white"/>
 <path d="M145.399 12.1643C141.845 12.1643 138.611 13.579 136.203 15.8677C133.795 13.579 130.561 12.1643 127.006 12.1643C119.569 12.1643 113.519 18.3005 113.519 25.8423L113.519 51.8288L122.093 51.8288L122.093 25.8423C122.093 23.0941 124.296 20.8595 127.006 20.8595C129.716 20.8595 131.92 23.0941 131.92 25.8423L131.92 51.8288L140.494 51.8288L140.494 25.8423C140.494 23.0941 142.698 20.8595 145.408 20.8595C148.118 20.8595 150.321 23.0941 150.321 25.8423L150.321 51.8288L158.896 51.8288L158.896 25.8423C158.896 18.3005 152.845 12.1643 145.408 12.1643L145.399 12.1643Z" fill="white"/>
@@ -636,7 +865,7 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
 <path d="M407 32.393C407 30.2845 406.689 28.2391 406.112 26.3379C403.739 18.4717 396.871 12.786 388.785 12.786C378.736 12.786 370.57 21.5803 370.57 32.393C370.57 43.2057 378.736 52 388.785 52C396.862 52 403.73 46.3233 406.112 38.4571L397.28 38.4571C395.511 41.6378 392.357 43.7283 388.785 43.7283C384.005 43.7283 380.007 39.9889 378.994 34.961L406.831 34.961C406.947 34.114 407 33.267 407 32.384L407 32.393ZM380.291 26.3379C382.05 23.1572 385.196 21.0487 388.785 21.0487C392.375 21.0487 395.52 23.1662 397.28 26.3379L380.3 26.3379L380.291 26.3379Z" fill="white"/>
 </g>
 <defs>
-<clipPath id="clip3">
+<clipPath id="clip4">
 <rect width="407" height="51.9999" fill="white"/>
 </clipPath>
 </defs>
@@ -645,7 +874,7 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
       <div class="split">
         <div class="col">
           <svg class="brand-logo" role="img" aria-label="jeden.ai" viewBox="0 0 201 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip5)">
+<g clip-path="url(#clip6)">
 <path d="M0 70V61.2859H7.3803V16.5719H17.3149V70H0ZM6.52716 5.85812C6.52716 2.57142 9.08149 0 12.3463 0C15.6112 0 18.2343 2.57142 18.2343 5.85812C18.2343 9.14481 15.6087 11.7162 12.3463 11.7162C9.08404 11.7162 6.52716 9.14481 6.52716 5.85812Z" fill="#0D0C12"/>
 <path d="M39.8608 54.715C28.225 54.715 20.1367 46.4291 20.1367 35.0717C20.1367 23.7144 28.2963 15.4285 39.7208 15.4285C50.506 15.4285 57.7437 23.6426 57.7437 35.0717C57.7437 36.0716 57.6724 37.2868 57.461 38.2149H30.4279C31.4924 43.0731 34.826 45.8573 39.9347 45.8573C44.0501 45.8573 46.7471 44.5704 49.1588 41.499L54.9067 47.5699C51.1452 52.4974 46.1079 54.7125 39.8634 54.7125L39.8608 54.715ZM30.4253 31.8568H48.023C47.3124 27.2139 44.1214 24.1426 39.5094 24.1426C34.8973 24.1426 31.4211 27.0704 30.4279 31.8568H30.4253Z" fill="#0D0C12"/>
 <path d="M78.1044 15.4285C82.9992 15.4285 87.4711 17.3564 89.3149 20.4996H89.5976C89.5263 19.9996 89.455 19.2844 89.455 17.2846V0H99.247V53.5716H90.1655V51.9283C90.1655 50.3567 90.2368 49.2851 90.3081 48.5724H90.0255C87.6851 52.5 83.073 54.7151 77.6791 54.7151C67.2479 54.7151 59.8701 46.6444 59.8701 35.0718C59.8701 23.4991 67.5331 15.4285 78.1044 15.4285ZM89.8115 34.9282C89.8115 28.5702 85.6248 24.1426 79.8082 24.1426C73.9915 24.1426 69.8735 28.5702 69.8735 34.9282C69.8735 41.2863 74.0603 45.7856 79.8082 45.7856C85.556 45.7856 89.8115 41.358 89.8115 34.9282Z" fill="#0D0C12"/>
@@ -656,7 +885,7 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
 <path d="M181.508 31.6107C181.508 30.111 182.707 28.9368 184.197 28.9368C185.687 28.9368 186.886 30.111 186.886 31.6107C186.886 33.1105 185.687 34.2847 184.197 34.2847C182.707 34.2847 181.508 33.1105 181.508 31.6107ZM181.963 53.3947V36.4998H186.499V53.3947H181.963Z" fill="#FBAB22"/>
 </g>
 <defs>
-<clipPath id="clip5">
+<clipPath id="clip6">
 <rect width="201" height="70" fill="#0D0C12"/>
 </clipPath>
 </defs>
@@ -702,7 +931,7 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
 
   <section id="built" class="scene s-white" data-mode="modules" data-bg="white" aria-labelledby="built-title">
     <div class="rail" aria-hidden="true"><div class="rail-mark"><svg aria-hidden="true" focusable="false" viewBox="0 0 407 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip4)">
+<g clip-path="url(#clip5)">
 <path d="M57.8522 21.4361L36.1987 21.4361L36.1987 6.32918e-06L9.09196e-06 0L7.52438e-06 8.96551L27.3578 8.96551L27.3578 51.8287L36.1987 51.8287L36.1987 30.3926L57.8522 30.3926L57.8522 51.8287L66.693 51.8287L66.6931 1.1661e-05L57.8522 1.01152e-05L57.8522 21.4361Z" fill="white"/>
 <path d="M100.377 32.0866C100.377 38.2408 95.9434 43.2507 90.4878 43.2507C85.0322 43.2507 80.5985 38.2408 80.5985 32.0866L80.5985 12.3174L72.0952 12.3174L72.0952 32.0956C72.0952 43.0074 80.3497 51.8828 90.4967 51.8828C100.644 51.8828 108.898 43.0074 108.898 32.0956L108.898 12.2454L100.395 12.2454L100.395 32.0866L100.377 32.0866Z" fill="white"/>
 <path d="M145.399 12.1643C141.845 12.1643 138.611 13.579 136.203 15.8677C133.795 13.579 130.561 12.1643 127.006 12.1643C119.569 12.1643 113.519 18.3005 113.519 25.8423L113.519 51.8288L122.093 51.8288L122.093 25.8423C122.093 23.0941 124.296 20.8595 127.006 20.8595C129.716 20.8595 131.92 23.0941 131.92 25.8423L131.92 51.8288L140.494 51.8288L140.494 25.8423C140.494 23.0941 142.698 20.8595 145.408 20.8595C148.118 20.8595 150.321 23.0941 150.321 25.8423L150.321 51.8288L158.896 51.8288L158.896 25.8423C158.896 18.3005 152.845 12.1643 145.408 12.1643L145.399 12.1643Z" fill="white"/>
@@ -714,7 +943,7 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
 <path d="M407 32.393C407 30.2845 406.689 28.2391 406.112 26.3379C403.739 18.4717 396.871 12.786 388.785 12.786C378.736 12.786 370.57 21.5803 370.57 32.393C370.57 43.2057 378.736 52 388.785 52C396.862 52 403.73 46.3233 406.112 38.4571L397.28 38.4571C395.511 41.6378 392.357 43.7283 388.785 43.7283C384.005 43.7283 380.007 39.9889 378.994 34.961L406.831 34.961C406.947 34.114 407 33.267 407 32.384L407 32.393ZM380.291 26.3379C382.05 23.1572 385.196 21.0487 388.785 21.0487C392.375 21.0487 395.52 23.1662 397.28 26.3379L380.3 26.3379L380.291 26.3379Z" fill="white"/>
 </g>
 <defs>
-<clipPath id="clip4">
+<clipPath id="clip5">
 <rect width="407" height="51.9999" fill="white"/>
 </clipPath>
 </defs>
@@ -725,60 +954,63 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
       <p class="places">Remote HQ <span class="b">+</span> <span data-i18n="bt.waw">Warszawa</span> <span class="b">+</span> Sopot</p>
 
       <div class="col">
+        <span class="kicker" data-i18n="bt.dk">Działy</span>
+        <div class="depts">
+          <article class="dept">
+            <div class="char"><img src="img/char-new-business.webp" alt="" loading="lazy" decoding="async"></div>
+            <span class="kicker">New Business</span>
+            <p class="line" data-i18n="bt.d1">Najpierw cel biznesowy, potem technologia.</p>
+            <ul class="people">
+              <li><span class="av"></span><span><b>Daniel Joński</b><small>Head of Sales</small></span></li>
+              <li><span class="av"></span><span><b>Jan Tyszkiewicz</b><small>Growth Manager</small></span></li>
+            </ul>
+          </article>
+          <article class="dept">
+            <div class="char"><img src="img/char-client-service.webp" alt="" loading="lazy" decoding="async"></div>
+            <span class="kicker">Client Service</span>
+            <p class="line" data-i18n="bt.d2">Wprawiamy wszystko w&nbsp;ruch: relacje, rozwój, działanie, wskazywanie kierunku.</p>
+            <ul class="people">
+              <li><span class="av"></span><span><b>Monika Domagała-Szmidt</b><small>Client Service Director</small></span></li>
+              <li><span class="av"></span><span><b>Paulina Dłużniewska</b><small>Senior Account Manager</small></span></li>
+              <li><span class="av"></span><span><b>Iwona Polańska</b><small>Senior Account Manager</small></span></li>
+            </ul>
+          </article>
+          <article class="dept">
+            <div class="char"><img src="img/char-creative.webp" alt="" loading="lazy" decoding="async"></div>
+            <span class="kicker">Creative</span>
+            <p class="line" data-i18n="bt.d3">50&nbsp;lat kierowania kreacją, wewnątrz każdej produkcji.</p>
+            <ul class="people">
+              <li><span class="av"></span><span><b>Paweł Mazurkiewicz</b><small>Co-founder &amp; Creative Director</small></span></li>
+              <li><span class="av"></span><span><b>Piotr Soszyński</b><small>Creative Supervisor</small></span></li>
+            </ul>
+          </article>
+          <article class="dept">
+            <div class="char"><img src="img/char-production.webp" alt="" loading="lazy" decoding="async"></div>
+            <span class="kicker">Production</span>
+            <p class="line" data-i18n="bt.d4">Razem prowadzą każdą produkcję w&nbsp;Humanverse.</p>
+            <ul class="people">
+              <li><span class="av"></span><span><b>Ela Trosińska</b><small>Head of Production</small></span></li>
+              <li><span class="av"></span><span><b>Bartosz Grabarczyk</b><small>Head of Production &amp; R&amp;D</small></span></li>
+            </ul>
+          </article>
+          <article class="dept">
+            <div class="char"><img src="img/char-rnd.webp" alt="" loading="lazy" decoding="async"></div>
+            <span class="kicker">R&amp;D</span>
+            <p class="line" data-i18n="bt.d5">Każda produkcja testuje coś nowego. To, co działa, trafia do następnej.</p>
+            <ul class="people">
+              <li><span class="av"></span><span><b>Bartosz Grabarczyk</b><small>Head of Production &amp; R&amp;D</small></span></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+
+      <div class="col">
         <span class="kicker" data-i18n="bt.fk">Założyciele</span>
         <div class="founders">
           <div class="person"><div class="ph"></div><span class="nm">Krzysztof Kujawski</span><span class="rl">CEO</span><span class="bio" data-i18n="bt.f1">Z&nbsp;zawodu reżyser filmowy, seryjny przedsiębiorca. Zabiera głos w&nbsp;sprawie AI i&nbsp;AI Act.</span></div>
           <div class="person"><div class="ph"></div><span class="nm">Paweł Mazurkiewicz</span><span class="rl">Creative Director</span><span class="bio" data-i18n="bt.f2">Około 20&nbsp;lat w&nbsp;kreacji, wielokrotny laureat nagrody Effie, prelegent na temat AI w&nbsp;reklamie.</span></div>
           <div class="person"><div class="ph"></div><span class="nm">Jarosław Czajkowski</span><span class="rl">CTO / CFO</span><span class="bio" data-i18n="bt.f3">13&nbsp;lat w&nbsp;inżynierii oprogramowania. Od zera zbudował procesy produkcyjne Humanverse.</span></div>
         </div>
-      </div>
-
-      <div class="depts">
-        <article class="dept">
-          <div class="char"><img src="img/char-new-business.webp" alt="" loading="lazy" decoding="async"></div>
-          <span class="kicker">New Business</span>
-          <p class="line" data-i18n="bt.d1">Najpierw cel biznesowy, potem technologia.</p>
-          <ul class="people">
-            <li><span class="av"></span><span><b>Daniel Joński</b><small>Head of Sales</small></span></li>
-            <li><span class="av"></span><span><b>Jan Tyszkiewicz</b><small>Growth Manager</small></span></li>
-          </ul>
-        </article>
-        <article class="dept">
-          <div class="char"><img src="img/char-client-service.webp" alt="" loading="lazy" decoding="async"></div>
-          <span class="kicker">Client Service</span>
-          <p class="line" data-i18n="bt.d2">Wprawiamy wszystko w&nbsp;ruch: relacje, rozwój, działanie, wskazywanie kierunku.</p>
-          <ul class="people">
-            <li><span class="av"></span><span><b>Monika Domagała-Szmidt</b><small>Client Service Director</small></span></li>
-            <li><span class="av"></span><span><b>Paulina Dłużniewska</b><small>Senior Account Manager</small></span></li>
-            <li><span class="av"></span><span><b>Iwona Polańska</b><small>Senior Account Manager</small></span></li>
-          </ul>
-        </article>
-        <article class="dept">
-          <div class="char"><img src="img/char-creative.webp" alt="" loading="lazy" decoding="async"></div>
-          <span class="kicker">Creative</span>
-          <p class="line" data-i18n="bt.d3">50&nbsp;lat kierowania kreacją, wewnątrz każdej produkcji.</p>
-          <ul class="people">
-            <li><span class="av"></span><span><b>Paweł Mazurkiewicz</b><small>Co-founder &amp; Creative Director</small></span></li>
-            <li><span class="av"></span><span><b>Piotr Soszyński</b><small>Creative Supervisor</small></span></li>
-          </ul>
-        </article>
-        <article class="dept">
-          <div class="char"><img src="img/char-production.webp" alt="" loading="lazy" decoding="async"></div>
-          <span class="kicker">Production</span>
-          <p class="line" data-i18n="bt.d4">Razem prowadzą każdą produkcję w&nbsp;Humanverse.</p>
-          <ul class="people">
-            <li><span class="av"></span><span><b>Ela Trosińska</b><small>Head of Production</small></span></li>
-            <li><span class="av"></span><span><b>Bartosz Grabarczyk</b><small>Head of Production &amp; R&amp;D</small></span></li>
-          </ul>
-        </article>
-        <article class="dept">
-          <div class="char"><img src="img/char-rnd.webp" alt="" loading="lazy" decoding="async"></div>
-          <span class="kicker">R&amp;D</span>
-          <p class="line" data-i18n="bt.d5">Każda produkcja testuje coś nowego. To, co działa, trafia do następnej.</p>
-          <ul class="people">
-            <li><span class="av"></span><span><b>Bartosz Grabarczyk</b><small>Head of Production &amp; R&amp;D</small></span></li>
-          </ul>
-        </article>
       </div>
 
       <div class="careers">
@@ -819,7 +1051,7 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
       <div class="split">
         <div class="col">
           <svg class="ac-logo" role="img" aria-label="AlterCast" viewBox="0 0 1511 282" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip6)">
+<g clip-path="url(#clip7)">
 <path d="M0 276.873L71.3348 5.46912H160.418L231.753 276.873H179.19L164.514 217.055H67.239L52.5625 276.873H0ZM79.185 169.884H151.885L119.119 37.6H112.293L79.5263 169.884H79.185Z" fill="#231F20"/>
 <path d="M397.632 276.873C385.003 276.873 374.764 272.771 366.914 264.909C359.064 257.047 354.968 246.451 354.968 233.462V125.105H301.723V84.7709H354.968V5.46912H403.776V84.4291H456.338V124.764H403.776V224.916C403.776 232.778 407.53 236.538 414.698 236.538H451.901V276.873H397.632Z" fill="#231F20"/>
 <path d="M238.922 84.4291V5.46912H287.73V224.916C287.73 232.778 291.484 236.538 298.652 236.538H335.855V276.873H281.586C268.958 276.873 258.718 272.771 250.868 264.909C243.018 257.047 238.922 246.451 238.922 233.462V84.4291Z" fill="#231F20"/>
@@ -832,7 +1064,7 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
 <path d="M905.848 127.498C917.912 127.498 927.692 117.704 927.692 105.622C927.692 93.5399 917.912 83.7455 905.848 83.7455C893.784 83.7455 884.004 93.5399 884.004 105.622C884.004 117.704 893.784 127.498 905.848 127.498Z" fill="#231F20"/>
 </g>
 <defs>
-<clipPath id="clip6">
+<clipPath id="clip7">
 <rect width="1511" height="282" fill="white"/>
 </clipPath>
 </defs>
@@ -889,7 +1121,7 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
 
 <footer class="site-foot">
   <div class="logos"><svg role="img" aria-label="Humanverse" viewBox="0 0 407 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip7)">
+<g clip-path="url(#clip8)">
 <path d="M57.8522 21.4361L36.1987 21.4361L36.1987 6.32918e-06L9.09196e-06 0L7.52438e-06 8.96551L27.3578 8.96551L27.3578 51.8287L36.1987 51.8287L36.1987 30.3926L57.8522 30.3926L57.8522 51.8287L66.693 51.8287L66.6931 1.1661e-05L57.8522 1.01152e-05L57.8522 21.4361Z" fill="white"/>
 <path d="M100.377 32.0866C100.377 38.2408 95.9434 43.2507 90.4878 43.2507C85.0322 43.2507 80.5985 38.2408 80.5985 32.0866L80.5985 12.3174L72.0952 12.3174L72.0952 32.0956C72.0952 43.0074 80.3497 51.8828 90.4967 51.8828C100.644 51.8828 108.898 43.0074 108.898 32.0956L108.898 12.2454L100.395 12.2454L100.395 32.0866L100.377 32.0866Z" fill="white"/>
 <path d="M145.399 12.1643C141.845 12.1643 138.611 13.579 136.203 15.8677C133.795 13.579 130.561 12.1643 127.006 12.1643C119.569 12.1643 113.519 18.3005 113.519 25.8423L113.519 51.8288L122.093 51.8288L122.093 25.8423C122.093 23.0941 124.296 20.8595 127.006 20.8595C129.716 20.8595 131.92 23.0941 131.92 25.8423L131.92 51.8288L140.494 51.8288L140.494 25.8423C140.494 23.0941 142.698 20.8595 145.408 20.8595C148.118 20.8595 150.321 23.0941 150.321 25.8423L150.321 51.8288L158.896 51.8288L158.896 25.8423C158.896 18.3005 152.845 12.1643 145.408 12.1643L145.399 12.1643Z" fill="white"/>
@@ -901,12 +1133,12 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
 <path d="M407 32.393C407 30.2845 406.689 28.2391 406.112 26.3379C403.739 18.4717 396.871 12.786 388.785 12.786C378.736 12.786 370.57 21.5803 370.57 32.393C370.57 43.2057 378.736 52 388.785 52C396.862 52 403.73 46.3233 406.112 38.4571L397.28 38.4571C395.511 41.6378 392.357 43.7283 388.785 43.7283C384.005 43.7283 380.007 39.9889 378.994 34.961L406.831 34.961C406.947 34.114 407 33.267 407 32.384L407 32.393ZM380.291 26.3379C382.05 23.1572 385.196 21.0487 388.785 21.0487C392.375 21.0487 395.52 23.1662 397.28 26.3379L380.3 26.3379L380.291 26.3379Z" fill="white"/>
 </g>
 <defs>
-<clipPath id="clip7">
+<clipPath id="clip8">
 <rect width="407" height="51.9999" fill="white"/>
 </clipPath>
 </defs>
 </svg><svg role="img" aria-label="jeden.ai" viewBox="0 0 201 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip8)">
+<g clip-path="url(#clip9)">
 <path d="M0 70V61.2859H7.3803V16.5719H17.3149V70H0ZM6.52716 5.85812C6.52716 2.57142 9.08149 0 12.3463 0C15.6112 0 18.2343 2.57142 18.2343 5.85812C18.2343 9.14481 15.6087 11.7162 12.3463 11.7162C9.08404 11.7162 6.52716 9.14481 6.52716 5.85812Z" fill="white"/>
 <path d="M39.8608 54.715C28.225 54.715 20.1367 46.4291 20.1367 35.0717C20.1367 23.7144 28.2963 15.4285 39.7208 15.4285C50.506 15.4285 57.7437 23.6426 57.7437 35.0717C57.7437 36.0716 57.6724 37.2868 57.461 38.2149H30.4279C31.4924 43.0731 34.826 45.8573 39.9347 45.8573C44.0501 45.8573 46.7471 44.5704 49.1588 41.499L54.9067 47.5699C51.1452 52.4974 46.1079 54.7125 39.8634 54.7125L39.8608 54.715ZM30.4253 31.8568H48.023C47.3124 27.2139 44.1214 24.1426 39.5094 24.1426C34.8973 24.1426 31.4211 27.0704 30.4279 31.8568H30.4253Z" fill="white"/>
 <path d="M78.1044 15.4285C82.9992 15.4285 87.4711 17.3564 89.3149 20.4996H89.5976C89.5263 19.9996 89.455 19.2844 89.455 17.2846V0H99.247V53.5716H90.1655V51.9283C90.1655 50.3567 90.2368 49.2851 90.3081 48.5724H90.0255C87.6851 52.5 83.073 54.7151 77.6791 54.7151C67.2479 54.7151 59.8701 46.6444 59.8701 35.0718C59.8701 23.4991 67.5331 15.4285 78.1044 15.4285ZM89.8115 34.9282C89.8115 28.5702 85.6248 24.1426 79.8082 24.1426C73.9915 24.1426 69.8735 28.5702 69.8735 34.9282C69.8735 41.2863 74.0603 45.7856 79.8082 45.7856C85.556 45.7856 89.8115 41.358 89.8115 34.9282Z" fill="white"/>
@@ -917,7 +1149,7 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
 <path d="M181.508 31.6107C181.508 30.111 182.707 28.9368 184.197 28.9368C185.687 28.9368 186.886 30.111 186.886 31.6107C186.886 33.1105 185.687 34.2847 184.197 34.2847C182.707 34.2847 181.508 33.1105 181.508 31.6107ZM181.963 53.3947V36.4998H186.499V53.3947H181.963Z" fill="#FBAB22"/>
 </g>
 <defs>
-<clipPath id="clip8">
+<clipPath id="clip9">
 <rect width="201" height="70" fill="white"/>
 </clipPath>
 </defs>
@@ -925,6 +1157,16 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
   <span data-i18n="ft.c">Humanverse v3 · koncept strony · październik 2026</span>
   <span data-i18n="ft.n">AlterCast to osobna firma.</span>
 </footer>
+
+<dialog id="workDialog" class="work-dialog" aria-labelledby="wdTitle">
+  <div class="wd-frame">
+    <button class="wd-close" type="button" autofocus aria-label="Zamknij" data-i18n-attr="aria-label:work.close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="wd-media"></div>
+    <h3 id="wdTitle" class="wd-title"></h3>
+    <p class="wd-sub"></p>
+    <p class="wd-desc"></p>
+  </div>
+</dialog>
 
 <aside class="panel" aria-label="Panel konceptu" data-i18n-attr="aria-label:pn.btn">
   <div class="panel-body" id="panelBody" hidden>
@@ -945,7 +1187,7 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
   <button class="panel-toggle" id="panelToggle" type="button" aria-expanded="false" aria-controls="panelBody"><svg class="pt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M3 6h7.5M15.5 6H21M3 12h2.5M10.5 12H21M3 18h10.5M18.5 18H21"/><circle cx="13" cy="6" r="2.5"/><circle cx="8" cy="12" r="2.5"/><circle cx="16" cy="18" r="2.5"/></svg><span class="pt-text" data-i18n="pn.btn">Panel konceptu</span></button>
 </aside>
 
-<script>window.HV_I18N = {"pl": {"nav.creative": "Kreacja", "nav.production": "Produkcja", "nav.team": "Zespół", "nav.cta": "Porozmawiajmy", "nav.menu": "Menu", "hero.t1": "Humanizujemy", "hero.t2": "AI.", "hero.tag": "Kompletny pakiet kreatywny AI dla marketingu.", "hero.cta1": "Zacznij od jednej kampanii", "hero.cta2": "Poznaj zespół", "hero.p1": "Największy niezależny producent wideo z&nbsp;AI w&nbsp;Polsce.", "hero.p2": "Z&nbsp;trzyosobowego zespołu do trzydziestu specjalistów w&nbsp;dwa lata.", "hero.p3": "Filmów z&nbsp;AI wyprodukowanych w&nbsp;samym 2026 roku.", "pos.n1": "Nie tylko dom produkcyjny.", "pos.n2": "Nie tylko agencja reklamowa.", "pos.n3": "Nie tylko postprodukcja.", "pos.n4": "Kompletny pakiet kreatywny AI dla marketingu.", "pos.lead": "Filmy wysokobudżetowe, automatyczna produkcja treści na dużą skalę i&nbsp;licencjonowane twarze. A&nbsp;wszystko pomiędzy: storyboard, animatik, gotowy film. Jeden partner na cały proces kreacji i&nbsp;produkcji.", "pos.hv": "Filmy wysokobudżetowe i&nbsp;nadzór kreatywny", "pos.jd": "Automatyczna produkcja treści na dużą skalę", "pos.ac": "Licencjonowane twarze", "pos.acp": "Osobna firma. Humanverse rozwija jej technologię.", "team.t": "Zespół", "team.s": "<span class=\"nb\">Trzy osoby <span class=\"arr\">→<\/span><\/span> trzydzieści w&nbsp;dwa lata.", "team.b": "Sprzedaż, Client Service i&nbsp;Creative zbudowaliśmy sami. Remote HQ, Warszawa i&nbsp;Sopot.", "team.g1": "Rośliśmy razem z&nbsp;klientami.", "team.g2": "Z&nbsp;każdego spostrzeżenia rodziło się coś nowego.", "team.q1": "Czyja to twarz?", "team.q2": "Potrzebujemy tysięcy materiałów, nie jednego filmu.", "team.q3": "Potrzebujemy też pomysłu, nie tylko realizacji.", "team.uc": "Wyprodukowaliśmy kampanię UniCredit. To jak dotąd największa w&nbsp;Polsce kampania reklamowa oparta na AI.", "cr.k": "Kreacja", "cr.t1": "Najpierw pomysł.", "cr.t2": "Potem narzędzie.", "cr.s1": "Wewnątrz każdej produkcji.", "cr.s2": "Nadzór kreatywny nad studiem: pomysł, scenariusz, look, montaż finalny.", "cr.l": "Nie jesteśmy agencją reklamową. Pracujemy wewnątrz każdej produkcji i&nbsp;pilnujemy, żeby każdy kadr wynikał z&nbsp;pomysłu, od pierwszego szkicu po montaż finalny.", "cr.a.t": "Audytujemy pomysły i&nbsp;scenariusze", "cr.a.b": "Te od agencji i&nbsp;te od klienta, zanim cokolwiek trafi do produkcji.", "cr.p.t": "Szlifujemy kreację pod AI", "cr.p.b": "Żeby pasowała do naszego procesu i&nbsp;wykorzystywała mocne strony AI, nie gubiąc pomysłu.", "cr.st1": "Pomysł", "cr.st2": "Scenariusz", "cr.st3": "Look", "cr.st4": "Montaż finalny", "pr.k": "Produkcja", "pr.t1": "Cel", "pr.t2": "ponad nowinkami", "pr.s": "Narzędzie dopasowujemy do wizji. Nigdy odwrotnie.", "pr.l1": "Live action", "pr.l1d": "Prawdziwy plan zdjęciowy, prawdziwe emocje, AI w&nbsp;postprodukcji.", "pr.l2": "Hybryda", "pr.l2d": "Prawdziwa gra aktorska, wygenerowany świat.", "pr.l3": "W&nbsp;pełni AI", "pr.l3d": "Niemożliwe wizualia, ekstremalna skala.", "pr.fam": "Każdy proces produkcji z&nbsp;AI zaprojektowaliśmy tak, żeby wyglądał znajomo:", "pr.c1": "Kreacja", "pr.c2": "Preprodukcja", "pr.c3": "Assety", "pr.c4": "Montaż", "pr.c5": "Animacja", "pr.c6": "VFX / Online", "pr.c7": "Korekcja kolorów", "pr.c8": "Dostawa", "pr.master": "Jeden master dla każdego rynku: wersje językowe i&nbsp;warianty rynkowe z&nbsp;tego samego materiału.", "rd.t1": "R&amp;D to nie laboratorium. To każdy projekt.", "rd.t2": "Uczymy się w&nbsp;trakcie pracy, nie w&nbsp;izolacji.", "rd.d1": "Każda produkcja testuje coś nowego: modele, procesy, narzędzia.", "rd.d2": "To, co działa, trafia od razu do kolejnego projektu.", "rd.d3": "Współpraca akademicka z&nbsp;PJATK oraz R&amp;D z&nbsp;twórcami modeli i&nbsp;platform.", "jd.t1": "Szyte na miarę", "jd.t2": "twojej marki.", "jd.s": "Nie narzędzie z&nbsp;półki, które pasuje do twojego procesu zaledwie w&nbsp;kilku procentach.", "jd.l": "Dopasowujemy jeden.ai do twoich produktów, danych, wytycznych marki i&nbsp;zespołu. W&nbsp;jego sercu jest system oparty na węzłach: każdy krok to blok, a&nbsp;bloki łączą się w&nbsp;dowolny proces.", "jd.r": "<strong>Stworzone z&nbsp;myślą o&nbsp;retailu.<\/strong> Jedna baza produktów, każdy format, każdy cykl promocyjny. Generowane automatycznie, zatwierdzane przez ludzi.", "jd.cta": "Umów demo jeden.ai", "jd.f1": "Twoja firma", "jd.f1a": "Baza produktów", "jd.f1b": "Ton marki i&nbsp;wytyczne", "jd.f1c": "Brief twojego zespołu", "jd.f2": "Węzły jeden.ai", "jd.f2a": "Modele obrazu", "jd.f2b": "Modele wideo", "jd.f2c": "Tekst i&nbsp;głos", "jd.f2d": "Wszystko, co ma API", "jd.f3": "Dowolny format", "jd.f3a": "E-commerce", "jd.f3b": "Social i&nbsp;stories", "jd.f3c": "Film i&nbsp;TV", "jd.f3d": "Print i&nbsp;OOH", "ap.k": "Jak myślimy", "ap.t1": "Nie sprzedajemy AI.", "ap.t2": "Sprzedajemy ludzką pracę.", "ap.l": "Ludzka praca, ludzkie twarze, ludzkie wsparcie. Najpierw cel biznesowy, potem technologia.", "ap.v1": "Relacje to wszystko.", "ap.v1d": "Na AIVerse Conference nasi klienci dzielili się ze sceny własnymi wynikami sprzedaży.", "ap.v2": "<span class=\"nb\">Słuchamy <span class=\"arr\">→<\/span><\/span> <span class=\"nb\">rozumiemy <span class=\"arr\">→<\/span><\/span> proponujemy.", "ap.v2d": "Sprzedaż, Client Service i&nbsp;Creative działają jak jeden zespół.", "ap.v3": "Szczerze o&nbsp;tym, co AI potrafi, a&nbsp;czego nie.", "ap.v3d": "Mówimy o&nbsp;tym przed startem projektu, a&nbsp;nie po fakcie.", "ap.v4": "Start za darmo.", "ap.v4d": "Klienci płacą tam, gdzie wnosimy realną wartość.", "ap.v5": "Znajomy proces. Nowy silnik.", "ap.v5d": "Twój zespół pracuje w&nbsp;znany sobie sposób. AI działa pod spodem.", "ap.v6": "Relacje ponad transakcjami.", "ap.v6d": "Jedna osoba do kontaktu, wspólne cele, myślenie długofalowe.", "ap.q": "„AI zmienia to, jak produkujemy. Nie zmienia tego, dlaczego ludzie kupują.”", "ap.qc": "Daniel Joński, Head of Sales", "ap.b1": "Nasz zakład:", "ap.b2": "globalna firma usług marketingowych zbudowana na&nbsp;ludziach.", "ap.b3": "Trwa rewolucja. Nie będziemy się ścigać z&nbsp;technologicznymi gigantami. W&nbsp;całym tym chaosie świadczymy usługi oparte na ludziach, a&nbsp;to wciąż się skaluje.", "bt.t1": "Jak jesteśmy", "bt.t2": "zbudowani", "bt.s": "Jeden zespół. Od pierwszej rozmowy do finalnego mastera.", "bt.waw": "Warszawa", "bt.fk": "Założyciele", "bt.f1": "Z&nbsp;zawodu reżyser filmowy, seryjny przedsiębiorca. Zabiera głos w&nbsp;sprawie AI i&nbsp;AI Act.", "bt.f2": "Około 20&nbsp;lat w&nbsp;kreacji, wielokrotny laureat nagrody Effie, prelegent na temat AI w&nbsp;reklamie.", "bt.f3": "13&nbsp;lat w&nbsp;inżynierii oprogramowania. Od zera zbudował procesy produkcyjne Humanverse.", "bt.d1": "Najpierw cel biznesowy, potem technologia.", "bt.d2": "Wprawiamy wszystko w&nbsp;ruch: relacje, rozwój, działanie, wskazywanie kierunku.", "bt.d3": "50&nbsp;lat kierowania kreacją, wewnątrz każdej produkcji.", "bt.d4": "Razem prowadzą każdą produkcję w&nbsp;Humanverse.", "bt.d5": "Każda produkcja testuje coś nowego. To, co działa, trafia do następnej.", "ca.k": "Kariera", "ca.t1": "Przyszłość dzieje się teraz.", "ca.t2": "Buduj ją z&nbsp;nami.", "ca.l": "Pomysły, sprawczość, wolność, rozwój. Pracujemy głównie zdalnie, ale regularnie się spotykamy.", "ca.d1": "Co tydzień dowozisz prawdziwe projekty prawdziwym klientom.", "ca.d2": "Widzisz wpływ na biznes i&nbsp;świętujesz kamienie milowe.", "ca.d3": "Rozwijasz się w&nbsp;firmie, która działa jak startup.", "ca.copy": "Kopiuj adres", "tr.t1": "Zbudowani", "tr.t2": "na zaufaniu", "tr.e": "Etyka", "tr.ed": "<span class=\"ph\">twarze z&nbsp;licencją i&nbsp;zgodą<\/span> <span class=\"ph\">nie udajemy<\/span> <span class=\"ph\">żadnych skrótów w&nbsp;kwestii praw<\/span>", "tr.x": "Przejrzystość", "tr.xd": "<span class=\"ph\">jasne harmonogramy i&nbsp;budżety<\/span> <span class=\"ph\">szczerze o&nbsp;tym, co potrafi AI<\/span> <span class=\"ph\">jeden wspólny status<\/span>", "tr.p": "Partnerstwo", "tr.pd": "<span class=\"ph\">jedna osoba do kontaktu<\/span> <span class=\"ph\">pomysły z&nbsp;własnej inicjatywy<\/span> <span class=\"ph\">gramy na długi dystans<\/span>", "tr.s": "Bezpieczeństwo to absolutny fundament Humanverse: jasno określone prawa, etyczna AI i&nbsp;pełna przejrzystość. Artykuł 50 AI Act obowiązuje od 2&nbsp;sierpnia 2026&nbsp;r. Pomagamy markom oznaczać treści generowane przez AI. Razem z&nbsp;kancelariami prawnymi i&nbsp;organizacjami branżowymi pracujemy nad wspólnym standardem.", "tr.q": "„AI daje narzędzia. My dajemy człowieczeństwo.”", "ac.t1": "Marki chcą AI.", "ac.t2": "Ich prawnicy chcą odpowiedzi.", "ac.l": "AlterCast to pierwszy na świecie globalny marketplace do licencjonowania wizerunku prawdziwych ludzi w&nbsp;erze AI. Legalny „Airbnb dla twarzy”.", "ac.c1": "Brak zgody", "ac.c1s": "problem generowanych twarzy", "ac.c1d": "Modele generatywne tworzą twarze, za którymi nikt nie stoi. Twarz, która wygląda jak prawdziwa osoba, to pozew czekający na złożenie.", "ac.c2": "2&nbsp;tygodnie", "ac.c2s": "czas tradycyjnego castingu", "ac.c2d": "Casting, umowy, zdjęcia, dla każdego rynku. Produkcja z&nbsp;AI potrzebuje twarzy z&nbsp;uregulowanymi prawami w&nbsp;kilka minut.", "ac.c3": "Ta sama twarz", "ac.c3s": "każda marka, każdy model, każda kampania", "ac.c3d": "Modele generatywne dążą do jednego wyglądu: zbyt symetrycznego, zbyt gładkiego, zbyt wypolerowanego.", "ac.s": "Prawdziwi ludzie licencjonują swoją twarz i&nbsp;dokładnie określają, do czego wolno jej używać, a&nbsp;do czego nie. Za każdym razem, gdy ich twarz pracuje, dostają zapłatę.", "ac.b": "Marki przeglądają, licencjonują w&nbsp;kilka kliknięć i&nbsp;produkują, a&nbsp;zgoda jest udokumentowana od pierwszego kliknięcia. Jeden marketplace, twarze z&nbsp;każdego rynku. Działa od 11&nbsp;września 2026&nbsp;r.", "ac.n": "AlterCast to osobna firma. Humanverse buduje i&nbsp;rozwija jej technologię.", "ac.cta": "Przejdź do altercast.ai <span class=\"arr ne\">↗<\/span>", "ct.t1": "Zacznij od", "ct.t2": "jednej kampanii.", "ct.l": "Pilotaż na jednej kampanii. Jasny zakres. Jasny koszt jednego materiału. Mierzymy to względem tego, jak produkujesz dziś.", "ct.topic": "Temat", "ct.tp1": "Produkcja", "ct.tp2": "Kreacja", "ct.tp4": "Partnerstwo", "ct.tp5": "Kariera", "ct.name": "Imię i&nbsp;nazwisko", "ct.mail": "Służbowy e-mail", "ct.msg": "Wiadomość", "ct.send": "Wyślij wiadomość", "ft.c": "Humanverse v3 · koncept strony · październik 2026", "ft.n": "AlterCast to osobna firma.", "pn.tr": "Przejścia kolorów", "pn.soft": "Płynne", "pn.hard": "Ostre", "pn.int": "Siła siatki", "pn.mode": "Tryb siatki", "pn.anim": "Animuj siatkę", "pn.btn": "Panel konceptu", "nav.aria": "Główna", "nav.lang": "Język", "ct.mailph": "anna@firma.pl", "ct.msgph": "Jedna kampania na Q1: 30-sekundowy film i wersje skrócone do social mediów.", "doc.title": "Humanverse v3", "ct.ok": "To prototyp. W wersji docelowej wiadomość trafi do osoby odpowiedzialnej za wybrany temat.", "ca.copied": "Skopiowano", "mode.fabric": "Tkanina", "mode.calm": "Spokój", "mode.modules": "Moduły", "mode.frames": "Kadry storyboardu", "mode.process": "Proces produkcji", "mode.pipeline": "Przepływ jeden.ai", "mode.face": "Twarz AlterCast", "mode.logo": "Znak Humanverse", "cv.module": "moduł", "cv.scene": "scena", "cv.shot": "ujęcie", "cv.idea": "Pomysł", "cv.script": "Scenariusz", "cv.look": "Look", "cv.cut": "Montaż finalny", "cv.in1": "Baza produktów", "cv.in2": "Wytyczne marki", "cv.in3": "Brief zespołu", "cv.n1": "Modele obrazu", "cv.n2": "Modele wideo", "cv.n3": "Tekst i głos", "cv.n4": "Dowolne API", "cv.o1": "E-commerce", "cv.o2": "Social i stories", "cv.o3": "Film i TV", "cv.o4": "Print i OOH", "cv.p1": "Kreacja", "cv.p2": "Preprodukcja", "cv.p3": "Assety", "cv.p4": "Montaż", "cv.p5": "Animacja", "cv.p6": "VFX / Online", "cv.p7": "Korekcja kolorów", "cv.p8": "Dostawa", "cv.ac1": "Licencja aktywna", "cv.ac2": "Zgoda udokumentowana", "team.alt": "Zespół Humanverse"}, "en": {"nav.menu": "Menu", "nav.creative": "Creative", "nav.production": "Production", "nav.team": "Team", "nav.cta": "Let's talk", "hero.t1": "Humanizing", "hero.t2": "AI.", "hero.tag": "A complete AI-based creative package for marketing.", "hero.cta1": "Start with one campaign", "hero.cta2": "Meet the team", "hero.p1": "The biggest independent AI video production company in Poland.", "hero.p2": "From a team of three to thirty specialists in two years.", "hero.p3": "AI videos produced in 2026 alone.", "pos.n1": "Not just a production house.", "pos.n2": "Not just an ad agency.", "pos.n3": "Not just post-production.", "pos.n4": "A complete AI-based creative package for marketing.", "pos.lead": "High-budget films, automated content at scale and licensed faces, plus everything in between: storyboard, animatic, final film. One partner for the whole creative and production process.", "pos.hv": "High-budget films and creative supervision", "pos.jd": "Automated content at scale", "pos.ac": "Licensed faces", "pos.acp": "A separate company. Humanverse develops its technology.", "team.t": "The team", "team.s": "<span class=\"nb\">Three people <span class=\"arr\">→<\/span><\/span> thirty in two years.", "team.b": "Sales, Client Service and Creative built in-house. Remote HQ, Warsaw and Sopot.", "team.g1": "We grew with our clients.", "team.g2": "Every insight became something new.", "team.q1": "Whose face is this?", "team.q2": "We need thousands of assets, not one film.", "team.q3": "We need the idea too, not just the execution.", "team.uc": "We produced UniCredit's campaign, the biggest AI-driven ad campaign in Poland to date.", "cr.k": "Creative", "cr.t1": "Idea first.", "cr.t2": "Then the tool.", "cr.s1": "Inside every production.", "cr.s2": "Creative supervision of the studio: idea, script, look, final cut.", "cr.l": "We are not an ad agency. We work inside every production and make sure every frame answers to the idea, from the first draft to the final cut.", "cr.a.t": "We audit ideas and scripts", "cr.a.b": "From the agency and from the client, before anything goes into production.", "cr.p.t": "We polish the creative for AI", "cr.p.b": "So it fits our pipeline and plays to what AI does best, without losing the idea.", "cr.st1": "Idea", "cr.st2": "Script", "cr.st3": "Look", "cr.st4": "Final cut", "pr.k": "Production", "pr.t1": "Purpose", "pr.t2": "over novelty", "pr.s": "The tool fits the vision. Never the other way around.", "pr.l1": "Live action", "pr.l1d": "Real set, real emotion, AI in post.", "pr.l2": "Hybrid", "pr.l2d": "Real performance, generated world.", "pr.l3": "Full AI", "pr.l3d": "Impossible visuals, extreme scale.", "pr.fam": "We designed every AI production process to feel familiar:", "pr.c1": "Creative", "pr.c2": "Pre-production", "pr.c3": "Assets", "pr.c4": "Edit", "pr.c5": "Animation", "pr.c6": "VFX / Online", "pr.c7": "Grade", "pr.c8": "Delivery", "pr.master": "One master, every market: language versions and market-specific variants from the same material.", "rd.t1": "R&amp;D isn't a lab. It's every project.", "rd.t2": "We learn on the job, not in isolation.", "rd.d1": "Every production tests something new: models, pipelines, tools.", "rd.d2": "What works goes straight into the next project.", "rd.d3": "Academic collaboration with PJAIT, and R&amp;D with model and platform developers.", "jd.t1": "Built around", "jd.t2": "your brand.", "jd.s": "Not an off-the-shelf tool that fits your process in a few percent.", "jd.l": "We set jeden.ai up around your products, data, brand guidelines and team. At its heart is a node-based system: every step is a block, and blocks connect into any workflow.", "jd.r": "<strong>Built for retail.<\/strong> One product database, every format, every promo cycle. Generated automatically, approved by people.", "jd.cta": "Book a jeden.ai demo", "jd.f1": "Your business", "jd.f1a": "Product database", "jd.f1b": "Brand voice &amp; guidelines", "jd.f1c": "Your team's brief", "jd.f2": "jeden.ai nodes", "jd.f2a": "Image models", "jd.f2b": "Video models", "jd.f2c": "Text &amp; voice", "jd.f2d": "Anything with an API", "jd.f3": "Any format", "jd.f3a": "E-commerce", "jd.f3b": "Social &amp; stories", "jd.f3c": "Film &amp; TV", "jd.f3d": "Print &amp; OOH", "ap.k": "How we think", "ap.t1": "We don't sell AI.", "ap.t2": "We sell people.", "ap.l": "Human work, human faces, human support. Business goal first, technology second.", "ap.v1": "Relationships are everything.", "ap.v1d": "At the AIVerse Conference our clients shared their own sales results on stage.", "ap.v2": "<span class=\"nb\">Listen <span class=\"arr\">→<\/span><\/span> <span class=\"nb\">understand <span class=\"arr\">→<\/span><\/span> propose.", "ap.v2d": "Sales, Client Service and Creative work as one team.", "ap.v3": "Honest about what AI can and can't do.", "ap.v3d": "We say it before the project starts, not after.", "ap.v4": "Free to start.", "ap.v4d": "Clients pay where we add real value.", "ap.v5": "Familiar process. New engine.", "ap.v5d": "Your team works the way it knows. AI runs underneath.", "ap.v6": "Relationships over transactions.", "ap.v6d": "One point of contact, shared targets, long-term thinking.", "ap.q": "“AI changes how we produce. It doesn't change why people buy.”", "ap.qc": "Daniel Joński, Head of Sales", "ap.b1": "Our bet:", "ap.b2": "a global marketing services company built on people.", "ap.b3": "A revolution is happening. We won't race big tech. In all this chaos we deliver human services, and that still scales.", "bt.t1": "How we're", "bt.t2": "built", "bt.s": "One team. From first conversation to final master.", "bt.waw": "Warsaw", "bt.fk": "Founders", "bt.f1": "Film director by background and serial entrepreneur. A voice on AI and the AI Act.", "bt.f2": "About 20 years as a creative, multiple Effie Award winner, speaker on AI in advertising.", "bt.f3": "13 years in software engineering. Built Humanverse's production pipelines from scratch.", "bt.d1": "Business goal first, technology second.", "bt.d2": "Putting things in motion: relationships, growth, action, guidance.", "bt.d3": "50 years of creative direction, inside every production.", "bt.d4": "Together they run every production at Humanverse.", "bt.d5": "Every production tests something new. What works goes into the next one.", "ca.k": "Careers", "ca.t1": "The future is now.", "ca.t2": "Build it with us.", "ca.l": "Ideas, ownership, freedom, growth. Remote-first, but we get together regularly.", "ca.d1": "You ship real projects to real clients, every week.", "ca.d2": "You see business impact and celebrate milestones.", "ca.d3": "You grow in a company that acts like a startup.", "ca.copy": "Copy address", "tr.t1": "Built", "tr.t2": "on trust", "tr.e": "Ethics", "tr.ed": "<span class=\"ph\">licensed, consented faces<\/span> <span class=\"ph\">we don't pretend<\/span> <span class=\"ph\">no shortcuts on rights<\/span>", "tr.x": "Transparency", "tr.xd": "<span class=\"ph\">clear timelines and budgets<\/span> <span class=\"ph\">honest about what AI can do<\/span> <span class=\"ph\">one shared status<\/span>", "tr.p": "Partnership", "tr.pd": "<span class=\"ph\">one point of contact<\/span> <span class=\"ph\">proactive ideas<\/span> <span class=\"ph\">in it for the long run<\/span>", "tr.s": "Safety is the absolute foundation of Humanverse: clear legal rights, ethical AI and full transparency. Article 50 of the AI Act has applied since 2 August 2026. We help brands label AI content and work with law firms and industry bodies on a common standard.", "tr.q": "“AI provides the tools. We provide the humanity.”", "ac.t1": "Brands want AI.", "ac.t2": "Their lawyers want answers.", "ac.l": "AlterCast is the world's first global marketplace for licensing real human likeness in the AI era. A legal “Airbnb for faces”.", "ac.c1": "No consent", "ac.c1s": "the problem with generated faces", "ac.c1d": "Generative models create faces with no one behind them. A face that looks like a real person is a lawsuit waiting to happen.", "ac.c2": "2 weeks", "ac.c2s": "the timeline of traditional casting", "ac.c2d": "Casting, contracts, shoot, for every market. AI production needs a cleared face in minutes.", "ac.c3": "Same face", "ac.c3s": "every brand, every model, every campaign", "ac.c3d": "Generative models converge on one look: too symmetrical, too smooth, too polished.", "ac.s": "Real people license their face, define exactly what it can and cannot be used for, and get paid every time it works.", "ac.b": "Brands browse, license in a few clicks and produce, with consent documented from the first click. One marketplace, faces from every market. Live since 11 September 2026.", "ac.n": "AlterCast is a separate company. Humanverse builds and develops its technology.", "ac.cta": "Go to altercast.ai <span class=\"arr ne\">↗<\/span>", "ct.t1": "Start with", "ct.t2": "one campaign.", "ct.l": "A pilot on one campaign. Clear scope. Clear cost per asset. Measured against how you produce today.", "ct.topic": "Topic", "ct.tp1": "Production", "ct.tp2": "Creative", "ct.tp4": "Partnership", "ct.tp5": "Careers", "ct.name": "Name", "ct.mail": "Work email", "ct.msg": "Message", "ct.send": "Send message", "ft.c": "Humanverse v3 · website concept · October 2026", "ft.n": "AlterCast is a separate company.", "pn.tr": "Colour transitions", "pn.soft": "Smooth", "pn.hard": "Sharp", "pn.int": "Grid strength", "pn.mode": "Grid mode", "pn.anim": "Animate the grid", "pn.btn": "Concept panel", "nav.aria": "Main", "nav.lang": "Language", "ct.mailph": "anna@company.com", "ct.msgph": "One campaign for Q1: a 30-second film and cutdowns for social.", "doc.title": "Humanverse v3", "ct.ok": "This is a prototype. In production the message goes to the person responsible for the topic you picked.", "ca.copied": "Copied", "mode.fabric": "Fabric", "mode.calm": "Calm", "mode.modules": "Modules", "mode.frames": "Storyboard frames", "mode.process": "Production process", "mode.pipeline": "jeden.ai pipeline", "mode.face": "AlterCast face", "mode.logo": "Humanverse mark", "cv.module": "module", "cv.scene": "scene", "cv.shot": "shot", "cv.idea": "Idea", "cv.script": "Script", "cv.look": "Look", "cv.cut": "Final cut", "cv.in1": "Product database", "cv.in2": "Brand guidelines", "cv.in3": "Team brief", "cv.n1": "Image models", "cv.n2": "Video models", "cv.n3": "Text & voice", "cv.n4": "Any API", "cv.o1": "E-commerce", "cv.o2": "Social & stories", "cv.o3": "Film & TV", "cv.o4": "Print & OOH", "cv.p1": "Creative", "cv.p2": "Pre-production", "cv.p3": "Assets", "cv.p4": "Edit", "cv.p5": "Animation", "cv.p6": "VFX / Online", "cv.p7": "Grade", "cv.p8": "Delivery", "cv.ac1": "Licence active", "cv.ac2": "Consent documented", "team.alt": "The Humanverse team"}};</script>
+<script>window.HV_I18N = {"pl": {"nav.creative": "Kreacja", "nav.production": "Produkcja", "nav.team": "Zespół", "nav.cta": "Porozmawiajmy", "nav.menu": "Menu", "nav.work": "Realizacje", "hero.t1": "Humanizujemy", "hero.t2": "AI.", "hero.tag": "Kompletny pakiet kreatywny AI dla marketingu.", "hero.cta1": "Zacznij od jednej kampanii", "hero.cta2": "Poznaj zespół", "reel.t": "Showreel 2026", "reel.note": "Autoplay, bez dźwięku, w&nbsp;pętli, od krawędzi do krawędzi. Tu trafi plik z&nbsp;reelem.", "reel.aria": "Showreel Humanverse", "work.k": "Realizacje", "work.t1": "Najnowsze", "work.t2": "produkcje.", "work.l": "Dziewięć naszych ostatnich produkcji. Kliknij, żeby zobaczyć film i&nbsp;opis projektu.", "work.slate": "Pętla · 3&nbsp;s", "work.close": "Zamknij", "pos.n1": "Nie tylko dom produkcyjny.", "pos.n2": "Nie tylko agencja reklamowa.", "pos.n3": "Nie tylko postprodukcja.", "pos.n4": "Kompletny pakiet kreatywny AI dla marketingu.", "pos.lead": "Filmy wysokobudżetowe, automatyczna produkcja treści na dużą skalę i&nbsp;licencjonowane twarze. A&nbsp;wszystko pomiędzy: storyboard, animatik, gotowy film. Jeden partner na cały proces kreacji i&nbsp;produkcji.", "pos.hv": "Filmy wysokobudżetowe i&nbsp;nadzór kreatywny", "pos.jd": "Automatyczna produkcja treści na dużą skalę", "pos.ac": "Licencjonowane twarze", "pos.acp": "Osobna firma. Humanverse rozwija jej technologię.", "team.t": "Zespół", "team.s": "<span class=\"nb\">Trzy osoby <span class=\"arr\">→<\/span><\/span> trzydzieści w&nbsp;dwa lata.", "team.b": "Sprzedaż, Client Service i&nbsp;Creative zbudowaliśmy sami. Remote HQ, Warszawa i&nbsp;Sopot.", "team.g1": "Rośliśmy razem z&nbsp;klientami.", "team.g2": "Z&nbsp;każdego spostrzeżenia rodziło się coś nowego.", "team.q1": "Czyja to twarz?", "team.q2": "Potrzebujemy tysięcy materiałów, nie jednego filmu.", "team.q3": "Potrzebujemy też pomysłu, nie tylko realizacji.", "team.uc": "Wyprodukowaliśmy kampanię UniCredit. To jak dotąd największa w&nbsp;Polsce kampania reklamowa oparta na AI.", "cr.k": "Kreacja", "cr.t1": "Najpierw pomysł.", "cr.t2": "Potem narzędzie.", "cr.s1": "Wewnątrz każdej produkcji.", "cr.s2": "Nadzór kreatywny nad studiem: pomysł, scenariusz, look, montaż finalny.", "cr.l": "Nie jesteśmy agencją reklamową. Pracujemy wewnątrz każdej produkcji i&nbsp;pilnujemy, żeby każdy kadr wynikał z&nbsp;pomysłu, od pierwszego szkicu po montaż finalny.", "cr.a.t": "Audytujemy pomysły i&nbsp;scenariusze", "cr.a.b": "Te od agencji i&nbsp;te od klienta, zanim cokolwiek trafi do produkcji.", "cr.p.t": "Szlifujemy kreację pod AI", "cr.p.b": "Żeby pasowała do naszego procesu i&nbsp;wykorzystywała mocne strony AI, nie gubiąc pomysłu.", "cr.st1": "Pomysł", "cr.st2": "Scenariusz", "cr.st3": "Look", "cr.st4": "Montaż finalny", "pr.k": "Produkcja", "pr.t1": "Cel", "pr.t2": "ponad nowinkami", "pr.s": "Narzędzie dopasowujemy do wizji. Nigdy odwrotnie.", "pr.l1": "Live action", "pr.l1d": "Prawdziwy plan zdjęciowy, prawdziwe emocje, AI w&nbsp;postprodukcji.", "pr.l2": "Hybryda", "pr.l2d": "Prawdziwa gra aktorska, wygenerowany świat.", "pr.l3": "W&nbsp;pełni AI", "pr.l3d": "Niemożliwe wizualia, ekstremalna skala.", "pr.fam": "Każdy proces produkcji z&nbsp;AI zaprojektowaliśmy tak, żeby wyglądał znajomo:", "pr.c1": "Kreacja", "pr.c2": "Preprodukcja", "pr.c3": "Assety", "pr.c4": "Montaż", "pr.c5": "Animacja", "pr.c6": "VFX / Online", "pr.c7": "Korekcja kolorów", "pr.c8": "Dostawa", "pr.master": "Jeden master dla każdego rynku: wersje językowe i&nbsp;warianty rynkowe z&nbsp;tego samego materiału.", "rd.t1": "R&amp;D to nie laboratorium. To każdy projekt.", "rd.t2": "Uczymy się w&nbsp;trakcie pracy, nie w&nbsp;izolacji.", "rd.d1": "Każda produkcja testuje coś nowego: modele, procesy, narzędzia.", "rd.d2": "To, co działa, trafia od razu do kolejnego projektu.", "rd.d3": "Współpraca akademicka z&nbsp;PJATK oraz R&amp;D z&nbsp;twórcami modeli i&nbsp;platform.", "jd.t1": "Szyte na miarę", "jd.t2": "twojej marki.", "jd.s": "Nie narzędzie z&nbsp;półki, które pasuje do twojego procesu zaledwie w&nbsp;kilku procentach.", "jd.l": "Dopasowujemy jeden.ai do twoich produktów, danych, wytycznych marki i&nbsp;zespołu. W&nbsp;jego sercu jest system oparty na węzłach: każdy krok to blok, a&nbsp;bloki łączą się w&nbsp;dowolny proces.", "jd.r": "<strong>Stworzone z&nbsp;myślą o&nbsp;retailu.<\/strong> Jedna baza produktów, każdy format, każdy cykl promocyjny. Generowane automatycznie, zatwierdzane przez ludzi.", "jd.cta": "Umów demo jeden.ai", "jd.f1": "Twoja firma", "jd.f1a": "Baza produktów", "jd.f1b": "Ton marki i&nbsp;wytyczne", "jd.f1c": "Brief twojego zespołu", "jd.f2": "Węzły jeden.ai", "jd.f2a": "Modele obrazu", "jd.f2b": "Modele wideo", "jd.f2c": "Tekst i&nbsp;głos", "jd.f2d": "Wszystko, co ma API", "jd.f3": "Dowolny format", "jd.f3a": "E-commerce", "jd.f3b": "Social i&nbsp;stories", "jd.f3c": "Film i&nbsp;TV", "jd.f3d": "Print i&nbsp;OOH", "ap.k": "Jak myślimy", "ap.t1": "Nie sprzedajemy AI.", "ap.t2": "Sprzedajemy ludzką pracę.", "ap.l": "Ludzka praca, ludzkie twarze, ludzkie wsparcie. Najpierw cel biznesowy, potem technologia.", "ap.v1": "Relacje to wszystko.", "ap.v1d": "Na AIVerse Conference nasi klienci dzielili się ze sceny własnymi wynikami sprzedaży.", "ap.v2": "<span class=\"nb\">Słuchamy <span class=\"arr\">→<\/span><\/span> <span class=\"nb\">rozumiemy <span class=\"arr\">→<\/span><\/span> proponujemy.", "ap.v2d": "Sprzedaż, Client Service i&nbsp;Creative działają jak jeden zespół.", "ap.v3": "Szczerze o&nbsp;tym, co AI potrafi, a&nbsp;czego nie.", "ap.v3d": "Mówimy o&nbsp;tym przed startem projektu, a&nbsp;nie po fakcie.", "ap.v4": "Start za darmo.", "ap.v4d": "Klienci płacą tam, gdzie wnosimy realną wartość.", "ap.v5": "Znajomy proces. Nowy silnik.", "ap.v5d": "Twój zespół pracuje w&nbsp;znany sobie sposób. AI działa pod spodem.", "ap.v6": "Relacje ponad transakcjami.", "ap.v6d": "Jedna osoba do kontaktu, wspólne cele, myślenie długofalowe.", "ap.q": "„AI zmienia to, jak produkujemy. Nie zmienia tego, dlaczego ludzie kupują.”", "ap.qc": "Daniel Joński, Head of Sales", "ap.b1": "Nasz zakład:", "ap.b2": "globalna firma usług marketingowych zbudowana na&nbsp;ludziach.", "ap.b3": "Trwa rewolucja. Nie będziemy się ścigać z&nbsp;technologicznymi gigantami. W&nbsp;całym tym chaosie świadczymy usługi oparte na ludziach, a&nbsp;to wciąż się skaluje.", "bt.t1": "Jak jesteśmy", "bt.t2": "zbudowani", "bt.s": "Jeden zespół. Od pierwszej rozmowy do finalnego mastera.", "bt.waw": "Warszawa", "bt.dk": "Działy", "bt.fk": "Założyciele", "bt.f1": "Z&nbsp;zawodu reżyser filmowy, seryjny przedsiębiorca. Zabiera głos w&nbsp;sprawie AI i&nbsp;AI Act.", "bt.f2": "Około 20&nbsp;lat w&nbsp;kreacji, wielokrotny laureat nagrody Effie, prelegent na temat AI w&nbsp;reklamie.", "bt.f3": "13&nbsp;lat w&nbsp;inżynierii oprogramowania. Od zera zbudował procesy produkcyjne Humanverse.", "bt.d1": "Najpierw cel biznesowy, potem technologia.", "bt.d2": "Wprawiamy wszystko w&nbsp;ruch: relacje, rozwój, działanie, wskazywanie kierunku.", "bt.d3": "50&nbsp;lat kierowania kreacją, wewnątrz każdej produkcji.", "bt.d4": "Razem prowadzą każdą produkcję w&nbsp;Humanverse.", "bt.d5": "Każda produkcja testuje coś nowego. To, co działa, trafia do następnej.", "ca.k": "Kariera", "ca.t1": "Przyszłość dzieje się teraz.", "ca.t2": "Buduj ją z&nbsp;nami.", "ca.l": "Pomysły, sprawczość, wolność, rozwój. Pracujemy głównie zdalnie, ale regularnie się spotykamy.", "ca.d1": "Co tydzień dowozisz prawdziwe projekty prawdziwym klientom.", "ca.d2": "Widzisz wpływ na biznes i&nbsp;świętujesz kamienie milowe.", "ca.d3": "Rozwijasz się w&nbsp;firmie, która działa jak startup.", "ca.copy": "Kopiuj adres", "tr.t1": "Zbudowani", "tr.t2": "na zaufaniu", "tr.e": "Etyka", "tr.ed": "<span class=\"ph\">twarze z&nbsp;licencją i&nbsp;zgodą<\/span> <span class=\"ph\">nie udajemy<\/span> <span class=\"ph\">żadnych skrótów w&nbsp;kwestii praw<\/span>", "tr.x": "Przejrzystość", "tr.xd": "<span class=\"ph\">jasne harmonogramy i&nbsp;budżety<\/span> <span class=\"ph\">szczerze o&nbsp;tym, co potrafi AI<\/span> <span class=\"ph\">jeden wspólny status<\/span>", "tr.p": "Partnerstwo", "tr.pd": "<span class=\"ph\">jedna osoba do kontaktu<\/span> <span class=\"ph\">pomysły z&nbsp;własnej inicjatywy<\/span> <span class=\"ph\">gramy na długi dystans<\/span>", "tr.s": "Bezpieczeństwo to absolutny fundament Humanverse: jasno określone prawa, etyczna AI i&nbsp;pełna przejrzystość. Artykuł 50 AI Act obowiązuje od 2&nbsp;sierpnia 2026&nbsp;r. Pomagamy markom oznaczać treści generowane przez AI. Razem z&nbsp;kancelariami prawnymi i&nbsp;organizacjami branżowymi pracujemy nad wspólnym standardem.", "tr.q": "„AI daje narzędzia. My dajemy człowieczeństwo.”", "ac.t1": "Marki chcą AI.", "ac.t2": "Ich prawnicy chcą odpowiedzi.", "ac.l": "AlterCast to pierwszy na świecie globalny marketplace do licencjonowania wizerunku prawdziwych ludzi w&nbsp;erze AI. Legalny „Airbnb dla twarzy”.", "ac.c1": "Brak zgody", "ac.c1s": "problem generowanych twarzy", "ac.c1d": "Modele generatywne tworzą twarze, za którymi nikt nie stoi. Twarz, która wygląda jak prawdziwa osoba, to pozew czekający na złożenie.", "ac.c2": "2&nbsp;tygodnie", "ac.c2s": "czas tradycyjnego castingu", "ac.c2d": "Casting, umowy, zdjęcia, dla każdego rynku. Produkcja z&nbsp;AI potrzebuje twarzy z&nbsp;uregulowanymi prawami w&nbsp;kilka minut.", "ac.c3": "Ta sama twarz", "ac.c3s": "każda marka, każdy model, każda kampania", "ac.c3d": "Modele generatywne dążą do jednego wyglądu: zbyt symetrycznego, zbyt gładkiego, zbyt wypolerowanego.", "ac.s": "Prawdziwi ludzie licencjonują swoją twarz i&nbsp;dokładnie określają, do czego wolno jej używać, a&nbsp;do czego nie. Za każdym razem, gdy ich twarz pracuje, dostają zapłatę.", "ac.b": "Marki przeglądają, licencjonują w&nbsp;kilka kliknięć i&nbsp;produkują, a&nbsp;zgoda jest udokumentowana od pierwszego kliknięcia. Jeden marketplace, twarze z&nbsp;każdego rynku. Działa od 11&nbsp;września 2026&nbsp;r.", "ac.n": "AlterCast to osobna firma. Humanverse buduje i&nbsp;rozwija jej technologię.", "ac.cta": "Przejdź do altercast.ai <span class=\"arr ne\">↗<\/span>", "ct.t1": "Zacznij od", "ct.t2": "jednej kampanii.", "ct.l": "Pilotaż na jednej kampanii. Jasny zakres. Jasny koszt jednego materiału. Mierzymy to względem tego, jak produkujesz dziś.", "ct.topic": "Temat", "ct.tp1": "Produkcja", "ct.tp2": "Kreacja", "ct.tp4": "Partnerstwo", "ct.tp5": "Kariera", "ct.name": "Imię i&nbsp;nazwisko", "ct.mail": "Służbowy e-mail", "ct.msg": "Wiadomość", "ct.send": "Wyślij wiadomość", "ft.c": "Humanverse v3 · koncept strony · październik 2026", "ft.n": "AlterCast to osobna firma.", "pn.tr": "Przejścia kolorów", "pn.soft": "Płynne", "pn.hard": "Ostre", "pn.int": "Siła siatki", "pn.mode": "Tryb siatki", "pn.anim": "Animuj siatkę", "pn.btn": "Panel konceptu", "nav.aria": "Główna", "nav.lang": "Język", "ct.mailph": "anna@firma.pl", "ct.msgph": "Jedna kampania na Q1: 30-sekundowy film i wersje skrócone do social mediów.", "doc.title": "Humanverse v3", "ct.ok": "To prototyp. W wersji docelowej wiadomość trafi do osoby odpowiedzialnej za wybrany temat.", "ca.copied": "Skopiowano", "mode.fabric": "Tkanina", "mode.calm": "Spokój", "mode.modules": "Moduły", "mode.frames": "Kadry storyboardu", "mode.process": "Proces produkcji", "mode.pipeline": "Przepływ jeden.ai", "mode.face": "Twarz AlterCast", "mode.logo": "Znak Humanverse", "cv.module": "moduł", "cv.scene": "scena", "cv.shot": "ujęcie", "cv.idea": "Pomysł", "cv.script": "Scenariusz", "cv.look": "Look", "cv.cut": "Montaż finalny", "cv.in1": "Baza produktów", "cv.in2": "Wytyczne marki", "cv.in3": "Brief zespołu", "cv.n1": "Modele obrazu", "cv.n2": "Modele wideo", "cv.n3": "Tekst i głos", "cv.n4": "Dowolne API", "cv.o1": "E-commerce", "cv.o2": "Social i stories", "cv.o3": "Film i TV", "cv.o4": "Print i OOH", "cv.p1": "Kreacja", "cv.p2": "Preprodukcja", "cv.p3": "Assety", "cv.p4": "Montaż", "cv.p5": "Animacja", "cv.p6": "VFX / Online", "cv.p7": "Korekcja kolorów", "cv.p8": "Dostawa", "cv.ac1": "Licencja aktywna", "cv.ac2": "Zgoda udokumentowana", "team.alt": "Zespół Humanverse", "work.01.t": "Projekt 01", "work.01.s": "Klient · format · rok", "work.01.d": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt. Każdy z dziewięciu projektów ma własny tytuł, podtytuł, opis, pętlę i film.", "work.02.t": "Projekt 02", "work.02.s": "Klient · format · rok", "work.02.d": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.", "work.03.t": "Projekt 03", "work.03.s": "Klient · format · rok", "work.03.d": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.", "work.04.t": "Projekt 04", "work.04.s": "Klient · format · rok", "work.04.d": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.", "work.05.t": "Projekt 05", "work.05.s": "Klient · format · rok", "work.05.d": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.", "work.06.t": "Projekt 06", "work.06.s": "Klient · format · rok", "work.06.d": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.", "work.07.t": "Projekt 07", "work.07.s": "Klient · format · rok", "work.07.d": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.", "work.08.t": "Projekt 08", "work.08.s": "Klient · format · rok", "work.08.d": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt.", "work.09.t": "Projekt 09", "work.09.s": "Klient · format · rok", "work.09.d": "Miejsce na opis projektu: wyzwanie, co zrobiliśmy i jaki był efekt."}, "en": {"nav.menu": "Menu", "nav.work": "Work", "nav.creative": "Creative", "nav.production": "Production", "nav.team": "Team", "nav.cta": "Let's talk", "hero.t1": "Humanizing", "hero.t2": "AI.", "hero.tag": "A complete AI-based creative package for marketing.", "hero.cta1": "Start with one campaign", "hero.cta2": "Meet the team", "reel.t": "Showreel 2026", "reel.note": "Autoplay, muted, looping, edge to edge. The reel file goes here.", "work.k": "Work", "work.t1": "Latest", "work.t2": "productions.", "work.l": "Nine of our latest productions. Click one to see the film and what we did.", "work.slate": "Loop · 3 s", "work.01.t": "Project 01", "work.01.s": "Client · format · year", "work.01.d": "Room for the project description: the challenge, what we did and the result. Each of the nine projects has its own title, subtitle, description, loop and film.", "work.02.t": "Project 02", "work.02.s": "Client · format · year", "work.02.d": "Room for the project description: the challenge, what we did and the result.", "work.03.t": "Project 03", "work.03.s": "Client · format · year", "work.03.d": "Room for the project description: the challenge, what we did and the result.", "work.04.t": "Project 04", "work.04.s": "Client · format · year", "work.04.d": "Room for the project description: the challenge, what we did and the result.", "work.05.t": "Project 05", "work.05.s": "Client · format · year", "work.05.d": "Room for the project description: the challenge, what we did and the result.", "work.06.t": "Project 06", "work.06.s": "Client · format · year", "work.06.d": "Room for the project description: the challenge, what we did and the result.", "work.07.t": "Project 07", "work.07.s": "Client · format · year", "work.07.d": "Room for the project description: the challenge, what we did and the result.", "work.08.t": "Project 08", "work.08.s": "Client · format · year", "work.08.d": "Room for the project description: the challenge, what we did and the result.", "work.09.t": "Project 09", "work.09.s": "Client · format · year", "work.09.d": "Room for the project description: the challenge, what we did and the result.", "pos.n1": "Not just a production house.", "pos.n2": "Not just an ad agency.", "pos.n3": "Not just post-production.", "pos.n4": "A complete AI-based creative package for marketing.", "pos.lead": "High-budget films, automated content at scale and licensed faces, plus everything in between: storyboard, animatic, final film. One partner for the whole creative and production process.", "pos.hv": "High-budget films and creative supervision", "pos.jd": "Automated content at scale", "pos.ac": "Licensed faces", "pos.acp": "A separate company. Humanverse develops its technology.", "team.t": "The team", "team.s": "<span class=\"nb\">Three people <span class=\"arr\">→<\/span><\/span> thirty in two years.", "team.b": "Sales, Client Service and Creative built in-house. Remote HQ, Warsaw and Sopot.", "team.g1": "We grew with our clients.", "team.g2": "Every insight became something new.", "team.q1": "Whose face is this?", "team.q2": "We need thousands of assets, not one film.", "team.q3": "We need the idea too, not just the execution.", "team.uc": "We produced UniCredit's campaign, the biggest AI-driven ad campaign in Poland to date.", "cr.k": "Creative", "cr.t1": "Idea first.", "cr.t2": "Then the tool.", "cr.s1": "Inside every production.", "cr.s2": "Creative supervision of the studio: idea, script, look, final cut.", "cr.l": "We are not an ad agency. We work inside every production and make sure every frame answers to the idea, from the first draft to the final cut.", "cr.a.t": "We audit ideas and scripts", "cr.a.b": "From the agency and from the client, before anything goes into production.", "cr.p.t": "We polish the creative for AI", "cr.p.b": "So it fits our pipeline and plays to what AI does best, without losing the idea.", "cr.st1": "Idea", "cr.st2": "Script", "cr.st3": "Look", "cr.st4": "Final cut", "pr.k": "Production", "pr.t1": "Purpose", "pr.t2": "over novelty", "pr.s": "The tool fits the vision. Never the other way around.", "pr.l1": "Live action", "pr.l1d": "Real set, real emotion, AI in post.", "pr.l2": "Hybrid", "pr.l2d": "Real performance, generated world.", "pr.l3": "Full AI", "pr.l3d": "Impossible visuals, extreme scale.", "pr.fam": "We designed every AI production process to feel familiar:", "pr.c1": "Creative", "pr.c2": "Pre-production", "pr.c3": "Assets", "pr.c4": "Edit", "pr.c5": "Animation", "pr.c6": "VFX / Online", "pr.c7": "Grade", "pr.c8": "Delivery", "pr.master": "One master, every market: language versions and market-specific variants from the same material.", "rd.t1": "R&amp;D isn't a lab. It's every project.", "rd.t2": "We learn on the job, not in isolation.", "rd.d1": "Every production tests something new: models, pipelines, tools.", "rd.d2": "What works goes straight into the next project.", "rd.d3": "Academic collaboration with PJAIT, and R&amp;D with model and platform developers.", "jd.t1": "Built around", "jd.t2": "your brand.", "jd.s": "Not an off-the-shelf tool that fits your process in a few percent.", "jd.l": "We set jeden.ai up around your products, data, brand guidelines and team. At its heart is a node-based system: every step is a block, and blocks connect into any workflow.", "jd.r": "<strong>Built for retail.<\/strong> One product database, every format, every promo cycle. Generated automatically, approved by people.", "jd.cta": "Book a jeden.ai demo", "jd.f1": "Your business", "jd.f1a": "Product database", "jd.f1b": "Brand voice &amp; guidelines", "jd.f1c": "Your team's brief", "jd.f2": "jeden.ai nodes", "jd.f2a": "Image models", "jd.f2b": "Video models", "jd.f2c": "Text &amp; voice", "jd.f2d": "Anything with an API", "jd.f3": "Any format", "jd.f3a": "E-commerce", "jd.f3b": "Social &amp; stories", "jd.f3c": "Film &amp; TV", "jd.f3d": "Print &amp; OOH", "ap.k": "How we think", "ap.t1": "We don't sell AI.", "ap.t2": "We sell people.", "ap.l": "Human work, human faces, human support. Business goal first, technology second.", "ap.v1": "Relationships are everything.", "ap.v1d": "At the AIVerse Conference our clients shared their own sales results on stage.", "ap.v2": "<span class=\"nb\">Listen <span class=\"arr\">→<\/span><\/span> <span class=\"nb\">understand <span class=\"arr\">→<\/span><\/span> propose.", "ap.v2d": "Sales, Client Service and Creative work as one team.", "ap.v3": "Honest about what AI can and can't do.", "ap.v3d": "We say it before the project starts, not after.", "ap.v4": "Free to start.", "ap.v4d": "Clients pay where we add real value.", "ap.v5": "Familiar process. New engine.", "ap.v5d": "Your team works the way it knows. AI runs underneath.", "ap.v6": "Relationships over transactions.", "ap.v6d": "One point of contact, shared targets, long-term thinking.", "ap.q": "“AI changes how we produce. It doesn't change why people buy.”", "ap.qc": "Daniel Joński, Head of Sales", "ap.b1": "Our bet:", "ap.b2": "a global marketing services company built on people.", "ap.b3": "A revolution is happening. We won't race big tech. In all this chaos we deliver human services, and that still scales.", "bt.t1": "How we're", "bt.t2": "built", "bt.s": "One team. From first conversation to final master.", "bt.waw": "Warsaw", "bt.dk": "Departments", "bt.d1": "Business goal first, technology second.", "bt.d2": "Putting things in motion: relationships, growth, action, guidance.", "bt.d3": "50 years of creative direction, inside every production.", "bt.d4": "Together they run every production at Humanverse.", "bt.d5": "Every production tests something new. What works goes into the next one.", "bt.fk": "Founders", "bt.f1": "Film director by background and serial entrepreneur. A voice on AI and the AI Act.", "bt.f2": "About 20 years as a creative, multiple Effie Award winner, speaker on AI in advertising.", "bt.f3": "13 years in software engineering. Built Humanverse's production pipelines from scratch.", "ca.k": "Careers", "ca.t1": "The future is now.", "ca.t2": "Build it with us.", "ca.l": "Ideas, ownership, freedom, growth. Remote-first, but we get together regularly.", "ca.d1": "You ship real projects to real clients, every week.", "ca.d2": "You see business impact and celebrate milestones.", "ca.d3": "You grow in a company that acts like a startup.", "ca.copy": "Copy address", "tr.t1": "Built", "tr.t2": "on trust", "tr.e": "Ethics", "tr.ed": "<span class=\"ph\">licensed, consented faces<\/span> <span class=\"ph\">we don't pretend<\/span> <span class=\"ph\">no shortcuts on rights<\/span>", "tr.x": "Transparency", "tr.xd": "<span class=\"ph\">clear timelines and budgets<\/span> <span class=\"ph\">honest about what AI can do<\/span> <span class=\"ph\">one shared status<\/span>", "tr.p": "Partnership", "tr.pd": "<span class=\"ph\">one point of contact<\/span> <span class=\"ph\">proactive ideas<\/span> <span class=\"ph\">in it for the long run<\/span>", "tr.s": "Safety is the absolute foundation of Humanverse: clear legal rights, ethical AI and full transparency. Article 50 of the AI Act has applied since 2 August 2026. We help brands label AI content and work with law firms and industry bodies on a common standard.", "tr.q": "“AI provides the tools. We provide the humanity.”", "ac.t1": "Brands want AI.", "ac.t2": "Their lawyers want answers.", "ac.l": "AlterCast is the world's first global marketplace for licensing real human likeness in the AI era. A legal “Airbnb for faces”.", "ac.c1": "No consent", "ac.c1s": "the problem with generated faces", "ac.c1d": "Generative models create faces with no one behind them. A face that looks like a real person is a lawsuit waiting to happen.", "ac.c2": "2 weeks", "ac.c2s": "the timeline of traditional casting", "ac.c2d": "Casting, contracts, shoot, for every market. AI production needs a cleared face in minutes.", "ac.c3": "Same face", "ac.c3s": "every brand, every model, every campaign", "ac.c3d": "Generative models converge on one look: too symmetrical, too smooth, too polished.", "ac.s": "Real people license their face, define exactly what it can and cannot be used for, and get paid every time it works.", "ac.b": "Brands browse, license in a few clicks and produce, with consent documented from the first click. One marketplace, faces from every market. Live since 11 September 2026.", "ac.n": "AlterCast is a separate company. Humanverse builds and develops its technology.", "ac.cta": "Go to altercast.ai <span class=\"arr ne\">↗<\/span>", "ct.t1": "Start with", "ct.t2": "one campaign.", "ct.l": "A pilot on one campaign. Clear scope. Clear cost per asset. Measured against how you produce today.", "ct.topic": "Topic", "ct.tp1": "Production", "ct.tp2": "Creative", "ct.tp4": "Partnership", "ct.tp5": "Careers", "ct.name": "Name", "ct.mail": "Work email", "ct.msg": "Message", "ct.send": "Send message", "ft.c": "Humanverse v3 · website concept · October 2026", "ft.n": "AlterCast is a separate company.", "pn.tr": "Colour transitions", "pn.soft": "Smooth", "pn.hard": "Sharp", "pn.int": "Grid strength", "pn.mode": "Grid mode", "pn.anim": "Animate the grid", "pn.btn": "Concept panel", "nav.aria": "Main", "nav.lang": "Language", "ct.mailph": "anna@company.com", "ct.msgph": "One campaign for Q1: a 30-second film and cutdowns for social.", "work.close": "Close", "doc.title": "Humanverse v3", "reel.aria": "Humanverse showreel", "ct.ok": "This is a prototype. In production the message goes to the person responsible for the topic you picked.", "ca.copied": "Copied", "mode.fabric": "Fabric", "mode.calm": "Calm", "mode.modules": "Modules", "mode.frames": "Storyboard frames", "mode.process": "Production process", "mode.pipeline": "jeden.ai pipeline", "mode.face": "AlterCast face", "mode.logo": "Humanverse mark", "cv.module": "module", "cv.scene": "scene", "cv.shot": "shot", "cv.idea": "Idea", "cv.script": "Script", "cv.look": "Look", "cv.cut": "Final cut", "cv.in1": "Product database", "cv.in2": "Brand guidelines", "cv.in3": "Team brief", "cv.n1": "Image models", "cv.n2": "Video models", "cv.n3": "Text & voice", "cv.n4": "Any API", "cv.o1": "E-commerce", "cv.o2": "Social & stories", "cv.o3": "Film & TV", "cv.o4": "Print & OOH", "cv.p1": "Creative", "cv.p2": "Pre-production", "cv.p3": "Assets", "cv.p4": "Edit", "cv.p5": "Animation", "cv.p6": "VFX / Online", "cv.p7": "Grade", "cv.p8": "Delivery", "cv.ac1": "Licence active", "cv.ac2": "Consent documented", "team.alt": "The Humanverse team"}};</script>
 <script>
 (() => {
   'use strict';
@@ -1058,6 +1300,221 @@ address { font-style: normal; font-weight: 500; font-size: 14px; color: var(--fg
   }));
 
   apply();
+})();
+</script>
+<script>
+(() => {
+  'use strict';
+  // Work grid and its overlay, the reel placeholder's timecode, and motion control for every video on the page
+  // (reduced motion, the concept panel's "Animate" checkbox, pausing what is off screen).
+  const doc = document;
+  const root = doc.documentElement;
+  const reduceMQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+  const motionBox = doc.getElementById('motion');
+  let motionOn = !reduceMQ.matches;
+
+  // ---------- reel, loops and the slate timecode ----------
+  const reel = doc.querySelector('.reel');
+  const reelVideo = doc.querySelector('.reel-video');
+  const slate = doc.querySelector('.reel-slate');
+  const tcEl = slate && slate.querySelector('.reel-tc');
+  const videos = Array.from(doc.querySelectorAll('video.reel-video, video.work-loop'));
+  const inView = new Set();
+  // no player at all: no picture-in-picture or cast button over the reel and the loops
+  videos.forEach(v => { v.disablePictureInPicture = true; v.disableRemotePlayback = true; });
+
+  const syncVideo = v => {
+    const play = motionOn && inView.has(v) && !doc.hidden;
+    if (play && v.paused) {
+      const p = v.play();
+      if (p && p.catch) p.catch(() => { /* autoplay refused: the first frame stays */ });
+    } else if (!play && !v.paused) {
+      v.pause();
+    }
+  };
+
+  // an animated GIF cannot be paused: with motion off it is swapped for a still of its first frame, and back again when
+  // motion returns. Needs same-origin pixels; where the browser refuses (file://, another origin) the GIF keeps playing.
+  const gifs = Array.from(doc.querySelectorAll('img.work-loop'));
+  const stills = new WeakMap();
+  const syncGif = img => {
+    if (!img.dataset.gif) img.dataset.gif = img.getAttribute('src');
+    if (motionOn) {
+      if (img.getAttribute('src') !== img.dataset.gif) img.src = img.dataset.gif;
+      return;
+    }
+    if (stills.has(img)) { img.src = stills.get(img); return; }
+    const grab = () => {
+      try {
+        const c = doc.createElement('canvas');
+        c.width = img.naturalWidth; c.height = img.naturalHeight;
+        c.getContext('2d').drawImage(img, 0, 0);
+        stills.set(img, c.toDataURL('image/png'));
+        if (!motionOn) img.src = stills.get(img);
+      } catch (err) { /* tainted canvas: leave the GIF playing */ }
+    };
+    if (img.complete && img.naturalWidth) grab(); else img.addEventListener('load', grab, { once: true });
+  };
+
+  // 25 fps timecode, HH:MM:SS:FF. It only runs while the slate is shown, on screen and motion is on; otherwise it holds its value.
+  const FPS = 25;
+  let tcRaf = 0, tcT0 = 0, tcMs = 0, tcShown = -1, slateInView = true;
+  const two = n => (n < 10 ? '0' : '') + n;
+  const tcText = fr => {
+    const s = Math.floor(fr / FPS);
+    return two(Math.floor(s / 3600) % 100) + ':' + two(Math.floor(s / 60) % 60) + ':' + two(s % 60) + ':' + two(fr % FPS);
+  };
+  const tcFrame = now => {
+    tcMs += Math.max(0, now - tcT0);
+    tcT0 = now;
+    const fr = Math.floor(tcMs * FPS / 1000);
+    if (fr !== tcShown) { tcShown = fr; tcEl.textContent = tcText(fr); }
+    tcRaf = requestAnimationFrame(tcFrame);
+  };
+  const tcSync = () => {
+    if (!tcEl) return;
+    const run = motionOn && slateInView && !doc.hidden && slate.offsetParent !== null;
+    if (run && !tcRaf) { tcT0 = performance.now(); tcRaf = requestAnimationFrame(tcFrame); }
+    else if (!run && tcRaf) { cancelAnimationFrame(tcRaf); tcRaf = 0; }
+  };
+
+  const setMotion = on => {
+    motionOn = on;
+    root.classList.toggle('motion-off', !on);
+    videos.forEach(syncVideo);
+    gifs.forEach(syncGif);
+    tcSync();
+  };
+
+  // reduced motion: the videos stay on their first frame (no autoplay) until the person turns motion on
+  if (!motionOn) {
+    root.classList.add('motion-off');
+    videos.forEach(v => { v.autoplay = false; v.removeAttribute('autoplay'); v.pause(); });
+    gifs.forEach(syncGif);
+  }
+  // a reel file the browser cannot play: fall back to the slate instead of an empty black frame
+  if (reelVideo && reel) {
+    const noVideo = () => { reel.classList.add('no-video'); tcSync(); };
+    if (reelVideo.error) noVideo(); else reelVideo.addEventListener('error', noVideo);
+  }
+
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.target === slate) { slateInView = e.isIntersecting; tcSync(); return; }
+        if (e.isIntersecting) inView.add(e.target); else inView.delete(e.target);
+        syncVideo(e.target);
+      });
+    }, { rootMargin: '120px 0px' });
+    videos.forEach(v => io.observe(v));
+    if (slate) io.observe(slate);
+  } else {
+    videos.forEach(v => inView.add(v));
+    tcSync();
+  }
+
+  // the concept panel checkbox drives the grid animation; the videos and the timecode follow it
+  if (motionBox) motionBox.addEventListener('change', () => setMotion(motionBox.checked));
+  // the system setting can change while the page is open: follow it through the same checkbox
+  const onReduceChange = e => {
+    if (motionBox) { motionBox.checked = !e.matches; motionBox.dispatchEvent(new Event('change', { bubbles: true })); }
+    else setMotion(!e.matches);
+  };
+  if (reduceMQ.addEventListener) reduceMQ.addEventListener('change', onReduceChange);
+  else if (reduceMQ.addListener) reduceMQ.addListener(onReduceChange);
+  doc.addEventListener('visibilitychange', () => { videos.forEach(syncVideo); tcSync(); });
+
+  // ---------- work overlay ----------
+  const dlg = doc.getElementById('workDialog');
+  const grid = doc.querySelector('.work-grid');
+  if (!dlg || !grid || typeof dlg.showModal !== 'function') return;
+  const frame = dlg.querySelector('.wd-frame');
+  const mediaBox = dlg.querySelector('.wd-media');
+  const titleEl = doc.getElementById('wdTitle');
+  const subEl = dlg.querySelector('.wd-sub');
+  const descEl = dlg.querySelector('.wd-desc');
+  const closeBtn = dlg.querySelector('.wd-close');
+  let opener = null;
+
+  // stop and drop every media element: nothing keeps playing (or downloading) behind a closed overlay
+  const clearMedia = () => {
+    mediaBox.querySelectorAll('video').forEach(v => { v.pause(); v.removeAttribute('src'); v.load(); });
+    mediaBox.textContent = '';
+  };
+
+  const buildMedia = tile => {
+    const film = tile.dataset.film;
+    const loop = tile.dataset.loop;
+    clearMedia();
+    let el;
+    if (film) {
+      // the full film, with controls; opening it is the person's own request, so it starts
+      el = doc.createElement('video');
+      el.src = film; el.controls = true; el.autoplay = true; el.playsInline = true;
+    } else if (loop && /\.gif(?:[?#]|$)/i.test(loop)) {
+      el = doc.createElement('img');
+      el.src = loop; el.alt = '';
+    } else if (loop) {
+      // the loop at full size; with reduced motion it waits on its first frame and gets controls to start it
+      el = doc.createElement('video');
+      el.src = loop; el.muted = true; el.loop = true; el.playsInline = true; el.autoplay = motionOn; el.controls = !motionOn;
+      el.setAttribute('aria-hidden', 'true');
+      el.disablePictureInPicture = true; el.disableRemotePlayback = true;
+    } else {
+      el = doc.createElement('div');
+      el.className = 'work-slate';
+      el.setAttribute('aria-hidden', 'true');
+      el.innerHTML = '<b></b><small></small>';
+      el.firstChild.textContent = tile.dataset.id || '';
+      el.lastChild.innerHTML = window.HV ? window.HV.t('work.slate') : 'Loop · 3 s';
+    }
+    mediaBox.appendChild(el);
+  };
+
+  const open = tile => {
+    const item = tile.closest('.work-item') || tile.parentElement;
+    const title = tile.querySelector('.work-title');
+    const sub = tile.querySelector('.work-sub');
+    const desc = item && item.querySelector('.work-desc');
+    // text comes from the tile, so it is already in the page language
+    titleEl.innerHTML = title ? title.innerHTML : '';
+    subEl.innerHTML = sub ? sub.innerHTML : '';
+    descEl.innerHTML = desc ? desc.innerHTML : '';
+    buildMedia(tile);
+    opener = tile;
+    if (!dlg.open) dlg.showModal();
+    frame.scrollTop = 0;
+  };
+
+  grid.addEventListener('click', e => {
+    const tile = e.target.closest ? e.target.closest('.work-tile') : null;
+    if (tile) open(tile);
+  });
+
+  closeBtn.addEventListener('click', () => dlg.close());
+  // a click on the backdrop lands on the dialog itself; a drag that starts inside the frame and ends outside must not close it
+  let downInFrame = false;
+  dlg.addEventListener('pointerdown', e => { downInFrame = frame.contains(e.target); });
+  dlg.addEventListener('click', e => {
+    if (e.target === dlg && !downInFrame) dlg.close();
+    downInFrame = false;
+  });
+  dlg.addEventListener('close', () => {
+    clearMedia();
+    const tile = opener;
+    opener = null;
+    if (tile && tile.isConnected) tile.focus({ preventScroll: true });
+  });
+
+  // the page behind does not scroll: wheel and touch on the backdrop are swallowed, and so are they inside the frame when it has nothing to scroll
+  const hold = e => {
+    const t = e.target;
+    const scrolls = frame.scrollHeight > frame.clientHeight + 1;
+    if (t !== dlg && (scrolls || (e.type === 'touchmove' && t.closest && t.closest('video')))) return;
+    e.preventDefault();
+  };
+  dlg.addEventListener('wheel', hold, { passive: false });
+  dlg.addEventListener('touchmove', hold, { passive: false });
 })();
 </script>
 <script>

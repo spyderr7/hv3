@@ -1,0 +1,374 @@
+<canvas id="hv-grid" aria-hidden="true"></canvas>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#top" aria-label="Humanverse">%%WORDMARK%%</a>
+  <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="navLinks"><span class="nav-ico" aria-hidden="true"></span><span class="nav-toggle-text" data-i18n="nav.menu">Menu</span></button>
+  <nav class="nav-links" id="navLinks" aria-label="Main" data-i18n-attr="aria-label:nav.aria">
+    <a href="#work" data-i18n="nav.work">Work</a>
+    <a href="#creative" data-i18n="nav.creative">Creative</a>
+    <a href="#production" data-i18n="nav.production">Production</a>
+    <a href="#jeden">jeden.ai</a>
+    <a href="#built" data-i18n="nav.team">Team</a>
+    <a href="#altercast">AlterCast</a>
+  </nav>
+  <div class="lang" role="group" aria-label="Language" data-i18n-attr="aria-label:nav.lang">
+    <button type="button" data-lang="pl" aria-pressed="true">PL</button>
+    <button type="button" data-lang="en" aria-pressed="false">EN</button>
+  </div>
+  <a class="nav-cta" href="#contact" data-i18n="nav.cta">Let's talk</a>
+</header>
+
+<main>
+  <section id="top" class="scene hero s-violet" data-mode="fabric" data-bg="violet" aria-labelledby="hero-title">
+    <div class="wrap">
+      <h1 id="hero-title" class="mega"><span class="a" data-i18n="hero.t1">Humanizing</span><span class="b" data-i18n="hero.t2">AI.</span></h1>
+      <p class="tagline" data-i18n="hero.tag">A complete AI-based creative package for marketing.</p>
+      <div class="ctas">
+        <a class="btn primary" href="#contact" data-i18n="hero.cta1">Start with one campaign</a>
+        <a class="btn" href="#team" data-i18n="hero.cta2">Meet the team</a>
+      </div>
+    </div>
+    <div class="reel">%%REEL%%<div class="reel-slate">
+      <span class="reel-pill">Reel</span>
+      <p class="reel-t" data-i18n="reel.t">Showreel 2026</p>
+      <p class="reel-note" data-i18n="reel.note">Autoplay, muted, looping, edge to edge. The reel file goes here.</p>
+      <span class="reel-tc" aria-hidden="true">00:00:00:00</span>
+    </div></div>
+  </section>
+
+  <section id="work" class="scene s-white" data-mode="modules" data-bg="white" aria-labelledby="work-title">
+    <div class="rail" aria-hidden="true"><div class="rail-mark">%%WORDMARK%%</div></div>
+    <div class="wrap">
+      <span class="kicker" data-i18n="work.k">Work</span>
+      <h2 id="work-title" class="mega"><span class="a" data-i18n="work.t1">Latest</span><span class="b" data-i18n="work.t2">productions.</span></h2>
+      <p class="lead" data-i18n="work.l">Nine of our latest productions. Click one to see the film and what we did.</p>
+      %%WORK_GRID%%
+    </div>
+  </section>
+
+  <section id="about" class="scene s-green" data-mode="calm" data-bg="green" aria-labelledby="about-title">
+    <div class="wrap">
+      <h2 id="about-title" class="nots">
+        <span data-i18n="pos.n1">Not just a production house.</span>
+        <span data-i18n="pos.n2">Not just an ad agency.</span>
+        <span data-i18n="pos.n3">Not just post-production.</span>
+        <span class="b" data-i18n="pos.n4">A complete AI-based creative package for marketing.</span>
+      </h2>
+      <p class="lead" data-i18n="pos.lead">High-budget films, automated content at scale and licensed faces, plus everything in between: storyboard, animatic, final film. One partner for the whole creative and production process.</p>
+      <div class="trio">
+        <div><span class="k">Humanverse</span><span class="v" data-i18n="pos.hv">High-budget films and creative supervision</span></div>
+        <div><span class="k">jeden.ai</span><span class="v" data-i18n="pos.jd">Automated content at scale</span></div>
+        <div><span class="k">AlterCast</span><span class="v" data-i18n="pos.ac">Licensed faces</span><span class="partner" data-i18n="pos.acp">A separate company. Humanverse develops its technology.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="team" class="scene s-violet" data-mode="fabric" data-bg="violet" aria-labelledby="team-title">
+    <div class="wrap">
+      <h2 id="team-title" class="mega" style="text-align:center"><span class="a" data-i18n="team.t">The team</span></h2>
+      <figure class="team-figure">%%IMG:team%%</figure>
+      <div class="team-cap">
+        <p class="statement sm" data-i18n="team.s"><span class="nb">Three people <span class="arr">→</span></span> thirty in two years.</p>
+        <p class="body" data-i18n="team.b">Sales, Client Service and Creative built in-house. Remote HQ, Warsaw and Sopot.</p>
+      </div>
+      <p class="statement sm"><span data-i18n="team.g1">We grew with our clients.</span> <span class="b" data-i18n="team.g2">Every insight became something new.</span></p>
+      <div class="story">
+        <div><q data-i18n="team.q1">Whose face is this?</q><span class="to"><span class="arr">→</span> AlterCast</span></div>
+        <div><q data-i18n="team.q2">We need thousands of assets, not one film.</q><span class="to"><span class="arr">→</span> jeden.ai</span></div>
+        <div><q data-i18n="team.q3">We need the idea too, not just the execution.</q><span class="to"><span class="arr">→</span> Creative</span></div>
+      </div>
+      <p class="body" data-i18n="team.uc">We produced UniCredit's campaign, the biggest AI-driven ad campaign in Poland to date.</p>
+    </div>
+  </section>
+
+  <section id="creative" class="scene s-white" data-mode="frames" data-bg="white" aria-labelledby="creative-title">
+    <div class="rail" aria-hidden="true"><div class="rail-mark">%%WORDMARK%%</div></div>
+    <div class="wrap">
+      <span class="kicker" data-i18n="cr.k">Creative</span>
+      <h2 id="creative-title" class="mega"><span class="a" data-i18n="cr.t1">Idea first.</span><span class="b" data-i18n="cr.t2">Then the tool.</span></h2>
+      <div class="split">
+        <div class="col">
+          <p class="statement sm"><span class="hl" data-i18n="cr.s1">Inside every production.</span> <span data-i18n="cr.s2">Creative supervision of the studio: idea, script, look, final cut.</span></p>
+          <p class="lead" data-i18n="cr.l">We are not an ad agency. We work inside every production and make sure every frame answers to the idea, from the first draft to the final cut.</p>
+        </div>
+        <div class="col">
+          <div class="pair"><h3 data-i18n="cr.a.t">We audit ideas and scripts</h3><p class="body" data-i18n="cr.a.b">From the agency and from the client, before anything goes into production.</p></div>
+          <div class="pair"><h3 data-i18n="cr.p.t">We polish the creative for AI</h3><p class="body" data-i18n="cr.p.b">So it fits our pipeline and plays to what AI does best, without losing the idea.</p></div>
+        </div>
+      </div>
+      <p class="stages">
+        <span data-i18n="cr.st1">Idea</span><span class="arrow" aria-hidden="true"><span class="arr">→</span></span>
+        <span data-i18n="cr.st2">Script</span><span class="arrow" aria-hidden="true"><span class="arr">→</span></span>
+        <span data-i18n="cr.st3">Look</span><span class="arrow" aria-hidden="true"><span class="arr">→</span></span>
+        <span data-i18n="cr.st4">Final cut</span>
+      </p>
+    </div>
+  </section>
+
+  <section id="production" class="scene s-violet" data-mode="process" data-bg="violet" aria-labelledby="production-title">
+    <div class="wrap">
+      <span class="kicker" data-i18n="pr.k">Production</span>
+      <div class="split">
+        <div class="col">
+          <h2 id="production-title" class="mega"><span class="a" data-i18n="pr.t1">Purpose</span><span class="b" data-i18n="pr.t2">over novelty</span></h2>
+          <p class="statement sm" data-i18n="pr.s">The tool fits the vision. Never the other way around.</p>
+          <ul class="paths">
+            <li><b data-i18n="pr.l1">Live action</b><span data-i18n="pr.l1d">Real set, real emotion, AI in post.</span></li>
+            <li><b data-i18n="pr.l2">Hybrid</b><span data-i18n="pr.l2d">Real performance, generated world.</span></li>
+            <li><b data-i18n="pr.l3">Full AI</b><span data-i18n="pr.l3d">Impossible visuals, extreme scale.</span></li>
+          </ul>
+          <p class="body" data-i18n="pr.fam">We designed every AI production process to feel familiar:</p>
+          <ol class="chain">
+            <li data-i18n="pr.c1">Creative</li><li data-i18n="pr.c2">Pre-production</li><li data-i18n="pr.c3">Assets</li><li data-i18n="pr.c4">Edit</li>
+            <li data-i18n="pr.c5">Animation</li><li data-i18n="pr.c6">VFX / Online</li><li data-i18n="pr.c7">Grade</li><li data-i18n="pr.c8">Delivery</li>
+          </ol>
+          <p class="body" data-i18n="pr.master">One master, every market: language versions and market-specific variants from the same material.</p>
+        </div>
+        <div class="col" aria-hidden="true"></div>
+      </div>
+      <div class="rnd">
+        <span class="kicker">R&amp;D</span>
+        <p class="statement"><span data-i18n="rd.t1">R&amp;D isn't a lab. It's every project.</span> <span class="b" data-i18n="rd.t2">We learn on the job, not in isolation.</span></p>
+        <ul class="dots">
+          <li data-i18n="rd.d1">Every production tests something new: models, pipelines, tools.</li>
+          <li data-i18n="rd.d2">What works goes straight into the next project.</li>
+          <li data-i18n="rd.d3">Academic collaboration with PJAIT, and R&amp;D with model and platform developers.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="jeden" class="scene s-white" data-mode="pipeline" data-bg="white" aria-labelledby="jeden-title">
+    <div class="rail" aria-hidden="true"><div class="rail-mark">%%WORDMARK%%</div></div>
+    <div class="wrap">
+      <div class="split">
+        <div class="col">
+          %%JEDEN%%
+          <h2 id="jeden-title" class="mega"><span class="b" data-i18n="jd.t1">Built around</span><span class="a" data-i18n="jd.t2">your brand.</span></h2>
+          <p class="statement sm" data-i18n="jd.s">Not an off-the-shelf tool that fits your process in a few percent.</p>
+          <p class="lead" data-i18n="jd.l">We set jeden.ai up around your products, data, brand guidelines and team. At its heart is a node-based system: every step is a block, and blocks connect into any workflow.</p>
+          <p class="body" data-i18n="jd.r"><strong>Built for retail.</strong> One product database, every format, every promo cycle. Generated automatically, approved by people.</p>
+          <div class="ctas"><a class="btn primary" href="#contact" data-i18n="jd.cta">Book a jeden.ai demo</a></div>
+        </div>
+        <div class="col" aria-hidden="true"></div>
+      </div>
+      <div class="flow3">
+        <div><span class="k" data-i18n="jd.f1">Your business</span><ul><li data-i18n="jd.f1a">Product database</li><li data-i18n="jd.f1b">Brand voice &amp; guidelines</li><li data-i18n="jd.f1c">Your team's brief</li></ul></div>
+        <div><span class="k" data-i18n="jd.f2">jeden.ai nodes</span><ul><li data-i18n="jd.f2a">Image models</li><li data-i18n="jd.f2b">Video models</li><li data-i18n="jd.f2c">Text &amp; voice</li><li data-i18n="jd.f2d">Anything with an API</li></ul></div>
+        <div><span class="k" data-i18n="jd.f3">Any format</span><ul><li data-i18n="jd.f3a">E-commerce</li><li data-i18n="jd.f3b">Social &amp; stories</li><li data-i18n="jd.f3c">Film &amp; TV</li><li data-i18n="jd.f3d">Print &amp; OOH</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="approach" class="scene s-green" data-mode="modules" data-bg="green" aria-labelledby="approach-title">
+    <div class="wrap">
+      <span class="kicker" data-i18n="ap.k">How we think</span>
+      <h2 id="approach-title" class="mega long"><span class="a" data-i18n="ap.t1">We don't sell AI.</span><span class="b" data-i18n="ap.t2">We sell people.</span></h2>
+      <p class="lead" data-i18n="ap.l">Human work, human faces, human support. Business goal first, technology second.</p>
+      <ul class="values">
+        <li><b data-i18n="ap.v1">Relationships are everything.</b><span data-i18n="ap.v1d">At the AIVerse Conference our clients shared their own sales results on stage.</span></li>
+        <li><b data-i18n="ap.v2"><span class="nb">Listen <span class="arr">→</span></span> <span class="nb">understand <span class="arr">→</span></span> propose.</b><span data-i18n="ap.v2d">Sales, Client Service and Creative work as one team.</span></li>
+        <li><b data-i18n="ap.v3">Honest about what AI can and can't do.</b><span data-i18n="ap.v3d">We say it before the project starts, not after.</span></li>
+        <li><b data-i18n="ap.v4">Free to start.</b><span data-i18n="ap.v4d">Clients pay where we add real value.</span></li>
+        <li><b data-i18n="ap.v5">Familiar process. New engine.</b><span data-i18n="ap.v5d">Your team works the way it knows. AI runs underneath.</span></li>
+        <li><b data-i18n="ap.v6">Relationships over transactions.</b><span data-i18n="ap.v6d">One point of contact, shared targets, long-term thinking.</span></li>
+      </ul>
+      <div class="split">
+        <blockquote class="quote"><p data-i18n="ap.q">“AI changes how we produce. It doesn't change why people buy.”</p><cite data-i18n="ap.qc">Daniel Joński, Head of Sales</cite></blockquote>
+        <div class="col">
+          <p class="statement sm"><span data-i18n="ap.b1">Our bet:</span> <span class="b" data-i18n="ap.b2">a global marketing services company built on people.</span></p>
+          <p class="body" data-i18n="ap.b3">A revolution is happening. We won't race big tech. In all this chaos we deliver human services, and that still scales.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="built" class="scene s-white" data-mode="modules" data-bg="white" aria-labelledby="built-title">
+    <div class="rail" aria-hidden="true"><div class="rail-mark">%%WORDMARK%%</div></div>
+    <div class="wrap">
+      <h2 id="built-title" class="mega"><span class="b" data-i18n="bt.t1">How we're</span><span class="a" data-i18n="bt.t2">built</span></h2>
+      <p class="statement sm" data-i18n="bt.s">One team. From first conversation to final master.</p>
+      <p class="places">Remote HQ <span class="b">+</span> <span data-i18n="bt.waw">Warsaw</span> <span class="b">+</span> Sopot</p>
+
+      <div class="col">
+        <span class="kicker" data-i18n="bt.dk">Departments</span>
+        <div class="depts">
+          <article class="dept">
+            <div class="char">%%CHAR:new-business%%</div>
+            <span class="kicker">New Business</span>
+            <p class="line" data-i18n="bt.d1">Business goal first, technology second.</p>
+            <ul class="people">
+              <li><span class="av">%%IMG:jonski%%</span><span><b>Daniel Joński</b><small>Head of Sales</small></span></li>
+              <li><span class="av">%%IMG:tyszkiewicz%%</span><span><b>Jan Tyszkiewicz</b><small>Growth Manager</small></span></li>
+            </ul>
+          </article>
+          <article class="dept">
+            <div class="char">%%CHAR:client-service%%</div>
+            <span class="kicker">Client Service</span>
+            <p class="line" data-i18n="bt.d2">Putting things in motion: relationships, growth, action, guidance.</p>
+            <ul class="people">
+              <li><span class="av">%%IMG:domagala%%</span><span><b>Monika Domagała-Szmidt</b><small>Client Service Director</small></span></li>
+              <li><span class="av">%%IMG:dluzniewska%%</span><span><b>Paulina Dłużniewska</b><small>Senior Account Manager</small></span></li>
+              <li><span class="av">%%IMG:polanska%%</span><span><b>Iwona Polańska</b><small>Senior Account Manager</small></span></li>
+            </ul>
+          </article>
+          <article class="dept">
+            <div class="char">%%CHAR:creative%%</div>
+            <span class="kicker">Creative</span>
+            <p class="line" data-i18n="bt.d3">50 years of creative direction, inside every production.</p>
+            <ul class="people">
+              <li><span class="av">%%IMG:mazurkiewicz-cr%%</span><span><b>Paweł Mazurkiewicz</b><small>Co-founder &amp; Creative Director</small></span></li>
+              <li><span class="av">%%IMG:soszynski%%</span><span><b>Piotr Soszyński</b><small>Creative Supervisor</small></span></li>
+            </ul>
+          </article>
+          <article class="dept">
+            <div class="char">%%CHAR:production%%</div>
+            <span class="kicker">Production</span>
+            <p class="line" data-i18n="bt.d4">Together they run every production at Humanverse.</p>
+            <ul class="people">
+              <li><span class="av">%%IMG:trosinska%%</span><span><b>Ela Trosińska</b><small>Head of Production</small></span></li>
+              <li><span class="av">%%IMG:grabarczyk%%</span><span><b>Bartosz Grabarczyk</b><small>Head of Production &amp; R&amp;D</small></span></li>
+            </ul>
+          </article>
+          <article class="dept">
+            <div class="char">%%CHAR:rnd%%</div>
+            <span class="kicker">R&amp;D</span>
+            <p class="line" data-i18n="bt.d5">Every production tests something new. What works goes into the next one.</p>
+            <ul class="people">
+              <li><span class="av">%%IMG:grabarczyk%%</span><span><b>Bartosz Grabarczyk</b><small>Head of Production &amp; R&amp;D</small></span></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+
+      <div class="col">
+        <span class="kicker" data-i18n="bt.fk">Founders</span>
+        <div class="founders">
+          <div class="person"><div class="ph">%%IMG:kujawski%%</div><span class="nm">Krzysztof Kujawski</span><span class="rl">CEO</span><span class="bio" data-i18n="bt.f1">Film director by background and serial entrepreneur. A voice on AI and the AI Act.</span></div>
+          <div class="person"><div class="ph">%%IMG:mazurkiewicz%%</div><span class="nm">Paweł Mazurkiewicz</span><span class="rl">Creative Director</span><span class="bio" data-i18n="bt.f2">About 20 years as a creative, multiple Effie Award winner, speaker on AI in advertising.</span></div>
+          <div class="person"><div class="ph">%%IMG:czajkowski%%</div><span class="nm">Jarosław Czajkowski</span><span class="rl">CTO / CFO</span><span class="bio" data-i18n="bt.f3">13 years in software engineering. Built Humanverse's production pipelines from scratch.</span></div>
+        </div>
+      </div>
+
+      <div class="careers">
+        <div class="col">
+          <span class="kicker" data-i18n="ca.k">Careers</span>
+          <p class="statement"><span data-i18n="ca.t1">The future is now.</span> <span class="b" data-i18n="ca.t2">Build it with us.</span></p>
+          <p class="body" style="color:rgba(255,255,255,.86)" data-i18n="ca.l">Ideas, ownership, freedom, growth. Remote-first, but we get together regularly.</p>
+        </div>
+        <div class="col">
+          <ul class="dots">
+            <li data-i18n="ca.d1">You ship real projects to real clients, every week.</li>
+            <li data-i18n="ca.d2">You see business impact and celebrate milestones.</li>
+            <li data-i18n="ca.d3">You grow in a company that acts like a startup.</li>
+          </ul>
+          <p class="mail"><code>work@humanverse.pro</code><button type="button" data-copy="work@humanverse.pro" data-i18n="ca.copy">Copy address</button></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="trust" class="scene s-violet" data-mode="calm" data-bg="violet" aria-labelledby="trust-title">
+    <div class="wrap">
+      <h2 id="trust-title" class="mega"><span class="a" data-i18n="tr.t1">Built</span><span class="b" data-i18n="tr.t2">on trust</span></h2>
+      <div class="trust-lines">
+        <div class="tl"><span class="hl" data-i18n="tr.e">Ethics</span><p data-i18n="tr.ed"><span class="ph">licensed, consented faces</span> <span class="ph">we don't pretend</span> <span class="ph">no shortcuts on rights</span></p></div>
+        <div class="tl"><span class="hl" data-i18n="tr.x">Transparency</span><p data-i18n="tr.xd"><span class="ph">clear timelines and budgets</span> <span class="ph">honest about what AI can do</span> <span class="ph">one shared status</span></p></div>
+        <div class="tl"><span class="hl" data-i18n="tr.p">Partnership</span><p data-i18n="tr.pd"><span class="ph">one point of contact</span> <span class="ph">proactive ideas</span> <span class="ph">in it for the long run</span></p></div>
+      </div>
+      <div class="split">
+        <p class="body" data-i18n="tr.s">Safety is the absolute foundation of Humanverse: clear legal rights, ethical AI and full transparency. Article 50 of the AI Act has applied since 2 August 2026. We help brands label AI content and work with law firms and industry bodies on a common standard.</p>
+        <blockquote class="quote"><p data-i18n="tr.q">“AI provides the tools. We provide the humanity.”</p></blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section id="altercast" class="scene s-yellow" data-mode="face" data-bg="yellow" aria-labelledby="ac-title">
+    <div class="wrap">
+      <div class="split">
+        <div class="col">
+          %%ALTERCAST%%
+          <h2 id="ac-title" class="ac-head"><span data-i18n="ac.t1">Brands want AI.</span> <span class="b" data-i18n="ac.t2">Their lawyers want answers.</span></h2>
+          <p class="lead" data-i18n="ac.l">AlterCast is the world's first global marketplace for licensing real human likeness in the AI era. A legal “Airbnb for faces”.</p>
+        </div>
+        <div class="col" aria-hidden="true"></div>
+      </div>
+      <div class="cards3">
+        <div><b data-i18n="ac.c1">No consent</b><small data-i18n="ac.c1s">the problem with generated faces</small><p data-i18n="ac.c1d">Generative models create faces with no one behind them. A face that looks like a real person is a lawsuit waiting to happen.</p></div>
+        <div><b data-i18n="ac.c2">2 weeks</b><small data-i18n="ac.c2s">the timeline of traditional casting</small><p data-i18n="ac.c2d">Casting, contracts, shoot, for every market. AI production needs a cleared face in minutes.</p></div>
+        <div><b data-i18n="ac.c3">Same face</b><small data-i18n="ac.c3s">every brand, every model, every campaign</small><p data-i18n="ac.c3d">Generative models converge on one look: too symmetrical, too smooth, too polished.</p></div>
+      </div>
+      <div class="ac-box">
+        <p class="statement sm" data-i18n="ac.s">Real people license their face, define exactly what it can and cannot be used for, and get paid every time it works.</p>
+        <p class="body" data-i18n="ac.b">Brands browse, license in a few clicks and produce, with consent documented from the first click. One marketplace, faces from every market. Live since 11 September 2026.</p>
+        <p class="ac-note" data-i18n="ac.n">AlterCast is a separate company. Humanverse builds and develops its technology.</p>
+        <p><a class="btn primary" href="https://altercast.ai" target="_blank" rel="noopener" data-i18n="ac.cta">Go to altercast.ai <span class="arr ne">↗</span></a></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="scene s-violet" data-mode="logo" data-bg="violet" aria-labelledby="contact-title">
+    <div class="wrap">
+      <div class="split">
+        <div class="col">
+          <h2 id="contact-title" class="mega"><span class="a" data-i18n="ct.t1">Start with</span><span class="b" data-i18n="ct.t2">one campaign.</span></h2>
+          <p class="lead" data-i18n="ct.l">A pilot on one campaign. Clear scope. Clear cost per asset. Measured against how you produce today.</p>
+          <form class="form" id="contactForm" novalidate>
+            <fieldset class="topics">
+              <legend data-i18n="ct.topic">Topic</legend>
+              <input type="radio" name="topic" id="tp1" value="production" checked><label for="tp1" data-i18n="ct.tp1">Production</label>
+              <input type="radio" name="topic" id="tp2" value="creative"><label for="tp2" data-i18n="ct.tp2">Creative</label>
+              <input type="radio" name="topic" id="tp3" value="jeden"><label for="tp3">jeden.ai</label>
+              <input type="radio" name="topic" id="tp4" value="partnership"><label for="tp4" data-i18n="ct.tp4">Partnership</label>
+              <input type="radio" name="topic" id="tp5" value="careers"><label for="tp5" data-i18n="ct.tp5">Careers</label>
+            </fieldset>
+            <div class="row2">
+              <div class="field"><label for="f-name" data-i18n="ct.name">Name</label><input id="f-name" name="name" autocomplete="name" placeholder="Anna Kowalska"></div>
+              <div class="field"><label for="f-mail" data-i18n="ct.mail">Work email</label><input id="f-mail" name="email" type="email" autocomplete="email" placeholder="anna@company.com" data-i18n-attr="placeholder:ct.mailph"></div>
+            </div>
+            <div class="field"><label for="f-msg" data-i18n="ct.msg">Message</label><textarea id="f-msg" name="message" placeholder="One campaign for Q1: a 30-second film and cutdowns for social." data-i18n-attr="placeholder:ct.msgph"></textarea></div>
+            <div class="ctas"><button class="btn primary" type="submit" data-i18n="ct.send">Send message</button></div>
+            <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+          </form>
+          <address>Humanverse sp. z o.o. · <span class="nb">ul. Zaniemyska 5,</span> <span class="nb">02-939 Warszawa</span></address>
+        </div>
+        <div class="col" aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="logos">%%HVLOGO%%%%JEDEN_FOOT%%</div>
+  <span data-i18n="ft.c">Humanverse v3 · website concept · October 2026</span>
+  <span data-i18n="ft.n">AlterCast is a separate company.</span>
+</footer>
+
+<dialog id="workDialog" class="work-dialog" aria-labelledby="wdTitle">
+  <div class="wd-frame">
+    <button class="wd-close" type="button" autofocus aria-label="Close" data-i18n-attr="aria-label:work.close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="wd-media"></div>
+    <h3 id="wdTitle" class="wd-title"></h3>
+    <p class="wd-sub"></p>
+    <p class="wd-desc"></p>
+  </div>
+</dialog>
+
+<aside class="panel" aria-label="Concept panel" data-i18n-attr="aria-label:pn.btn">
+  <div class="panel-body" id="panelBody" hidden>
+    <fieldset>
+      <legend data-i18n="pn.tr">Colour transitions</legend>
+      <div class="seg">
+        <input type="radio" name="trans" id="tr-soft" value="soft" checked><label for="tr-soft" data-i18n="pn.soft">Smooth</label>
+        <input type="radio" name="trans" id="tr-hard" value="hard"><label for="tr-hard" data-i18n="pn.hard">Sharp</label>
+      </div>
+    </fieldset>
+    <div>
+      <div class="panel-row"><label class="lbl" for="intensity" data-i18n="pn.int">Grid strength</label><b id="intensityOut">100%</b></div>
+      <input type="range" id="intensity" min="0" max="160" step="5" value="100">
+    </div>
+    <div class="panel-row"><span class="lbl" data-i18n="pn.mode">Grid mode</span><b id="modeReadout">Fabric</b></div>
+    <label class="chk" for="motion"><input type="checkbox" id="motion" checked><span data-i18n="pn.anim">Animate the grid</span></label>
+  </div>
+  <button class="panel-toggle" id="panelToggle" type="button" aria-expanded="false" aria-controls="panelBody"><svg class="pt-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M3 6h7.5M15.5 6H21M3 12h2.5M10.5 12H21M3 18h10.5M18.5 18H21"/><circle cx="13" cy="6" r="2.5"/><circle cx="8" cy="12" r="2.5"/><circle cx="16" cy="18" r="2.5"/></svg><span class="pt-text" data-i18n="pn.btn">Concept panel</span></button>
+</aside>
